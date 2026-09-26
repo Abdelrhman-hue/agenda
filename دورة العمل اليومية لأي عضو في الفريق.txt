@@ -1,0 +1,13 @@
+# 1. تحديث فرع dev المحلي
+git checkout dev
+git pull origin dev
+
+# 2. إنشاء فرع للمهمة الخاصة به
+git checkout -b feat/booking-page
+
+# 3. العمل على الكود وإضافته
+git add .
+git commit -m "feat(ui): add time slot selector component"
+
+# 4. رفع الفرع إلى GitHub
+git push -u origin feat/booking-page
