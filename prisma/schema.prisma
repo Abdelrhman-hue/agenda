@@ -1,0 +1,130 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+enum Role {
+  ADMIN
+  PROVIDER
+  CLIENT
+}
+
+enum ProviderCategory {
+  CLINIC
+  TUTOR
+  GYM
+  CONSULTANT
+  BEAUTY
+  OTHER
+}
+
+enum DepositType {
+  NONE
+  FIXED
+  FULL
+}
+
+enum BookingStatus {
+  HELD
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+  NO_SHOW
+  EXPIRED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+
+model User {
+  id        String   @id @default(cuid())
+  email     String?  @unique
+  phone     String?  @unique
+  name      String?
+  role      Role
+  createdAt DateTime @default(now())
+
+  providerProfile ProviderProfile?
+  bookings        Booking[]
+}
+
+model ProviderProfile {
+  id            String           @id @default(cuid())
+  userId        String           @unique
+  user          User             @relation(fields: [userId], references: [id])
+  slug          String           @unique
+  category      ProviderCategory
+  bio           String?
+  depositType   DepositType      @default(FIXED)
+  depositAmount Int              @default(0) // بالقرش أو الجنيه حسب اختيارك
+  bufferMinutes Int              @default(15)
+  timezone      String           @default("Africa/Cairo")
+  createdAt     DateTime         @default(now())
+
+  services     Service[]
+  workingHours WorkingHours[]
+  bookings     Booking[]
+}
+
+model WorkingHours {
+  id         String          @id @default(cuid())
+  providerId String
+  provider   ProviderProfile @relation(fields: [providerId], references: [id])
+  dayOfWeek  Int // 0 = الأحد ... 6 = السبت
+  startTime  String // "09:00"
+  endTime    String // "17:00"
+
+  @@unique([providerId, dayOfWeek, startTime])
+}
+
+model Service {
+  id              String          @id @default(cuid())
+  providerId      String
+  provider        ProviderProfile @relation(fields: [providerId], references: [id])
+  name            String
+  durationMinutes Int
+  price           Int
+  isActive        Boolean         @default(true)
+
+  bookings Booking[]
+}
+
+model Booking {
+  id            String          @id @default(cuid())
+  providerId    String
+  provider      ProviderProfile @relation(fields: [providerId], references: [id])
+  serviceId     String
+  service       Service         @relation(fields: [serviceId], references: [id])
+  clientId      String
+  client        User            @relation(fields: [clientId], references: [id])
+  startsAt      DateTime
+  endsAt        DateTime
+  status        BookingStatus   @default(HELD)
+  holdExpiresAt DateTime?
+  createdAt     DateTime        @default(now())
+
+  payment Payment?
+
+  @@unique([providerId, startsAt]) // يمنع الحجز المزدوج
+  @@index([providerId, startsAt])
+}
+
+model Payment {
+  id          String        @id @default(cuid())
+  bookingId   String        @unique
+  booking     Booking       @relation(fields: [bookingId], references: [id])
+  amount      Int
+  status      PaymentStatus @default(PENDING)
+  gatewayRef  String?
+  createdAt   DateTime      @default(now())
+}
