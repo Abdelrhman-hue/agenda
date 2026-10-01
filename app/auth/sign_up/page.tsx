@@ -1,14 +1,18 @@
+import "@/app/home/globals.css"
+import { RegisterForm } from "./RegisterForm";
+import Benefits from "./BenefitsSection";
+
 function sign_up() {
 
-  return <div className="p-6 w-full h-full grid grid-cols-12" dir="rtl">
+  return <div className="px-6 py-4 w-full gap-3 grid grid-cols-12" dir="rtl">
     {/* form for register */}
-    <div className="col-span-9 items-center justify-center w-full h-full bg-red-600 gap-4">
-      hello
+    <div className="lg:col-span-8 col-span-12 justify-center">
+      <RegisterForm />
     </div>
 
     {/* benifits section */}
-    <div className="col-span-3 items-center justify-center w-full h-full bg-blue-600 gap-4">
-      benifits section
+    <div className="col-span-4 md:hidden sm:hidden lg:block items-center justify-center w-full h-fullgap-4">
+      <Benefits />
     </div>
 
   </div>;
