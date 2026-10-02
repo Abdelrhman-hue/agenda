@@ -91,7 +91,7 @@ export default function Benefits() {
             />
 
             {/* Stats */}
-            <Card className="rounded-[16px] border-0 shadow-[0_1px_3px_rgba(23,32,30,0.04)]">
+            <Card className="rounded-card border-0 shadow-level1">
                <CardContent className="flex items-center gap-3 p-4">
                   <div className="flex flex-1 items-center gap-3">
                      <div className="flex -space-x-2 space-x-reverse">

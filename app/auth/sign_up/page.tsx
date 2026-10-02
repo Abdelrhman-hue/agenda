@@ -4,12 +4,13 @@ import Benefits from "./BenefitsSection";
 
 function sign_up() {
 
+
   return <div className="px-6 py-3 w-full gap-6 scale-90 bg-canvas grid grid-cols-12 " dir="rtl">
     {/* form for register */}
     <div className="lg:col-span-8 col-span-12    
     overflow-hidden
-    rounded-2xl
-    bg-[#FAFBF8]
+    rounded-[16px]
+    bg-surface
     shadow-lg
     before:pointer-events-none
     before:absolute
@@ -31,8 +32,7 @@ function sign_up() {
     </div>
 
     {/* benifits section */}
-    <div className="col-span-4 md:hidden  sm:hidden lg:block items-center justify-center w-full h-fullgap-4">
-
+    <div className="col-span-4 hidden lg:block items-center justify-center w-full h-full gap-4">
       <Benefits />
     </div>
 

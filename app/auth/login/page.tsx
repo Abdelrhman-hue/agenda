@@ -1,30 +1,63 @@
+import { Badge } from "@/components/ui/badge";
+import { ArrowRight } from "lucide-react";
+import Link from "next/link";
+
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import LoginForm from "./LoginForm";
+import LoginBenifits from "./LoginBenifits";
+import GoogleProvider from "../GoogleProvider";
+
 function login() {
   return (
-    <div>
-      <div className="bg-surface border border-border-subtle rounded-card p-6 shadow-level1 font-arabic">
-        {/* شارة حالة الموعد */}
-        <span className="inline-block bg-primary-light text-primary text-xs font-semibold px-2.5 py-1 rounded-full mb-3">
-          متاح للحجز
-        </span>
+    <section className="w-full md:p-8 p-4 min-h-screen grid grid-cols-12 bg-canvas" dir="rtl">
+      {/* LOGIN FORM */}
+      <div className="w-full h-full  border-none p-8 col-span-12 lg:col-span-6 flex flex-col gap-3">
 
-        <h3 className="text-neutral-primary text-lg font-bold mb-1">
-          كشف استشاري
-        </h3>
-        <p className="text-neutral-muted text-sm mb-4">
-          المدة: 30 دقيقة • عيادة التجمع
-        </p>
+        <div className="flex items-center justify-between">
 
-        {/* زر الحجز الأساسي مع تفاعل الـ Hover */}
-        <button className="w-full bg-primary hover:bg-primary-dark text-white font-medium py-2.5 rounded-input transition-colors">
-          تأكيد الموعد
-        </button>
+          <Link className="flex items-center gap-2 text-[#3e4945] text-title-md hover:underline" href={"/"}>
+            <ArrowRight />
+            العودة للرئيسية
+          </Link>
 
-        {/* زر سداد العربون الذهبي */}
-        <button className="w-full mt-2 bg-accent-gold hover:opacity-90 text-neutral-primary font-semibold py-2.5 rounded-input transition-opacity">
-          دفع العربون عبر إنستاباي
-        </button>
+          <Badge className="bg-muted p-2">
+            <span className="w-2 h-2 rounded-full bg-primary-dark ml-1"></span>
+            <p className="text-label-md text-primary-dark">بوابة الشركاء</p>
+          </Badge>
+
+        </div>
+
+        <div className="mt-3">
+          <h2 className="text-headline-lg mb-1 text-neutral-primary">اهلاً بك فى اجندة</h2>
+          <p className="text-body-md text-neutral-primary">
+            سجل دخولك لإدارة مواعيدك, حجوزاتك, وتدفقاتك النقدية
+          </p>
+        </div>
+
+        <LoginForm />
+
+        {/* Separator */}
+        <div className="my-3 flex items-center gap-3">
+          <Separator className="flex-1" />
+
+          <span className="text-[12px] text-[#6B7272]">
+            أو
+          </span>
+
+          <Separator className="flex-1" />
+        </div>
+
+        {/* GOOGLE PROVIDER */}
+        <GoogleProvider />
+
       </div>
-    </div>
+
+
+      {/* LEFT SIDE */}
+      <LoginBenifits />
+
+    </section>
   );
 }
 
