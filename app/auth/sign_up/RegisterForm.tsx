@@ -36,13 +36,11 @@ export function RegisterForm() {
    const [password, setPassword] = useState("");
    const [showPassword, setShowPassword] = useState(false);
 
-
    return (
       <div
          dir="rtl"
          className="
-        rounded-[16px]
-       bg-surface
+        rounded-card
         p-5
         shadow-lg
         sm:p-6
@@ -53,30 +51,26 @@ export function RegisterForm() {
             <Badge
                className="
             rounded-full
-            border-0
-            bg-[#DFF4EE]
-            px-3
-            py-1
-            text-[12px]
-            font-medium
-            text-[#087F6A]
+            bg-primary-light
+            text-primary-dark!
+            text-label-md
           "
             >
                ⚡ تجربة مجانية لمدة 14 يومًا
             </Badge>
 
-            <h1 className="mt-3 text-[28px] font font-semibold leading-10 text-[#17201E]">
+            <h1 className="mt-3 text-headline-lg">
                ابدأ مع أجندة
             </h1>
 
-            <p className="mt-1 text-[14px] leading-6 text-[#6B7272]">
+            <p className="mt-1 text-body-md ">
                أنشئ حسابك وابدأ تنظيم مواعيدك وتحصيل العربون في دقائق معدودة.
             </p>
          </div>
 
          {/* Account Type */}
          <div className="mb-5">
-            <Label className="mb-2 block text-[14px] font-semibold leading-5.5">
+            <Label className="mb-2 block text-label-md">
                أنا أسجل بصفتي:
             </Label>
 
@@ -357,7 +351,7 @@ export function RegisterForm() {
                   <span>رمز خاص مطلوب</span>
                </div>
 
-               
+
 
             </div>
          </div>

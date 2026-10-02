@@ -10,7 +10,7 @@ function sign_up() {
     <div className="lg:col-span-8 col-span-12    
     overflow-hidden
     rounded-[16px]
-    bg-[#FAFBF8]
+    bg-surface
     shadow-lg
     before:pointer-events-none
     before:absolute

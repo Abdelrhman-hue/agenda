@@ -15,7 +15,7 @@ interface IBenefitCardProps {
 
 const BenefitCard = ({ title, description, icon: Icon, bgIcon, iconColor, badgeText, badgeBg, badgeTextColor }: IBenefitCardProps) => {
    return (
-      <Card className="w-full shadow-sm">
+      <Card className="w-full shadow-level1">
          <CardContent className="flex items-center gap-3 p-4">
             <div className={`flex size-13 shrink-0 items-center justify-center rounded-[10px] ${bgIcon} =${iconColor}`}>
                <Icon className="size-7" />
