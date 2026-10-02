@@ -4,7 +4,7 @@ import Benefits from "./BenefitsSection";
 
 function sign_up() {
 
-  return <div className="px-6 py-3 w-full gap-6 scale-90 grid grid-cols-12 " dir="rtl">
+  return <div className="px-6 py-3 w-full gap-6 scale-90 bg-canvas grid grid-cols-12 " dir="rtl">
     {/* form for register */}
     <div className="lg:col-span-8 col-span-12    
     overflow-hidden
