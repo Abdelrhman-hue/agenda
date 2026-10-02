@@ -20,10 +20,9 @@ export function RegisterInput({
   prefix,
 }: RegisterInputProps) {
   return (
-    <div className="space-y-2">
-      <Label className="text-[14px] font-semibold leading-[22px] text-[#17201E]">
+    <div className="space-y-1">
+      <Label className="text-[14px] font-semibold leading-5.5 text-[#17201E]">
         {label}
-
         {required && (
           <span className="mr-1 text-red-500">*</span>
         )}
@@ -40,13 +39,13 @@ export function RegisterInput({
           className={`
             h-11
             rounded-[10px]
-            border-[#E5EAE8]
             bg-[#F4F8F6]
             text-[14px]
             shadow-none
+            border-emerald-100
             placeholder:text-[#6B7272]
-            focus-visible:border-[#087F6A]
-            focus-visible:ring-[#087F6A]
+            focus-visible:border-emerald-200
+            focus-visible:ring-0
             ${Icon ? "pr-10" : ""}
             ${prefix ? "pl-20" : ""}
           `}
