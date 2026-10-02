@@ -42,7 +42,7 @@ export function RegisterForm() {
          dir="rtl"
          className="
         rounded-[16px]
-        bg-white
+       bg-surface
         p-5
         shadow-lg
         sm:p-6
