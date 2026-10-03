@@ -2,14 +2,17 @@
 
 import { useState } from "react";
 import {
-   Check,
-   Eye,
-   EyeOff,
-   LockKeyhole,
-   Mail,
-   Phone,
-   Store,
-   UserRound,
+  Check,
+  Eye,
+  EyeOff,
+  LockKeyhole,
+  Mail,
+  Phone,
+  Store,
+  UserRound,
+  Loader2,
+  ShieldCheck,
+  AlertCircle,
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -17,457 +20,428 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-   RadioGroup,
-   RadioGroupItem,
-} from "@/components/ui/radio-group";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
 import { RegisterInput } from "./RegisterInput";
 import Link from "next/link";
-
-
+import GoogleProvider from "../GoogleProvider";
+import { registerUserAction } from "@/app/actions/authActions";
+import { useRouter } from "next/navigation";
 
 type AccountType = "business" | "client";
 
 export function RegisterForm() {
-   const [accountType, setAccountType] =
-      useState<AccountType>("business");
+  const router = useRouter();
+  const [accountType, setAccountType] = useState<AccountType>("business");
 
-   const [password, setPassword] = useState("");
-   const [showPassword, setShowPassword] = useState(false);
+  // Form State
+  const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
+  // Status & Validation State
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [serverError, setServerError] = useState<string | null>(null);
+  const [serverSuccess, setServerSuccess] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-   return (
-      <div
-         dir="rtl"
-         className="
-        rounded-[16px]
-        bg-white
-        p-5
-        shadow-lg
-        sm:p-6
-      "
-      >
-         {/* Header */}
-         <div className="mb-5">
-            <Badge
-               className="
-            rounded-full
-            border-0
-            bg-[#DFF4EE]
-            px-3
-            py-1
-            text-[12px]
-            font-medium
-            text-[#087F6A]
-          "
-            >
-               ⚡ تجربة مجانية لمدة 14 يومًا
-            </Badge>
+  // Password strength calculations
+  const hasMinLength = password.length >= 8;
+  const hasSpecialOrNum = /[0-9!@#$%^&*(),.?":{}|<>]/.test(password);
 
-            <h1 className="mt-3 text-[28px] font font-semibold leading-10 text-[#17201E]">
-               ابدأ مع أجندة
-            </h1>
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
 
-            <p className="mt-1 text-[14px] leading-6 text-[#6B7272]">
-               أنشئ حسابك وابدأ تنظيم مواعيدك وتحصيل العربون في دقائق معدودة.
-            </p>
-         </div>
+    if (!fullName.trim()) {
+      newErrors.fullName = "الاسم بالكامل أو اسم النشاط مطلوب.";
+    }
 
-         {/* Account Type */}
-         <div className="mb-5">
-            <Label className="mb-2 block text-[14px] font-semibold leading-5.5">
-               أنا أسجل بصفتي:
-            </Label>
+    const cleanPhone = phone.replace(/\s+/g, "");
+    if (!cleanPhone) {
+      newErrors.phone = "رقم الهاتف المحمول مطلوب.";
+    } else if (!/^01[0125]\d{8}$/.test(cleanPhone)) {
+      newErrors.phone = "أدخل رقم هاتف مصري صحيح مكون من 11 رقمًا (مثال: 01012345678).";
+    }
 
-            <RadioGroup
-               value={accountType}
-               onValueChange={(value) =>
-                  setAccountType(value as AccountType)
-               }
-               className="grid grid-cols-2 gap-2"
-            >
-               {/* Business */}
-               <Label
-                  htmlFor="business"
-                  className={`
-      flex cursor-pointer justify-start items-center gap-3
-      rounded-[10px]
-      border
-      py-6
-      transition-all
-      ${accountType === "business"
-                        ? "border-[#D6EBE5] bg-[#EAF6F3]"
-                        : "border-[#E5EAE8] bg-white"
-                     }
-    `}
-               >
-                  <RadioGroupItem
-                     id="business"
-                     value="business"
-                     className="sr-only"
-                  />
+    if (!email.trim()) {
+      newErrors.email = "البريد الإلكتروني مطلوب.";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      newErrors.email = "صيغة البريد الإلكتروني غير صحيحة.";
+    }
 
-                  {/* Custom Radio */}
-                  <div
-                     className={`
-        flex size-5 shrink-0 items-center justify-center
-        rounded-full border
-        ${accountType === "business"
-                           ? "border-[#087F6A] bg-[#087F6A]"
-                           : "border-[#AAB8B4] bg-white"
-                        }
-      `}
-                  >
-                     {accountType === "business" && (
-                        <Check className="size-3 text-white" strokeWidth={3} />
-                     )}
-                  </div>
+    if (!password) {
+      newErrors.password = "كلمة المرور مطلوبة.";
+    } else if (password.length < 8) {
+      newErrors.password = "كلمة المرور يجب أن تكون 8 أحرف على الأقل.";
+    }
 
-                  <div className={`
-                     flex size-11 shrink-0 items-center justify-center ${accountType === "business" ? "bg-[#087F6A] text-white" : "bg-emerald-50 border border-[#AAB8B4]"} rounded-[10px] `}>
-                     <Store className="size-6" />
-                  </div>
+    if (!termsAccepted) {
+      newErrors.terms = "يجب الموافقة على شروط الاستخدام وسياسة الخصوصية للاستمرار.";
+    }
 
-                  <div className="min-w-0">
-                     <p className="text-[14px] mb-2 font-semibold text-[#17201E]">
-                        صاحب خدمة أو نشاط
-                     </p>
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
-                     <p className="text-[12px] leading-5 text-[#6B7272]">
-                        عيادة، صالون، أكاديمية، مستقل
-                     </p>
-                  </div>
-               </Label>
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setServerError(null);
+    setServerSuccess(null);
 
-               {/* Client */}
-               <Label
-                  htmlFor="client"
-                  className={`
-      flex cursor-pointer items-center gap-3
-      rounded-[10px]
-      border
-    
-      py-5
-      transition-all
-      ${accountType === "client"
-                        ? "border-[#D6EBE5] bg-[#EAF6F3]"
-                        : "border-[#E5EAE8] bg-white"
-                     }
-    `}
-               >
-                  <RadioGroupItem
-                     id="client"
-                     value="client"
-                     className="sr-only"
-                  />
+    if (!validateForm()) {
+      return;
+    }
 
-                  {/* Custom Radio */}
-                  <div
-                     className={`
-        flex size-5 shrink-0 items-center justify-center
-        rounded-full border
-        ${accountType === "client"
-                           ? "border-[#087F6A] bg-[#087F6A]"
-                           : "border-[#AAB8B4] bg-white"
-                        }
-      `}
-                  >
-                     {accountType === "client" && (
-                        <Check className="size-3 text-white" strokeWidth={3} />
-                     )}
-                  </div>
+    setIsSubmitting(true);
 
-                  <div className={`
-                     flex size-11 shrink-0 items-center justify-center ${accountType === "client" ? "bg-[#087F6A] text-white" : "bg-emerald-50 border border-[#AAB8B4]"} rounded-[10px] `}>
-                     <UserRound className="size-5" />
-                  </div>
+    try {
+      const res = await registerUserAction({
+        name: fullName,
+        phone,
+        email,
+        password,
+        accountType,
+        termsAccepted,
+      });
 
-                  <div className="min-w-0">
-                     <p className="text-[14px] mb-2 font-semibold text-[#17201E]">
-                        عميل مستفيد
-                     </p>
+      if (res.success) {
+        setServerSuccess("تم إنشاء حسابك بنجاح! جاري توجيهك الآن...");
+        setTimeout(() => {
+          router.push("/auth/login?registered=true");
+        }, 1500);
+      } else {
+        setServerError(res.error || "حدث خطأ أثناء التسجيل.");
+      }
+    } catch (err) {
+      setServerError("تعذر الاتصال بالخادم. يرجى التأكد من اتصال الإنترنت والمحاولة مجددًا.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
-                     <p className="text-[12px] leading-5 text-[#6B7272]">
-                        لحجز ومتابعة وإدارة مواعيدك الشخصية
-                     </p>
-                  </div>
-               </Label>
-            </RadioGroup>
-         </div>
+  return (
+    <div dir="rtl" className="w-full bg-surface p-5 sm:p-7 rounded-[16px] shadow-level1 text-right">
+      {/* Header */}
+      <div className="mb-6">
+        <Badge className="rounded-full bg-primary-light text-primary-dark font-medium text-label-md px-3 py-1 border-0 inline-flex items-center gap-1.5">
+          <span>⚡</span>
+          <span>تجربة مجانية لمدة 14 يومًا</span>
+        </Badge>
 
+        <h1 className="mt-3 text-headline-lg font-bold text-neutral-primary">
+          ابدأ مع أجندة
+        </h1>
 
-         {/* Inputs */}
-         <div className="space-y-4">
-            <RegisterInput
-               required
-               label="الاسم بالكامل أو اسم النشاط"
-               placeholder="د. كريم إبراهيم أو أكاديمية النور"
-               icon={UserRound}
-            />
-
-            <div dir="rtl" className="w-full space-y-2">
-               {/* Label */}
-               <Label className="text-[14px] font-semibold text-[#17201E]">
-                  رقم الهاتف المحمول
-                  <span className="mr-1 text-red-500">*</span>
-               </Label>
-
-               {/* Phone Input */}
-               <div
-                  className="
-          relative
-          flex
-          h-11
-          w-full
-          overflow-hidden
-          rounded-[10px]
-          bg-[#EAF5F2]
-        "
-               >
-                  {/* Country Code */}
-                  <div
-                     className="
-            flex
-            h-full
-            shrink-0
-            items-center
-            gap-2
-            border-l
-            border-[#DCEAE6]
-            bg-[#E4F1EE]
-            px-4
-            text-[13px]
-            font-medium
-            text-[#17201E]
-          "
-                  >
-                     <span className="text-[12px]">EG</span>
-
-                     <span dir="ltr">+20</span>
-                  </div>
-
-                  {/* Input */}
-                  <Input
-                     type="tel"
-
-                     // value={value}
-                     // onChange={(e) => onChange?.(e.target.value)}
-                     placeholder="010 1234 5678"
-                     dir="ltr"
-                     className="
-            h-full
-            flex-1
-            rounded-none
-            border-0
-            bg-transparent
-            px-4
-            text-[14px]
-            text-[#17201E]
-            shadow-none
-            placeholder:text-[#7B8582]
-            focus-visible:ring-0
-            focus-visible:ring-offset-0
-          "
-                  />
-
-                  {/* Phone Icon */}
-                  <div
-                     className="
-            flex
-            w-12
-            shrink-0
-            items-center
-            justify-center
-            text-[#53615D]
-          "
-                  >
-                     <Phone className="size-4.5" />
-                  </div>
-               </div>
-
-               {/* Helper text */}
-               <p className="text-[12px] leading-5 text-[#6B7272]">
-                  لتفعيل حسابك وإرسال رسائل العربون والواتساب
-               </p>
-            </div>
-
-            <RegisterInput
-               label="البريد الإلكتروني للعمل"
-               placeholder="name@company.com"
-               type="email"
-               icon={Mail}
-               required
-            />
-
-            {/* Password */}
-            <div className="space-y-2">
-               <div className="flex items-center justify-between">
-                  <Label className="text-[14px] font-semibold leading-5.5">
-                     كلمة المرور
-                     <span className="mr-1 text-red-500">*</span>
-                  </Label>
-
-                  <span className="text-[12px] leading-5 text-[#6B7272]">
-                     8 أحرف على الأقل
-                  </span>
-               </div>
-
-               <div className="relative" >
-                  <LockKeyhole className="absolute right-3 top-1/2 size-4 -translate-y-1/2 text-[#6B7272]" />
-
-                  <Input
-                     type={showPassword ? "text" : "password"}
-                     value={password}
-                     onChange={(e) => setPassword(e.target.value)}
-                     placeholder="••••••••"
-                     className="
-                h-11
-                rounded-[10px]
-                border-emerald-100
-                outline-0
-                bg-[#F4F8F6]
-                px-10
-                text-[14px]
-                shadow-none
-                focus-visible:border-emerald-200
-                focus-visible:ring-0
-              "
-                  />
-
-                  <Button
-                     type="button"
-                     variant="ghost"
-                     size="icon"
-                     onClick={() =>
-                        setShowPassword((prev) => !prev)
-                     }
-                     className="absolute  cursor-pointer left-1 top-1/2 size-9 -translate-y-1/2 text-[#6B7272]"
-                  >
-                     {showPassword ? (
-                        <EyeOff className="size-4" />
-                     ) : (
-                        <Eye className="size-4" />
-                     )}
-                  </Button>
-               </div>
-
-               <div className="flex justify-between text-[12px] leading-5 text-[#6B7272]">
-                  <span>أدخل كلمة مرور قوية</span>
-                  <span>رمز خاص مطلوب</span>
-               </div>
-
-               
-
-            </div>
-         </div>
-
-         {/* Terms */}
-         <div dir="rtl" className="flex mt-2 relative z-10 items-start gap-2">
-            <Checkbox
-               id="terms"
-               className="
-          mt-0.5
-          size-4
-          rounded-xs
-          border-[#7B8582]
-          bg-white
-          shadow-none
-          focus-visible:ring-0
-          focus-visible:ring-offset-0
-          data-[state=checked]:border-primary
-          data-[state=checked]:bg-primary
-        "
-            />
-
-            <Label
-               htmlFor="terms"
-               className="cursor-pointer text-[12px] font-normal leading-5 text-neutral-primary"
-            >
-               أوافق على{" "}
-               <Link
-                  href="/terms"
-                  className="text-[#80b1a9] hover:underline"
-               >
-                  شروط الاستخدام
-               </Link>{" "}
-               و{" "}
-               <Link
-                  href="/privacy"
-                  className="text-[#80b1a9] hover:underline"
-               >
-                  سياسة الخصوصية
-               </Link>{" "}
-               الخاصة بمنصة أجندة وموافق على استلام إشعارات الحجز المباشرة.
-            </Label>
-         </div>
-
-         {/* Submit */}
-         <Button
-            className="
-          mt-4
-          h-11
-          w-full
-          rounded-[10px]
-          bg-[#087F6A]
-          text-[14px]
-          cursor-pointer
-          font-semibold
-          hover:bg-[#056653]
-        "
-         >
-            إنشاء الحساب مجانًا ←
-         </Button>
-
-         {/* Divider */}
-         <div className="my-3 flex items-center gap-3">
-            <Separator className="flex-1" />
-
-            <span className="text-[12px] text-[#6B7272]">
-               أو
-            </span>
-
-            <Separator className="flex-1" />
-         </div>
-
-         {/* Google */}
-         <Button
-            variant="outline"
-            className="
-          h-11
-          w-full
-          rounded-[10px]
-          border-0
-          cursor-pointer
-          font-semibold
-          shadow
-          bg-emerald-50
-          text-[14px]
-          hover:bg-[#EEF5F2]
-        "
-         >
-
-            <svg xmlns="http://w3.org" viewBox="0 0 48 48" width="48px" height="48px">
-               <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
-               <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
-               <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" />
-               <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.46-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
-               <path fill="none" d="M0 0h48v48H0z" />
-            </svg>
-
-            التسجيل السريع باستخدام Google
-         </Button>
-
-         {/* Login */}
-         <p className="mt-3 text-center text-[12px] leading-5 text-[#6B7272]">
-            لديك حساب بالفعل على أجندة؟{" "}
-            <Link
-               href="/login"
-               className="font-medium text-[#087F6A] hover:underline"
-            >
-               تسجيل الدخول
-            </Link>
-         </p>
+        <p className="mt-1.5 text-body-md text-neutral-muted">
+          أنشئ حسابك وابدأ تنظيم مواعيدك وتحصيل العربون في دقائق معدودة.
+        </p>
       </div>
-   );
+
+      {/* Global Banners */}
+      {serverError && (
+        <div className="mb-5 p-3.5 rounded-[10px] bg-[#FFDAD6] border border-[#D94B4B]/30 flex items-start gap-2.5 text-body-md text-[#D94B4B]">
+          <AlertCircle className="size-5 shrink-0 mt-0.5" />
+          <span>{serverError}</span>
+        </div>
+      )}
+
+      {serverSuccess && (
+        <div className="mb-5 p-3.5 rounded-[10px] bg-[#DDF4EE] border border-[#16855B]/30 flex items-start gap-2.5 text-body-md text-[#16855B]">
+          <Check className="size-5 shrink-0 mt-0.5" />
+          <span>{serverSuccess}</span>
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="space-y-5">
+        {/* Account Type Selector */}
+        <div>
+          <Label className="mb-2.5 block text-label-md font-semibold text-neutral-primary">
+            أنا أسجل بصفتي:
+          </Label>
+
+          <RadioGroup
+            value={accountType}
+            onValueChange={(val) => setAccountType(val as AccountType)}
+            className="grid grid-cols-1 sm:grid-cols-2 gap-3"
+          >
+            {/* Business Radio */}
+            <Label
+              htmlFor="type-business"
+              className={`
+                flex cursor-pointer items-center gap-3
+                rounded-[10px] border p-3.5
+                transition-all duration-200
+                ${
+                  accountType === "business"
+                    ? "border-primary bg-[#EAF6F3] shadow-level1"
+                    : "border-border-subtle bg-surface hover:border-primary/50"
+                }
+              `}
+            >
+              <RadioGroupItem id="type-business" value="business" className="sr-only" />
+
+              <div
+                className={`
+                  flex size-5 shrink-0 items-center justify-center rounded-full border transition-colors
+                  ${
+                    accountType === "business"
+                      ? "border-primary bg-primary"
+                      : "border-[#AAB8B4] bg-surface"
+                  }
+                `}
+              >
+                {accountType === "business" && <Check className="size-3 text-white" strokeWidth={3} />}
+              </div>
+
+              <div
+                className={`
+                  flex size-10 shrink-0 items-center justify-center rounded-[10px]
+                  ${accountType === "business" ? "bg-primary text-white" : "bg-[#F4F8F6] text-neutral-muted"}
+                `}
+              >
+                <Store className="size-5" />
+              </div>
+
+              <div className="min-w-0 flex-1">
+                <p className="text-body-md font-semibold text-neutral-primary">صاحب خدمة أو نشاط</p>
+                <p className="text-body-sm text-neutral-muted">عيادة، صالون، أكاديمية، مستقل</p>
+              </div>
+            </Label>
+
+            {/* Client Radio */}
+            <Label
+              htmlFor="type-client"
+              className={`
+                flex cursor-pointer items-center gap-3
+                rounded-[10px] border p-3.5
+                transition-all duration-200
+                ${
+                  accountType === "client"
+                    ? "border-primary bg-[#EAF6F3] shadow-level1"
+                    : "border-border-subtle bg-surface hover:border-primary/50"
+                }
+              `}
+            >
+              <RadioGroupItem id="type-client" value="client" className="sr-only" />
+
+              <div
+                className={`
+                  flex size-5 shrink-0 items-center justify-center rounded-full border transition-colors
+                  ${
+                    accountType === "client"
+                      ? "border-primary bg-primary"
+                      : "border-[#AAB8B4] bg-surface"
+                  }
+                `}
+              >
+                {accountType === "client" && <Check className="size-3 text-white" strokeWidth={3} />}
+              </div>
+
+              <div
+                className={`
+                  flex size-10 shrink-0 items-center justify-center rounded-[10px]
+                  ${accountType === "client" ? "bg-primary text-white" : "bg-[#F4F8F6] text-neutral-muted"}
+                `}
+              >
+                <UserRound className="size-5" />
+              </div>
+
+              <div className="min-w-0 flex-1">
+                <p className="text-body-md font-semibold text-neutral-primary">عميل مستفيد</p>
+                <p className="text-body-sm text-neutral-muted">لحجز ومتابعة مواعيدك</p>
+              </div>
+            </Label>
+          </RadioGroup>
+        </div>
+
+        {/* Inputs */}
+        <div className="space-y-4">
+          <RegisterInput
+            required
+            label="الاسم بالكامل أو اسم النشاط"
+            placeholder="د. كريم إبراهيم أو أكاديمية النور"
+            icon={UserRound}
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            error={errors.fullName}
+          />
+
+          {/* Phone Field */}
+          <div className="space-y-1.5 w-full">
+            <Label className="text-body-md font-semibold text-neutral-primary flex items-center gap-1">
+              رقم الهاتف المحمول
+              <span className="text-[#D94B4B]">*</span>
+            </Label>
+
+            <div className="relative flex h-11 w-full overflow-hidden rounded-[10px] border border-border-subtle bg-[#F4F8F6] focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all">
+              {/* Country Code Prefix */}
+              <div className="flex h-full shrink-0 items-center gap-1.5 border-l border-border-subtle bg-[#EAF5F2] px-3.5 text-body-sm font-semibold text-neutral-primary select-none">
+                <span>EG</span>
+                <span dir="ltr" className="tabular-numbers">+20</span>
+              </div>
+
+              <Input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="010 1234 5678"
+                dir="ltr"
+                className="h-full flex-1 rounded-none border-0 bg-transparent px-3.5 text-body-md text-neutral-primary shadow-none placeholder:text-neutral-muted focus-visible:ring-0 text-right tabular-numbers"
+              />
+
+              <div className="flex size-11 shrink-0 items-center justify-center text-neutral-muted">
+                <Phone className="size-4.5" />
+              </div>
+            </div>
+
+            {errors.phone ? (
+              <p className="text-body-sm text-[#D94B4B] font-medium">{errors.phone}</p>
+            ) : (
+              <p className="text-body-sm text-neutral-muted">
+                لتفعيل حسابك وإرسال إشعارات الحجز والواتساب المباشرة
+              </p>
+            )}
+          </div>
+
+          <RegisterInput
+            required
+            label="البريد الإلكتروني للعمل"
+            placeholder="name@company.com"
+            type="email"
+            icon={Mail}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            error={errors.email}
+          />
+
+          {/* Password Field with Security & Live Requirements */}
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between">
+              <Label className="text-body-md font-semibold text-neutral-primary flex items-center gap-1">
+                كلمة المرور
+                <span className="text-[#D94B4B]">*</span>
+              </Label>
+              <span className="text-body-sm text-neutral-muted">8 أحرف على الأقل</span>
+            </div>
+
+            <div className="relative">
+              <LockKeyhole className="absolute right-3.5 top-1/2 size-4.5 -translate-y-1/2 text-neutral-muted pointer-events-none" />
+
+              <Input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className={`
+                  h-11 w-full rounded-[10px] bg-[#F4F8F6] px-10 text-body-md text-neutral-primary border
+                  ${errors.password ? "border-[#D94B4B]" : "border-border-subtle focus-visible:border-primary"}
+                  placeholder:text-neutral-muted shadow-none focus-visible:ring-1 focus-visible:ring-primary transition-all
+                `}
+              />
+
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute left-1 top-1/2 size-9 -translate-y-1/2 text-neutral-muted hover:text-neutral-primary cursor-pointer"
+              >
+                {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+              </Button>
+            </div>
+
+            {/* Live Password Indicator */}
+            <div className="flex flex-wrap items-center justify-between gap-2 pt-1 text-body-sm">
+              <span className={`flex items-center gap-1 ${hasMinLength ? "text-[#16855B]" : "text-neutral-muted"}`}>
+                <Check className={`size-3.5 ${hasMinLength ? "opacity-100" : "opacity-40"}`} />
+                <span>8 أحرف على الأقل</span>
+              </span>
+              <span className={`flex items-center gap-1 ${hasSpecialOrNum ? "text-[#16855B]" : "text-neutral-muted"}`}>
+                <Check className={`size-3.5 ${hasSpecialOrNum ? "opacity-100" : "opacity-40"}`} />
+                <span>رقم أو رمز خاص</span>
+              </span>
+            </div>
+
+            {errors.password && (
+              <p className="text-body-sm text-[#D94B4B] font-medium">{errors.password}</p>
+            )}
+          </div>
+        </div>
+
+        {/* Security Hashing Notice */}
+        <div className="flex items-center gap-2 p-2.5 rounded-[10px] bg-[#EAF6F3] border border-[#DDF4EE] text-body-sm text-primary-dark">
+          <ShieldCheck className="size-4.5 shrink-0 text-primary" />
+          <span>تتم حماية وتشفير كلمة المرور بتقنية <strong>Bcrypt Hash (Salt 12)</strong> عالية الأمان.</span>
+        </div>
+
+        {/* Terms Agreement */}
+        <div className="space-y-1">
+          <div className="flex items-start gap-2.5">
+            <Checkbox
+              id="terms"
+              checked={termsAccepted}
+              onCheckedChange={(checked) => setTermsAccepted(!!checked)}
+              className="mt-1 size-4 rounded-xs border-border-subtle data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+            />
+
+            <Label htmlFor="terms" className="cursor-pointer text-body-sm leading-5 text-neutral-primary font-normal">
+              أوافق على{" "}
+              <Link href="/terms" className="font-semibold text-primary hover:underline">
+                شروط الاستخدام
+              </Link>{" "}
+              و{" "}
+              <Link href="/privacy" className="font-semibold text-primary hover:underline">
+                سياسة الخصوصية
+              </Link>{" "}
+              الخاصة بمنصة أجندة وموافق على استلام إشعارات الحجز المباشرة.
+            </Label>
+          </div>
+          {errors.terms && (
+            <p className="text-body-sm text-[#D94B4B] font-medium pr-6">{errors.terms}</p>
+          )}
+        </div>
+
+        {/* Submit Button */}
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          className="
+            h-11 w-full rounded-[10px] bg-primary text-surface text-label-lg font-semibold
+            hover:bg-primary-dark transition-all duration-200 cursor-pointer shadow-level2
+            disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2
+          "
+        >
+          {isSubmitting ? (
+            <>
+              <Loader2 className="size-4 animate-spin" />
+              <span>جاري إنشاء الحساب والتشفير...</span>
+            </>
+          ) : (
+            <span>إنشاء الحساب مجانًا ←</span>
+          )}
+        </Button>
+
+        {/* Divider */}
+        <div className="my-4 flex items-center gap-3">
+          <Separator className="flex-1 bg-border-subtle" />
+          <span className="text-body-sm text-neutral-muted">أو</span>
+          <Separator className="flex-1 bg-border-subtle" />
+        </div>
+
+        {/* Google Provider */}
+        <GoogleProvider />
+
+        {/* Existing Account Link */}
+        <p className="mt-4 text-center text-body-sm text-neutral-muted">
+          لديك حساب بالفعل على أجندة؟{" "}
+          <Link href="/auth/login" className="font-semibold text-primary hover:underline">
+            تسجيل الدخول
+          </Link>
+        </p>
+      </form>
+    </div>
+  );
 }

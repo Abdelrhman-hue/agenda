@@ -47,12 +47,13 @@ enum PaymentStatus {
 
 
 model User {
-  id        String   @id @default(cuid())
-  email     String?  @unique
-  phone     String?  @unique
-  name      String?
-  role      Role
-  createdAt DateTime @default(now())
+  id           String   @id @default(cuid())
+  email        String?  @unique
+  phone        String?  @unique
+  name         String?
+  passwordHash String?
+  role         Role
+  createdAt    DateTime @default(now())
 
   providerProfile ProviderProfile?
   bookings        Booking[]

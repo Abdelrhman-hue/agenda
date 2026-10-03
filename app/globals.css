@@ -121,11 +121,17 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    letter-spacing: 0;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-canvas text-neutral-primary font-arabic;
+    letter-spacing: 0;
   }
   html {
-    @apply font-sans;
+    @apply font-arabic;
   }
+}
+
+.tabular-numbers {
+  font-variant-numeric: tabular-nums;
 }
