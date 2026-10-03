@@ -1,58 +1,149 @@
-import { Button } from '@base-ui/react'
-import Link from 'next/link'
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
 import LoginInput from "./LoginInput";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
-import { ArrowLeft, AtSign, Lock } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft, AtSign, Lock, Loader2, AlertCircle, Check } from "lucide-react";
+import { loginUserAction } from "@/app/actions/authActions";
+import { useRouter } from "next/navigation";
 
+export default function LoginForm() {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(true);
 
-const LoginForm = () => {
-   return (
-      <form className="w-full mt-6 flex flex-col gap-4" action="">
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [serverError, setServerError] = useState<string | null>(null);
+  const [serverSuccess, setServerSuccess] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-         <LoginInput
-            label="البريد الالكتروني"
-            placeholder="ادخل البريد الالكتروني"
-            name="email"
-            type="email"
-            icon={<AtSign className="text-[#7C8582] size-6" />}
-         />
+  const validate = () => {
+    const newErrors: Record<string, string> = {};
+    if (!email.trim()) {
+      newErrors.email = "يرجى إدخال البريد الإلكتروني.";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      newErrors.email = "صيغة البريد الإلكتروني غير صحيحة.";
+    }
 
-         <LoginInput
-            label="كلمة المرور"
-            placeholder="ادخل كلمة المرور"
-            name="password"
-            type="password"
-            icon={<Lock className="text-[#7C8582] size-6" />}
-         />
+    if (!password) {
+      newErrors.password = "يرجى إدخال كلمة المرور.";
+    }
 
-         <div className="w-full flex items-center justify-between">
-            <FieldGroup className="w-56 ">
-               <Field orientation="horizontal">
-                  <Checkbox name="remember-me" />
-                  <FieldLabel className="text-label-lg text-primary-dark" htmlFor="remember-me">
-                     تذكرني علي هذا الجهاز
-                  </FieldLabel>
-               </Field>
-            </FieldGroup>
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
-            <Link
-               href={"/auth/forgot-password"}
-               className="text-label-lg text-primary-dark hover:underline"
-            >
-               نسيت كلمة المرور؟
-            </Link>
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setServerError(null);
+    setServerSuccess(null);
 
-         </div>
+    if (!validate()) return;
 
-         <Button type="submit" className="w-full mt-3 cursor-pointer h-14 rounded-input hover:shadow-level2  bg-primary-dark hover:bg-primary-dark/90 focus-visible:ring-0 focus-visible:ring-offset-0 focus:ring-0 flex items-center justify-center gap-2">
-            <span className="text-body-lg text-surface">تسجيل الدخول</span>
-            <ArrowLeft className="size-6 text-surface" />
-         </Button>
+    setIsSubmitting(true);
 
+    try {
+      const res = await loginUserAction({
+        email,
+        password,
+        rememberMe,
+      });
 
-      </form>
-   )
+      if (res.success) {
+        setServerSuccess("تم تسجيل الدخول بنجاح! جاري التوجيه إلى لوحة التحكم...");
+        setTimeout(() => {
+          router.push("/home");
+        }, 1200);
+      } else {
+        setServerError(res.error || "خطأ في البريد الإلكتروني أو كلمة المرور.");
+      }
+    } catch (err) {
+      setServerError("تعذر الاتصال بالخادم. يرجى المحاولة مرة أخرى.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="w-full space-y-4" dir="rtl">
+      {serverError && (
+        <div className="p-3.5 rounded-[10px] bg-[#FFDAD6] border border-[#D94B4B]/30 flex items-start gap-2.5 text-body-md text-[#D94B4B]">
+          <AlertCircle className="size-5 shrink-0 mt-0.5" />
+          <span>{serverError}</span>
+        </div>
+      )}
+
+      {serverSuccess && (
+        <div className="p-3.5 rounded-[10px] bg-[#DDF4EE] border border-[#16855B]/30 flex items-start gap-2.5 text-body-md text-[#16855B]">
+          <Check className="size-5 shrink-0 mt-0.5" />
+          <span>{serverSuccess}</span>
+        </div>
+      )}
+
+      <LoginInput
+        label="البريد الإلكتروني"
+        placeholder="name@company.com"
+        name="email"
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        error={errors.email}
+        icon={<AtSign className="size-4.5 text-neutral-muted" />}
+      />
+
+      <LoginInput
+        label="كلمة المرور"
+        placeholder="••••••••"
+        name="password"
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        error={errors.password}
+        icon={<Lock className="size-4.5 text-neutral-muted" />}
+      />
+
+      <div className="w-full flex items-center justify-between text-body-sm pt-1">
+        <label className="flex items-center gap-2 cursor-pointer select-none">
+          <Checkbox
+            checked={rememberMe}
+            onCheckedChange={(val) => setRememberMe(!!val)}
+            className="size-4 rounded-xs border-border-subtle data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+          />
+          <span className="text-body-sm font-medium text-neutral-primary">تذكرني على هذا الجهاز</span>
+        </label>
+
+        <Link
+          href="/auth/forgot-password"
+          className="text-body-sm font-semibold text-primary hover:underline"
+        >
+          نسيت كلمة المرور؟
+        </Link>
+      </div>
+
+      <Button
+        type="submit"
+        disabled={isSubmitting}
+        className="
+          w-full h-11 rounded-[10px] bg-primary text-surface text-label-lg font-semibold
+          hover:bg-primary-dark transition-all duration-200 cursor-pointer shadow-level2
+          disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-2
+        "
+      >
+        {isSubmitting ? (
+          <>
+            <Loader2 className="size-4 animate-spin" />
+            <span>جاري التحقق والتشفير...</span>
+          </>
+        ) : (
+          <>
+            <span>تسجيل الدخول</span>
+            <ArrowLeft className="size-5" />
+          </>
+        )}
+      </Button>
+    </form>
+  );
 }
-
-export default LoginForm
