@@ -58,19 +58,16 @@ export default function Navbar() {
         <Link
           href="/"
           aria-label="أجندة - الصفحة الرئيسية"
-          className="flex shrink-0 items-center gap-2"
+          className="flex shrink-0 items-center"
         >
-          {/* Small brand icon */}
-          <span
-            aria-hidden="true"
-            className="flex h-7 w-7 items-center justify-center rounded-md text-emerald-700"
-          >
-            <Image src="/logo.jpg" alt="Logo" width={60} height={60} />
-          </span>
-
-          <span className="text-lg font-bold tracking-tight text-foreground">
-            أجندة
-          </span>
+          <Image
+            src="/logo.jpg"
+            alt="Logo"
+            width={100}
+            height={100}
+            className="h-22 w-22 object-contain"
+            priority
+          />
         </Link>
 
         {/* =========================================================

@@ -55,10 +55,10 @@ export function Hero() {
       dir="rtl"
       className="relative isolate overflow-hidden bg-[radial-gradient(60%_60%_at_15%_35%,#d6f2e5_0%,transparent_70%),linear-gradient(180deg,#f3fbf7_0%,#ffffff_100%)]"
     >
-      <div className="mx-auto grid max-w-6xl items-center gap-12 px-2 py-20 sm:px-8 lg:grid-cols-2 lg:gap-10 lg:py-5">
+      <div className="mx-auto grid max-w-6xl items-center gap-12  px-2 py-20 sm:px-8 lg:grid-cols-2 lg:gap-10 lg:py-5">
         {/* ───────── النص ───────── */}
-        <div className="flex flex-col items-start">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-brand/15 bg-[#E0EAE7] px-3.5 py-1.5 text-[14px] font-semibold text-[#006453]">
+        <div className="flex flex-col items-center text-center lg:items-start lg:text-right">
+          <span className="inline-flex items-center sm:text-center gap-1.5 rounded-full border border-brand/15 bg-[#E0EAE7] px-3.5 py-1.5 text-[14px] font-semibold text-[#006453]">
             <Zap className="size-3.5 fill-brand font-[#006453]" aria-hidden />
             أول منصة مواعيد ذكية مصممة خصيصًا لمصر
           </span>
@@ -91,9 +91,9 @@ export function Hero() {
             والرسائل اليدوية المرهقة.
           </p>
 
-          <div className="mt-8 flex flex-wrap items-center gap-3">
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
             <Link
-              href="/signup"
+              href="auth/login"
               className="bg-[#006453] inline-flex h-12 items-center gap-2 rounded-xl px-6 text-sm font-semibold text-white shadow-[0_8px_20px_-8px] shadow-brand/60 transition-colors hover:bg-brand/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
             >
               ابدأ مجانًا الآن

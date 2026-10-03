@@ -130,6 +130,7 @@ export default function LoginForm() {
           w-full h-11 rounded-[10px] bg-primary text-surface text-label-lg font-semibold
           hover:bg-primary-dark transition-all duration-200 cursor-pointer shadow-level2
           disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-2
+          text-white
         "
       >
         {isSubmitting ? (
