@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import {  IBM_Plex_Sans_Arabic } from "next/font/google";
+import { IBM_Plex_Sans_Arabic } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/nav";
+import Footer from "@/components/footer";
 const ibmPlexArabic = IBM_Plex_Sans_Arabic({
   subsets: ["arabic"],
   weight: ["400", "500", "600", "700"],
@@ -15,13 +16,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html
-      lang="en"
-      className={`${ibmPlexArabic.className} h-full antialiased`}
-    >
+    <html lang="en" className={`${ibmPlexArabic.className} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
         <Navbar />
         {children}
+        <Footer />
       </body>
     </html>
   );
