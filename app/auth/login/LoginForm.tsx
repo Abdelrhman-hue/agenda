@@ -6,7 +6,6 @@ import LoginInput from "./LoginInput";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, AtSign, Lock, Loader2, AlertCircle, Check } from "lucide-react";
-import { loginUserAction } from "@/app/actions/authActions";
 import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
@@ -46,21 +45,32 @@ export default function LoginForm() {
     setIsSubmitting(true);
 
     try {
-      const res = await loginUserAction({
-        email,
-        password,
-        rememberMe,
-      });
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email,
+          password
+        })
+      })
 
-      if (res.success) {
+      const data = await res.json();
+
+      if (!res.ok) {
+        setServerError(data.message || "خطأ في البريد الإلكتروني أو كلمة المرور.");
+      } else {
         setServerSuccess("تم تسجيل الدخول بنجاح! جاري التوجيه إلى لوحة التحكم...");
         setTimeout(() => {
           router.push("/home");
-        }, 1200);
-      } else {
-        setServerError(res.error || "خطأ في البريد الإلكتروني أو كلمة المرور.");
+        }, 2000);
       }
+
+
+
     } catch (err) {
+      console.log(err)
       setServerError("تعذر الاتصال بالخادم. يرجى المحاولة مرة أخرى.");
     } finally {
       setIsSubmitting(false);
