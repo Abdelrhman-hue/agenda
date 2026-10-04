@@ -59,12 +59,25 @@ export default function LoginForm() {
       const data = await res.json();
 
       if (!res.ok) {
-        setServerError(data.message || "خطأ في البريد الإلكتروني أو كلمة المرور.");
-      } else {
-        setServerSuccess("تم تسجيل الدخول بنجاح! جاري التوجيه إلى لوحة التحكم...");
+        setServerError(
+          data.message || "خطأ في البريد الإلكتروني أو كلمة المرور."
+        );
+        return;
+      }
+
+      if (data.code === "EMAIL_NOT_VERIFIED") {
+        setServerSuccess(data.message);
+        return;
+      }
+
+      if (data.code === "LOGIN_SUCCESS") {
+        setServerSuccess(
+          "تم تسجيل الدخول بنجاح! جاري التوجيه إلى لوحة التحكم..."
+        );
+
         setTimeout(() => {
           router.push("/home");
-        }, 2000);
+        }, 1800);
       }
 
 

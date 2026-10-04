@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { TRegisterUser } from "@/utils/dto/auth";
+import { generateVerificationToken } from "@/utils/generateToken";
+import { sendVerficationTokenMails } from "@/utils/sendMails";
 import { registerSchema } from "@/utils/validation/register";
 import bcrypt from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
@@ -37,7 +39,12 @@ export const POST = async (request: NextRequest) => {
          }
       })
 
-      return NextResponse.json({ message: "تم إنشاء الحساب بنجاح سجل الدخول الان", status: "success", data: { name } }, { status: 201 })
+      const verificationToken = await generateVerificationToken(email)
+      await sendVerficationTokenMails(verificationToken.email, verificationToken.token)
+
+      
+
+      return NextResponse.json({ message: "تم إرسال رابط التحقق إلى بريدك الإلكتروني. يرجى التحقق من صندوق الوارد.", status: "success", data: { name } }, { status: 201 })
 
    } catch (error) {
       console.log(error)

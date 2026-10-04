@@ -25,8 +25,8 @@ import { Separator } from "@/components/ui/separator";
 import { RegisterInput } from "./RegisterInput";
 import Link from "next/link";
 import GoogleProvider from "../GoogleProvider";
-import { registerUserAction } from "@/app/actions/authActions";
 import { useRouter } from "next/navigation";
+
 
 type AccountType = "PROVIDER" | "CLIENT";
 
@@ -121,11 +121,13 @@ export function RegisterForm() {
         return;
       }
 
-      setServerSuccess("تم إنشاء حسابك بنجاح! جاري توجيهك الآن...");
+
+      setServerSuccess(data.message);
 
       setTimeout(() => {
         router.push("/auth/login?registered=true");
       }, 1500);
+
     } catch (error) {
       console.log(error)
       setServerError(
