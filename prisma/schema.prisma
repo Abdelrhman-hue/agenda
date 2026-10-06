@@ -14,7 +14,7 @@ model User {
   phone         String?   @unique
   password      String?
   name          String?
-  role          Role
+  role          Role      @default(CLIENT)
   createdAt     DateTime  @default(now())
 
   bookings        Booking[]
@@ -75,10 +75,22 @@ model ProviderProfile {
   bufferMinutes Int              @default(15)
   timezone      String           @default("Africa/Cairo")
   createdAt     DateTime         @default(now())
-  bookings      Booking[]
-  user          User             @relation(fields: [userId], references: [id])
-  services      Service[]
-  workingHours  WorkingHours[]
+
+  bookings     Booking[]
+  user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  services     Service[]
+  workingHours WorkingHours[]
+  absences     ProviderAbsence[]
+}
+
+model ProviderAbsence {
+  id         String          @id @default(cuid())
+  providerId String
+  date       DateTime        @db.Date
+  reason     String?
+  provider   ProviderProfile @relation(fields: [providerId], references: [id], onDelete: Cascade)
+
+  @@unique([providerId, date])
 }
 
 model WorkingHours {
@@ -87,7 +99,7 @@ model WorkingHours {
   dayOfWeek  Int
   startTime  String
   endTime    String
-  provider   ProviderProfile @relation(fields: [providerId], references: [id])
+  provider   ProviderProfile @relation(fields: [providerId], references: [id], onDelete: Cascade)
 
   @@unique([providerId, dayOfWeek, startTime])
 }
@@ -98,38 +110,45 @@ model Service {
   name            String
   durationMinutes Int
   price           Int
+  requiresAddress Boolean         @default(false)
   isActive        Boolean         @default(true)
   bookings        Booking[]
-  provider        ProviderProfile @relation(fields: [providerId], references: [id])
+  provider        ProviderProfile @relation(fields: [providerId], references: [id], onDelete: Cascade)
 }
 
 model Booking {
-  id            String          @id @default(cuid())
-  providerId    String
-  serviceId     String
-  clientId      String
-  startsAt      DateTime
-  endsAt        DateTime
-  status        BookingStatus   @default(HELD)
-  holdExpiresAt DateTime?
-  createdAt     DateTime        @default(now())
-  client        User            @relation(fields: [clientId], references: [id])
-  provider      ProviderProfile @relation(fields: [providerId], references: [id])
-  service       Service         @relation(fields: [serviceId], references: [id])
-  payment       Payment?
+  id                 String        @id @default(cuid())
+  providerId         String
+  serviceId          String
+  clientId           String
+  startsAt           DateTime
+  endsAt             DateTime
+  status             BookingStatus @default(HELD)
+  holdExpiresAt      DateTime?
+  address            String?
+  clientNotes         String?
+  cancellationReason String?
+  createdAt          DateTime      @default(now())
+
+  client   User            @relation(fields: [clientId], references: [id])
+  provider ProviderProfile @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  service  Service         @relation(fields: [serviceId], references: [id])
+  payment  Payment?
 
   @@unique([providerId, startsAt])
   @@index([providerId, startsAt])
+  @@index([providerId, status])
 }
 
 model Payment {
   id         String        @id @default(cuid())
   bookingId  String        @unique
   amount     Int
+  method     PaymentMethod @default(INSTAPAY)
   status     PaymentStatus @default(PENDING)
   gatewayRef String?
   createdAt  DateTime      @default(now())
-  booking    Booking       @relation(fields: [bookingId], references: [id])
+  booking    Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
 }
 
 enum Role {
@@ -144,6 +163,7 @@ enum ProviderCategory {
   GYM
   CONSULTANT
   BEAUTY
+  CRAFTSMAN
   OTHER
 }
 
@@ -167,4 +187,11 @@ enum PaymentStatus {
   PAID
   FAILED
   REFUNDED
+}
+
+enum PaymentMethod {
+  INSTAPAY
+  VODAFONE_CASH
+  CARD
+  CASH
 }
