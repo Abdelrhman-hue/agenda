@@ -25,14 +25,14 @@ import { Separator } from "@/components/ui/separator";
 import { RegisterInput } from "./RegisterInput";
 import Link from "next/link";
 import GoogleProvider from "../GoogleProvider";
-import { registerUserAction } from "@/app/actions/authActions";
 import { useRouter } from "next/navigation";
 
-type AccountType = "business" | "client";
+
+type AccountType = "PROVIDER" | "CLIENT";
 
 export function RegisterForm() {
   const router = useRouter();
-  const [accountType, setAccountType] = useState<AccountType>("business");
+  const [accountType, setAccountType] = useState<AccountType>("PROVIDER");
 
   // Form State
   const [fullName, setFullName] = useState("");
@@ -87,7 +87,9 @@ export function RegisterForm() {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
+
     e.preventDefault();
+
     setServerError(null);
     setServerSuccess(null);
 
@@ -98,28 +100,44 @@ export function RegisterForm() {
     setIsSubmitting(true);
 
     try {
-      const res = await registerUserAction({
-        name: fullName,
-        phone,
-        email,
-        password,
-        accountType,
-        termsAccepted,
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: fullName,
+          phone,
+          email,
+          password,
+          accountType,
+        }),
       });
 
-      if (res.success) {
-        setServerSuccess("تم إنشاء حسابك بنجاح! جاري توجيهك الآن...");
-        setTimeout(() => {
-          router.push("/auth/login?registered=true");
-        }, 1500);
-      } else {
-        setServerError(res.error || "حدث خطأ أثناء التسجيل.");
+      const data = await response.json();
+
+      if (!response.ok) {
+        setServerError(data.message || "حدث خطأ أثناء التسجيل.");
+        return;
       }
-    } catch (err) {
-      setServerError("تعذر الاتصال بالخادم. يرجى التأكد من اتصال الإنترنت والمحاولة مجددًا.");
+
+
+      setServerSuccess(data.message);
+
+      setTimeout(() => {
+        router.push("/auth/login?registered=true");
+      }, 1500);
+
+    } catch (error) {
+      console.log(error)
+      setServerError(
+        "تعذر الاتصال بالخادم. يرجى التأكد من اتصال الإنترنت والمحاولة مجددًا."
+      );
     } finally {
       setIsSubmitting(false);
     }
+
+
   };
 
   return (
@@ -174,32 +192,30 @@ export function RegisterForm() {
                 flex cursor-pointer items-center gap-3
                 rounded-[10px] border p-3.5
                 transition-all duration-200
-                ${
-                  accountType === "business"
-                    ? "border-primary bg-[#EAF6F3] shadow-level1"
-                    : "border-border-subtle bg-surface hover:border-primary/50"
+                ${accountType === "PROVIDER"
+                  ? "border-primary bg-[#EAF6F3] shadow-level1"
+                  : "border-border-subtle bg-surface hover:border-primary/50"
                 }
               `}
             >
-              <RadioGroupItem id="type-business" value="business" className="sr-only" />
+              <RadioGroupItem id="type-business" value="PROVIDER" className="sr-only" />
 
               <div
                 className={`
                   flex size-5 shrink-0 items-center justify-center rounded-full border transition-colors
-                  ${
-                    accountType === "business"
-                      ? "border-primary bg-primary"
-                      : "border-[#AAB8B4] bg-surface"
+                  ${accountType === "PROVIDER"
+                    ? "border-primary bg-primary"
+                    : "border-[#AAB8B4] bg-surface"
                   }
                 `}
               >
-                {accountType === "business" && <Check className="size-3 text-white" strokeWidth={3} />}
+                {accountType === "PROVIDER" && <Check className="size-3 text-white" strokeWidth={3} />}
               </div>
 
               <div
                 className={`
                   flex size-10 shrink-0 items-center justify-center rounded-[10px]
-                  ${accountType === "business" ? "bg-primary text-white" : "bg-[#F4F8F6] text-neutral-muted"}
+                  ${accountType === "PROVIDER" ? "bg-primary text-white" : "bg-[#F4F8F6] text-neutral-muted"}
                 `}
               >
                 <Store className="size-5" />
@@ -218,32 +234,30 @@ export function RegisterForm() {
                 flex cursor-pointer items-center gap-3
                 rounded-[10px] border p-3.5
                 transition-all duration-200
-                ${
-                  accountType === "client"
-                    ? "border-primary bg-[#EAF6F3] shadow-level1"
-                    : "border-border-subtle bg-surface hover:border-primary/50"
+                ${accountType === "CLIENT"
+                  ? "border-primary bg-[#EAF6F3] shadow-level1"
+                  : "border-border-subtle bg-surface hover:border-primary/50"
                 }
               `}
             >
-              <RadioGroupItem id="type-client" value="client" className="sr-only" />
+              <RadioGroupItem id="type-client" value="CLIENT" className="sr-only" />
 
               <div
                 className={`
                   flex size-5 shrink-0 items-center justify-center rounded-full border transition-colors
-                  ${
-                    accountType === "client"
-                      ? "border-primary bg-primary"
-                      : "border-[#AAB8B4] bg-surface"
+                  ${accountType === "CLIENT"
+                    ? "border-primary bg-primary"
+                    : "border-[#AAB8B4] bg-surface"
                   }
                 `}
               >
-                {accountType === "client" && <Check className="size-3 text-white" strokeWidth={3} />}
+                {accountType === "CLIENT" && <Check className="size-3 text-white" strokeWidth={3} />}
               </div>
 
               <div
                 className={`
                   flex size-10 shrink-0 items-center justify-center rounded-[10px]
-                  ${accountType === "client" ? "bg-primary text-white" : "bg-[#F4F8F6] text-neutral-muted"}
+                  ${accountType === "CLIENT" ? "bg-primary text-white" : "bg-[#F4F8F6] text-neutral-muted"}
                 `}
               >
                 <UserRound className="size-5" />

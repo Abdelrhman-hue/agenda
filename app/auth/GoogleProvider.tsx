@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 
 export default function GoogleProvider() {
+
   return (
     <Button
       type="button"
