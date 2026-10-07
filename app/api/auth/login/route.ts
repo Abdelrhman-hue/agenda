@@ -2,7 +2,7 @@ import { signIn } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { generateVerificationToken } from "@/utils/generateToken";
 import { sendVerficationTokenMails } from "@/utils/sendMails";
-import { loginSchema } from "@/utils/validation/login";
+import { loginSchema } from "@/utils/validation/auth/login";
 import { AuthError } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 

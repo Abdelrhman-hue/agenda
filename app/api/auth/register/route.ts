@@ -1,8 +1,8 @@
 import { prisma } from "@/lib/prisma";
-import { TRegisterUser } from "@/utils/dto/auth";
+import { TRegisterUser } from "@/utils/dto";
 import { generateVerificationToken } from "@/utils/generateToken";
 import { sendVerficationTokenMails } from "@/utils/sendMails";
-import { registerSchema } from "@/utils/validation/register";
+import { registerSchema } from "@/utils/validation/auth/register";
 import bcrypt from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
 
