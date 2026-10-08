@@ -25,10 +25,7 @@ export default {
           return null;
         }
 
-        const isPasswordMatched = await bcrypt.compare(
-          password,
-          user.password
-        );
+        const isPasswordMatched = await bcrypt.compare(password, user.password);
 
         if (!isPasswordMatched) {
           return null;
@@ -44,7 +41,10 @@ export default {
     }),
     Google({
       clientId: process.env.AUTH_GOOGLE_ID,
-      clientSecret: process.env.AUTH_GOOGLE_SECRET
-    })
+      clientSecret: process.env.AUTH_GOOGLE_SECRET,
+      authorization: {
+        params: { prompt: "select_account" },
+      },
+    }),
   ],
 } satisfies NextAuthConfig;

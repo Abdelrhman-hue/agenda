@@ -24,6 +24,7 @@ export const ProviderCategory = {
   GYM: 'GYM',
   CONSULTANT: 'CONSULTANT',
   BEAUTY: 'BEAUTY',
+  CRAFTSMAN: 'CRAFTSMAN',
   OTHER: 'OTHER'
 } as const
 
@@ -59,3 +60,13 @@ export const PaymentStatus = {
 } as const
 
 export type PaymentStatus = (typeof PaymentStatus)[keyof typeof PaymentStatus]
+
+
+export const PaymentMethod = {
+  INSTAPAY: 'INSTAPAY',
+  VODAFONE_CASH: 'VODAFONE_CASH',
+  CARD: 'CARD',
+  CASH: 'CASH'
+} as const
+
+export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod]

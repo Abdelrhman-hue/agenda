@@ -43,6 +43,11 @@ export type VerificationToken = Prisma.VerificationTokenModel
  */
 export type ProviderProfile = Prisma.ProviderProfileModel
 /**
+ * Model ProviderAbsence
+ * 
+ */
+export type ProviderAbsence = Prisma.ProviderAbsenceModel
+/**
  * Model WorkingHours
  * 
  */

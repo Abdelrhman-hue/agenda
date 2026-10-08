@@ -12,9 +12,9 @@ export default function GoogleProvider() {
   const googleAuthHandler = async () => {
     const result = await authWithGoogleAct()
 
-    if (result.isSuccess) {
-      router.replace("/home")
-    }
+    // if (result.isSuccess) {
+    //   router.replace("/home")
+    // }
     console.log(result.message)
     
   }

@@ -402,6 +402,7 @@ export const ModelName = {
   Session: 'Session',
   VerificationToken: 'VerificationToken',
   ProviderProfile: 'ProviderProfile',
+  ProviderAbsence: 'ProviderAbsence',
   WorkingHours: 'WorkingHours',
   Service: 'Service',
   Booking: 'Booking',
@@ -421,7 +422,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "account" | "session" | "verificationToken" | "providerProfile" | "workingHours" | "service" | "booking" | "payment"
+    modelProps: "user" | "account" | "session" | "verificationToken" | "providerProfile" | "providerAbsence" | "workingHours" | "service" | "booking" | "payment"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -795,6 +796,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ProviderAbsence: {
+      payload: Prisma.$ProviderAbsencePayload<ExtArgs>
+      fields: Prisma.ProviderAbsenceFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ProviderAbsenceFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderAbsencePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ProviderAbsenceFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderAbsencePayload>
+        }
+        findFirst: {
+          args: Prisma.ProviderAbsenceFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderAbsencePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ProviderAbsenceFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderAbsencePayload>
+        }
+        findMany: {
+          args: Prisma.ProviderAbsenceFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderAbsencePayload>[]
+        }
+        create: {
+          args: Prisma.ProviderAbsenceCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderAbsencePayload>
+        }
+        createMany: {
+          args: Prisma.ProviderAbsenceCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ProviderAbsenceCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderAbsencePayload>[]
+        }
+        delete: {
+          args: Prisma.ProviderAbsenceDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderAbsencePayload>
+        }
+        update: {
+          args: Prisma.ProviderAbsenceUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderAbsencePayload>
+        }
+        deleteMany: {
+          args: Prisma.ProviderAbsenceDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ProviderAbsenceUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ProviderAbsenceUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderAbsencePayload>[]
+        }
+        upsert: {
+          args: Prisma.ProviderAbsenceUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderAbsencePayload>
+        }
+        aggregate: {
+          args: Prisma.ProviderAbsenceAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateProviderAbsence>
+        }
+        groupBy: {
+          args: Prisma.ProviderAbsenceGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ProviderAbsenceGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ProviderAbsenceCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ProviderAbsenceCountAggregateOutputType> | number
+        }
+      }
+    }
     WorkingHours: {
       payload: Prisma.$WorkingHoursPayload<ExtArgs>
       fields: Prisma.WorkingHoursFieldRefs
@@ -1134,6 +1209,7 @@ export const UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
   emailVerified: 'emailVerified',
+  image: 'image',
   phone: 'phone',
   password: 'password',
   name: 'name',
@@ -1198,6 +1274,16 @@ export const ProviderProfileScalarFieldEnum = {
 export type ProviderProfileScalarFieldEnum = (typeof ProviderProfileScalarFieldEnum)[keyof typeof ProviderProfileScalarFieldEnum]
 
 
+export const ProviderAbsenceScalarFieldEnum = {
+  id: 'id',
+  providerId: 'providerId',
+  date: 'date',
+  reason: 'reason'
+} as const
+
+export type ProviderAbsenceScalarFieldEnum = (typeof ProviderAbsenceScalarFieldEnum)[keyof typeof ProviderAbsenceScalarFieldEnum]
+
+
 export const WorkingHoursScalarFieldEnum = {
   id: 'id',
   providerId: 'providerId',
@@ -1215,6 +1301,7 @@ export const ServiceScalarFieldEnum = {
   name: 'name',
   durationMinutes: 'durationMinutes',
   price: 'price',
+  requiresAddress: 'requiresAddress',
   isActive: 'isActive'
 } as const
 
@@ -1230,6 +1317,9 @@ export const BookingScalarFieldEnum = {
   endsAt: 'endsAt',
   status: 'status',
   holdExpiresAt: 'holdExpiresAt',
+  address: 'address',
+  clientNotes: 'clientNotes',
+  cancellationReason: 'cancellationReason',
   createdAt: 'createdAt'
 } as const
 
@@ -1240,6 +1330,7 @@ export const PaymentScalarFieldEnum = {
   id: 'id',
   bookingId: 'bookingId',
   amount: 'amount',
+  method: 'method',
   status: 'status',
   gatewayRef: 'gatewayRef',
   createdAt: 'createdAt'
@@ -1380,6 +1471,20 @@ export type EnumBookingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$Pr
  * Reference to a field of type 'BookingStatus[]'
  */
 export type ListEnumBookingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BookingStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'PaymentMethod'
+ */
+export type EnumPaymentMethodFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentMethod'>
+    
+
+
+/**
+ * Reference to a field of type 'PaymentMethod[]'
+ */
+export type ListEnumPaymentMethodFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentMethod[]'>
     
 
 
@@ -1566,6 +1671,7 @@ export type GlobalOmitConfig = {
   session?: Prisma.SessionOmit
   verificationToken?: Prisma.VerificationTokenOmit
   providerProfile?: Prisma.ProviderProfileOmit
+  providerAbsence?: Prisma.ProviderAbsenceOmit
   workingHours?: Prisma.WorkingHoursOmit
   service?: Prisma.ServiceOmit
   booking?: Prisma.BookingOmit
