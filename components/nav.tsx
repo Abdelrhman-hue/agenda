@@ -10,12 +10,30 @@ type NavItem = {
 };
 
 const navItems: NavItem[] = [
-  { label: "الرئيسية", href: "/" },
-  { label: "المميزات", href: "#features" },
-  { label: "كيف تعمل", href: "#how-it-works" },
-  { label: "لمن تناسب؟", href: "#who-is-it-for" },
-  { label: "الأسعار", href: "#pricing" },
-  { label: "الأسئلة الشائعة", href: "#faq" },
+  {
+    label: "الرئيسية",
+    href: "/",
+  },
+  {
+    label: "حجز موعد",
+    href: "/book",
+  },
+  {
+    label: "إدارة الحجوزات",
+    href: "/dashboard/bookings",
+  },
+  {
+    label: "المميزات",
+    href: "/#features",
+  },
+  {
+    label: "الأسعار",
+    href: "/#pricing",
+  },
+  {
+    label: "الأسئلة الشائعة",
+    href: "/#faq",
+  },
 ];
 
 export default async function Navbar() {
