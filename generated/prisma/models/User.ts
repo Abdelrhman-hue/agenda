@@ -280,7 +280,7 @@ export type UserCreateInput = {
   phone?: string | null
   password?: string | null
   name?: string | null
-  role: $Enums.Role
+  role?: $Enums.Role
   createdAt?: Date | string
   bookings?: Prisma.BookingCreateNestedManyWithoutClientInput
   providerProfile?: Prisma.ProviderProfileCreateNestedOneWithoutUserInput
@@ -295,7 +295,7 @@ export type UserUncheckedCreateInput = {
   phone?: string | null
   password?: string | null
   name?: string | null
-  role: $Enums.Role
+  role?: $Enums.Role
   createdAt?: Date | string
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutClientInput
   providerProfile?: Prisma.ProviderProfileUncheckedCreateNestedOneWithoutUserInput
@@ -340,7 +340,7 @@ export type UserCreateManyInput = {
   phone?: string | null
   password?: string | null
   name?: string | null
-  role: $Enums.Role
+  role?: $Enums.Role
   createdAt?: Date | string
 }
 
@@ -487,7 +487,7 @@ export type UserCreateWithoutAccountsInput = {
   phone?: string | null
   password?: string | null
   name?: string | null
-  role: $Enums.Role
+  role?: $Enums.Role
   createdAt?: Date | string
   bookings?: Prisma.BookingCreateNestedManyWithoutClientInput
   providerProfile?: Prisma.ProviderProfileCreateNestedOneWithoutUserInput
@@ -501,7 +501,7 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   phone?: string | null
   password?: string | null
   name?: string | null
-  role: $Enums.Role
+  role?: $Enums.Role
   createdAt?: Date | string
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutClientInput
   providerProfile?: Prisma.ProviderProfileUncheckedCreateNestedOneWithoutUserInput
@@ -559,7 +559,7 @@ export type UserCreateWithoutSessionsInput = {
   phone?: string | null
   password?: string | null
   name?: string | null
-  role: $Enums.Role
+  role?: $Enums.Role
   createdAt?: Date | string
   bookings?: Prisma.BookingCreateNestedManyWithoutClientInput
   providerProfile?: Prisma.ProviderProfileCreateNestedOneWithoutUserInput
@@ -573,7 +573,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   phone?: string | null
   password?: string | null
   name?: string | null
-  role: $Enums.Role
+  role?: $Enums.Role
   createdAt?: Date | string
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutClientInput
   providerProfile?: Prisma.ProviderProfileUncheckedCreateNestedOneWithoutUserInput
@@ -631,7 +631,7 @@ export type UserCreateWithoutProviderProfileInput = {
   phone?: string | null
   password?: string | null
   name?: string | null
-  role: $Enums.Role
+  role?: $Enums.Role
   createdAt?: Date | string
   bookings?: Prisma.BookingCreateNestedManyWithoutClientInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
@@ -645,7 +645,7 @@ export type UserUncheckedCreateWithoutProviderProfileInput = {
   phone?: string | null
   password?: string | null
   name?: string | null
-  role: $Enums.Role
+  role?: $Enums.Role
   createdAt?: Date | string
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutClientInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
@@ -703,7 +703,7 @@ export type UserCreateWithoutBookingsInput = {
   phone?: string | null
   password?: string | null
   name?: string | null
-  role: $Enums.Role
+  role?: $Enums.Role
   createdAt?: Date | string
   providerProfile?: Prisma.ProviderProfileCreateNestedOneWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
@@ -717,7 +717,7 @@ export type UserUncheckedCreateWithoutBookingsInput = {
   phone?: string | null
   password?: string | null
   name?: string | null
-  role: $Enums.Role
+  role?: $Enums.Role
   createdAt?: Date | string
   providerProfile?: Prisma.ProviderProfileUncheckedCreateNestedOneWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
@@ -1552,7 +1552,7 @@ export type UserCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
   /**
    * The data needed to create a User.
    */
-  data: Prisma.XOR<Prisma.UserCreateInput, Prisma.UserUncheckedCreateInput>
+  data?: Prisma.XOR<Prisma.UserCreateInput, Prisma.UserUncheckedCreateInput>
 }
 
 /**

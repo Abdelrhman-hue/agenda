@@ -264,6 +264,7 @@ export type ProviderProfileWhereInput = {
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   services?: Prisma.ServiceListRelationFilter
   workingHours?: Prisma.WorkingHoursListRelationFilter
+  absences?: Prisma.ProviderAbsenceListRelationFilter
 }
 
 export type ProviderProfileOrderByWithRelationInput = {
@@ -281,6 +282,7 @@ export type ProviderProfileOrderByWithRelationInput = {
   user?: Prisma.UserOrderByWithRelationInput
   services?: Prisma.ServiceOrderByRelationAggregateInput
   workingHours?: Prisma.WorkingHoursOrderByRelationAggregateInput
+  absences?: Prisma.ProviderAbsenceOrderByRelationAggregateInput
 }
 
 export type ProviderProfileWhereUniqueInput = Prisma.AtLeast<{
@@ -301,6 +303,7 @@ export type ProviderProfileWhereUniqueInput = Prisma.AtLeast<{
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   services?: Prisma.ServiceListRelationFilter
   workingHours?: Prisma.WorkingHoursListRelationFilter
+  absences?: Prisma.ProviderAbsenceListRelationFilter
 }, "id" | "userId" | "slug">
 
 export type ProviderProfileOrderByWithAggregationInput = {
@@ -351,6 +354,7 @@ export type ProviderProfileCreateInput = {
   user: Prisma.UserCreateNestedOneWithoutProviderProfileInput
   services?: Prisma.ServiceCreateNestedManyWithoutProviderInput
   workingHours?: Prisma.WorkingHoursCreateNestedManyWithoutProviderInput
+  absences?: Prisma.ProviderAbsenceCreateNestedManyWithoutProviderInput
 }
 
 export type ProviderProfileUncheckedCreateInput = {
@@ -367,6 +371,7 @@ export type ProviderProfileUncheckedCreateInput = {
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutProviderInput
   services?: Prisma.ServiceUncheckedCreateNestedManyWithoutProviderInput
   workingHours?: Prisma.WorkingHoursUncheckedCreateNestedManyWithoutProviderInput
+  absences?: Prisma.ProviderAbsenceUncheckedCreateNestedManyWithoutProviderInput
 }
 
 export type ProviderProfileUpdateInput = {
@@ -383,6 +388,7 @@ export type ProviderProfileUpdateInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutProviderProfileNestedInput
   services?: Prisma.ServiceUpdateManyWithoutProviderNestedInput
   workingHours?: Prisma.WorkingHoursUpdateManyWithoutProviderNestedInput
+  absences?: Prisma.ProviderAbsenceUpdateManyWithoutProviderNestedInput
 }
 
 export type ProviderProfileUncheckedUpdateInput = {
@@ -399,6 +405,7 @@ export type ProviderProfileUncheckedUpdateInput = {
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutProviderNestedInput
   services?: Prisma.ServiceUncheckedUpdateManyWithoutProviderNestedInput
   workingHours?: Prisma.WorkingHoursUncheckedUpdateManyWithoutProviderNestedInput
+  absences?: Prisma.ProviderAbsenceUncheckedUpdateManyWithoutProviderNestedInput
 }
 
 export type ProviderProfileCreateManyInput = {
@@ -546,6 +553,20 @@ export type IntFieldUpdateOperationsInput = {
   divide?: number
 }
 
+export type ProviderProfileCreateNestedOneWithoutAbsencesInput = {
+  create?: Prisma.XOR<Prisma.ProviderProfileCreateWithoutAbsencesInput, Prisma.ProviderProfileUncheckedCreateWithoutAbsencesInput>
+  connectOrCreate?: Prisma.ProviderProfileCreateOrConnectWithoutAbsencesInput
+  connect?: Prisma.ProviderProfileWhereUniqueInput
+}
+
+export type ProviderProfileUpdateOneRequiredWithoutAbsencesNestedInput = {
+  create?: Prisma.XOR<Prisma.ProviderProfileCreateWithoutAbsencesInput, Prisma.ProviderProfileUncheckedCreateWithoutAbsencesInput>
+  connectOrCreate?: Prisma.ProviderProfileCreateOrConnectWithoutAbsencesInput
+  upsert?: Prisma.ProviderProfileUpsertWithoutAbsencesInput
+  connect?: Prisma.ProviderProfileWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProviderProfileUpdateToOneWithWhereWithoutAbsencesInput, Prisma.ProviderProfileUpdateWithoutAbsencesInput>, Prisma.ProviderProfileUncheckedUpdateWithoutAbsencesInput>
+}
+
 export type ProviderProfileCreateNestedOneWithoutWorkingHoursInput = {
   create?: Prisma.XOR<Prisma.ProviderProfileCreateWithoutWorkingHoursInput, Prisma.ProviderProfileUncheckedCreateWithoutWorkingHoursInput>
   connectOrCreate?: Prisma.ProviderProfileCreateOrConnectWithoutWorkingHoursInput
@@ -601,6 +622,7 @@ export type ProviderProfileCreateWithoutUserInput = {
   bookings?: Prisma.BookingCreateNestedManyWithoutProviderInput
   services?: Prisma.ServiceCreateNestedManyWithoutProviderInput
   workingHours?: Prisma.WorkingHoursCreateNestedManyWithoutProviderInput
+  absences?: Prisma.ProviderAbsenceCreateNestedManyWithoutProviderInput
 }
 
 export type ProviderProfileUncheckedCreateWithoutUserInput = {
@@ -616,6 +638,7 @@ export type ProviderProfileUncheckedCreateWithoutUserInput = {
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutProviderInput
   services?: Prisma.ServiceUncheckedCreateNestedManyWithoutProviderInput
   workingHours?: Prisma.WorkingHoursUncheckedCreateNestedManyWithoutProviderInput
+  absences?: Prisma.ProviderAbsenceUncheckedCreateNestedManyWithoutProviderInput
 }
 
 export type ProviderProfileCreateOrConnectWithoutUserInput = {
@@ -647,10 +670,92 @@ export type ProviderProfileUpdateWithoutUserInput = {
   bookings?: Prisma.BookingUpdateManyWithoutProviderNestedInput
   services?: Prisma.ServiceUpdateManyWithoutProviderNestedInput
   workingHours?: Prisma.WorkingHoursUpdateManyWithoutProviderNestedInput
+  absences?: Prisma.ProviderAbsenceUpdateManyWithoutProviderNestedInput
 }
 
 export type ProviderProfileUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumProviderCategoryFieldUpdateOperationsInput | $Enums.ProviderCategory
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  depositType?: Prisma.EnumDepositTypeFieldUpdateOperationsInput | $Enums.DepositType
+  depositAmount?: Prisma.IntFieldUpdateOperationsInput | number
+  bufferMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bookings?: Prisma.BookingUncheckedUpdateManyWithoutProviderNestedInput
+  services?: Prisma.ServiceUncheckedUpdateManyWithoutProviderNestedInput
+  workingHours?: Prisma.WorkingHoursUncheckedUpdateManyWithoutProviderNestedInput
+  absences?: Prisma.ProviderAbsenceUncheckedUpdateManyWithoutProviderNestedInput
+}
+
+export type ProviderProfileCreateWithoutAbsencesInput = {
+  id?: string
+  slug: string
+  category: $Enums.ProviderCategory
+  bio?: string | null
+  depositType?: $Enums.DepositType
+  depositAmount?: number
+  bufferMinutes?: number
+  timezone?: string
+  createdAt?: Date | string
+  bookings?: Prisma.BookingCreateNestedManyWithoutProviderInput
+  user: Prisma.UserCreateNestedOneWithoutProviderProfileInput
+  services?: Prisma.ServiceCreateNestedManyWithoutProviderInput
+  workingHours?: Prisma.WorkingHoursCreateNestedManyWithoutProviderInput
+}
+
+export type ProviderProfileUncheckedCreateWithoutAbsencesInput = {
+  id?: string
+  userId: string
+  slug: string
+  category: $Enums.ProviderCategory
+  bio?: string | null
+  depositType?: $Enums.DepositType
+  depositAmount?: number
+  bufferMinutes?: number
+  timezone?: string
+  createdAt?: Date | string
+  bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutProviderInput
+  services?: Prisma.ServiceUncheckedCreateNestedManyWithoutProviderInput
+  workingHours?: Prisma.WorkingHoursUncheckedCreateNestedManyWithoutProviderInput
+}
+
+export type ProviderProfileCreateOrConnectWithoutAbsencesInput = {
+  where: Prisma.ProviderProfileWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProviderProfileCreateWithoutAbsencesInput, Prisma.ProviderProfileUncheckedCreateWithoutAbsencesInput>
+}
+
+export type ProviderProfileUpsertWithoutAbsencesInput = {
+  update: Prisma.XOR<Prisma.ProviderProfileUpdateWithoutAbsencesInput, Prisma.ProviderProfileUncheckedUpdateWithoutAbsencesInput>
+  create: Prisma.XOR<Prisma.ProviderProfileCreateWithoutAbsencesInput, Prisma.ProviderProfileUncheckedCreateWithoutAbsencesInput>
+  where?: Prisma.ProviderProfileWhereInput
+}
+
+export type ProviderProfileUpdateToOneWithWhereWithoutAbsencesInput = {
+  where?: Prisma.ProviderProfileWhereInput
+  data: Prisma.XOR<Prisma.ProviderProfileUpdateWithoutAbsencesInput, Prisma.ProviderProfileUncheckedUpdateWithoutAbsencesInput>
+}
+
+export type ProviderProfileUpdateWithoutAbsencesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumProviderCategoryFieldUpdateOperationsInput | $Enums.ProviderCategory
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  depositType?: Prisma.EnumDepositTypeFieldUpdateOperationsInput | $Enums.DepositType
+  depositAmount?: Prisma.IntFieldUpdateOperationsInput | number
+  bufferMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bookings?: Prisma.BookingUpdateManyWithoutProviderNestedInput
+  user?: Prisma.UserUpdateOneRequiredWithoutProviderProfileNestedInput
+  services?: Prisma.ServiceUpdateManyWithoutProviderNestedInput
+  workingHours?: Prisma.WorkingHoursUpdateManyWithoutProviderNestedInput
+}
+
+export type ProviderProfileUncheckedUpdateWithoutAbsencesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumProviderCategoryFieldUpdateOperationsInput | $Enums.ProviderCategory
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -677,6 +782,7 @@ export type ProviderProfileCreateWithoutWorkingHoursInput = {
   bookings?: Prisma.BookingCreateNestedManyWithoutProviderInput
   user: Prisma.UserCreateNestedOneWithoutProviderProfileInput
   services?: Prisma.ServiceCreateNestedManyWithoutProviderInput
+  absences?: Prisma.ProviderAbsenceCreateNestedManyWithoutProviderInput
 }
 
 export type ProviderProfileUncheckedCreateWithoutWorkingHoursInput = {
@@ -692,6 +798,7 @@ export type ProviderProfileUncheckedCreateWithoutWorkingHoursInput = {
   createdAt?: Date | string
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutProviderInput
   services?: Prisma.ServiceUncheckedCreateNestedManyWithoutProviderInput
+  absences?: Prisma.ProviderAbsenceUncheckedCreateNestedManyWithoutProviderInput
 }
 
 export type ProviderProfileCreateOrConnectWithoutWorkingHoursInput = {
@@ -723,6 +830,7 @@ export type ProviderProfileUpdateWithoutWorkingHoursInput = {
   bookings?: Prisma.BookingUpdateManyWithoutProviderNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutProviderProfileNestedInput
   services?: Prisma.ServiceUpdateManyWithoutProviderNestedInput
+  absences?: Prisma.ProviderAbsenceUpdateManyWithoutProviderNestedInput
 }
 
 export type ProviderProfileUncheckedUpdateWithoutWorkingHoursInput = {
@@ -738,6 +846,7 @@ export type ProviderProfileUncheckedUpdateWithoutWorkingHoursInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutProviderNestedInput
   services?: Prisma.ServiceUncheckedUpdateManyWithoutProviderNestedInput
+  absences?: Prisma.ProviderAbsenceUncheckedUpdateManyWithoutProviderNestedInput
 }
 
 export type ProviderProfileCreateWithoutServicesInput = {
@@ -753,6 +862,7 @@ export type ProviderProfileCreateWithoutServicesInput = {
   bookings?: Prisma.BookingCreateNestedManyWithoutProviderInput
   user: Prisma.UserCreateNestedOneWithoutProviderProfileInput
   workingHours?: Prisma.WorkingHoursCreateNestedManyWithoutProviderInput
+  absences?: Prisma.ProviderAbsenceCreateNestedManyWithoutProviderInput
 }
 
 export type ProviderProfileUncheckedCreateWithoutServicesInput = {
@@ -768,6 +878,7 @@ export type ProviderProfileUncheckedCreateWithoutServicesInput = {
   createdAt?: Date | string
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutProviderInput
   workingHours?: Prisma.WorkingHoursUncheckedCreateNestedManyWithoutProviderInput
+  absences?: Prisma.ProviderAbsenceUncheckedCreateNestedManyWithoutProviderInput
 }
 
 export type ProviderProfileCreateOrConnectWithoutServicesInput = {
@@ -799,6 +910,7 @@ export type ProviderProfileUpdateWithoutServicesInput = {
   bookings?: Prisma.BookingUpdateManyWithoutProviderNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutProviderProfileNestedInput
   workingHours?: Prisma.WorkingHoursUpdateManyWithoutProviderNestedInput
+  absences?: Prisma.ProviderAbsenceUpdateManyWithoutProviderNestedInput
 }
 
 export type ProviderProfileUncheckedUpdateWithoutServicesInput = {
@@ -814,6 +926,7 @@ export type ProviderProfileUncheckedUpdateWithoutServicesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutProviderNestedInput
   workingHours?: Prisma.WorkingHoursUncheckedUpdateManyWithoutProviderNestedInput
+  absences?: Prisma.ProviderAbsenceUncheckedUpdateManyWithoutProviderNestedInput
 }
 
 export type ProviderProfileCreateWithoutBookingsInput = {
@@ -829,6 +942,7 @@ export type ProviderProfileCreateWithoutBookingsInput = {
   user: Prisma.UserCreateNestedOneWithoutProviderProfileInput
   services?: Prisma.ServiceCreateNestedManyWithoutProviderInput
   workingHours?: Prisma.WorkingHoursCreateNestedManyWithoutProviderInput
+  absences?: Prisma.ProviderAbsenceCreateNestedManyWithoutProviderInput
 }
 
 export type ProviderProfileUncheckedCreateWithoutBookingsInput = {
@@ -844,6 +958,7 @@ export type ProviderProfileUncheckedCreateWithoutBookingsInput = {
   createdAt?: Date | string
   services?: Prisma.ServiceUncheckedCreateNestedManyWithoutProviderInput
   workingHours?: Prisma.WorkingHoursUncheckedCreateNestedManyWithoutProviderInput
+  absences?: Prisma.ProviderAbsenceUncheckedCreateNestedManyWithoutProviderInput
 }
 
 export type ProviderProfileCreateOrConnectWithoutBookingsInput = {
@@ -875,6 +990,7 @@ export type ProviderProfileUpdateWithoutBookingsInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutProviderProfileNestedInput
   services?: Prisma.ServiceUpdateManyWithoutProviderNestedInput
   workingHours?: Prisma.WorkingHoursUpdateManyWithoutProviderNestedInput
+  absences?: Prisma.ProviderAbsenceUpdateManyWithoutProviderNestedInput
 }
 
 export type ProviderProfileUncheckedUpdateWithoutBookingsInput = {
@@ -890,6 +1006,7 @@ export type ProviderProfileUncheckedUpdateWithoutBookingsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   services?: Prisma.ServiceUncheckedUpdateManyWithoutProviderNestedInput
   workingHours?: Prisma.WorkingHoursUncheckedUpdateManyWithoutProviderNestedInput
+  absences?: Prisma.ProviderAbsenceUncheckedUpdateManyWithoutProviderNestedInput
 }
 
 
@@ -901,12 +1018,14 @@ export type ProviderProfileCountOutputType = {
   bookings: number
   services: number
   workingHours: number
+  absences: number
 }
 
 export type ProviderProfileCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   bookings?: boolean | ProviderProfileCountOutputTypeCountBookingsArgs
   services?: boolean | ProviderProfileCountOutputTypeCountServicesArgs
   workingHours?: boolean | ProviderProfileCountOutputTypeCountWorkingHoursArgs
+  absences?: boolean | ProviderProfileCountOutputTypeCountAbsencesArgs
 }
 
 /**
@@ -940,6 +1059,13 @@ export type ProviderProfileCountOutputTypeCountWorkingHoursArgs<ExtArgs extends 
   where?: Prisma.WorkingHoursWhereInput
 }
 
+/**
+ * ProviderProfileCountOutputType without action
+ */
+export type ProviderProfileCountOutputTypeCountAbsencesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProviderAbsenceWhereInput
+}
+
 
 export type ProviderProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -956,6 +1082,7 @@ export type ProviderProfileSelect<ExtArgs extends runtime.Types.Extensions.Inter
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   services?: boolean | Prisma.ProviderProfile$servicesArgs<ExtArgs>
   workingHours?: boolean | Prisma.ProviderProfile$workingHoursArgs<ExtArgs>
+  absences?: boolean | Prisma.ProviderProfile$absencesArgs<ExtArgs>
   _count?: boolean | Prisma.ProviderProfileCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["providerProfile"]>
 
@@ -1006,6 +1133,7 @@ export type ProviderProfileInclude<ExtArgs extends runtime.Types.Extensions.Inte
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   services?: boolean | Prisma.ProviderProfile$servicesArgs<ExtArgs>
   workingHours?: boolean | Prisma.ProviderProfile$workingHoursArgs<ExtArgs>
+  absences?: boolean | Prisma.ProviderProfile$absencesArgs<ExtArgs>
   _count?: boolean | Prisma.ProviderProfileCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ProviderProfileIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1022,6 +1150,7 @@ export type $ProviderProfilePayload<ExtArgs extends runtime.Types.Extensions.Int
     user: Prisma.$UserPayload<ExtArgs>
     services: Prisma.$ServicePayload<ExtArgs>[]
     workingHours: Prisma.$WorkingHoursPayload<ExtArgs>[]
+    absences: Prisma.$ProviderAbsencePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1432,6 +1561,7 @@ export interface Prisma__ProviderProfileClient<T, Null = never, ExtArgs extends 
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   services<T extends Prisma.ProviderProfile$servicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProviderProfile$servicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ServicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   workingHours<T extends Prisma.ProviderProfile$workingHoursArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProviderProfile$workingHoursArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkingHoursPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  absences<T extends Prisma.ProviderProfile$absencesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProviderProfile$absencesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProviderAbsencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1941,6 +2071,30 @@ export type ProviderProfile$workingHoursArgs<ExtArgs extends runtime.Types.Exten
   take?: number
   skip?: number
   distinct?: Prisma.WorkingHoursScalarFieldEnum | Prisma.WorkingHoursScalarFieldEnum[]
+}
+
+/**
+ * ProviderProfile.absences
+ */
+export type ProviderProfile$absencesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProviderAbsence
+   */
+  select?: Prisma.ProviderAbsenceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ProviderAbsence
+   */
+  omit?: Prisma.ProviderAbsenceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProviderAbsenceInclude<ExtArgs> | null
+  where?: Prisma.ProviderAbsenceWhereInput
+  orderBy?: Prisma.ProviderAbsenceOrderByWithRelationInput | Prisma.ProviderAbsenceOrderByWithRelationInput[]
+  cursor?: Prisma.ProviderAbsenceWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProviderAbsenceScalarFieldEnum | Prisma.ProviderAbsenceScalarFieldEnum[]
 }
 
 /**

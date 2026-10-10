@@ -56,6 +56,7 @@ export const ModelName = {
   Session: 'Session',
   VerificationToken: 'VerificationToken',
   ProviderProfile: 'ProviderProfile',
+  ProviderAbsence: 'ProviderAbsence',
   WorkingHours: 'WorkingHours',
   Service: 'Service',
   Booking: 'Booking',
@@ -146,6 +147,16 @@ export const ProviderProfileScalarFieldEnum = {
 export type ProviderProfileScalarFieldEnum = (typeof ProviderProfileScalarFieldEnum)[keyof typeof ProviderProfileScalarFieldEnum]
 
 
+export const ProviderAbsenceScalarFieldEnum = {
+  id: 'id',
+  providerId: 'providerId',
+  date: 'date',
+  reason: 'reason'
+} as const
+
+export type ProviderAbsenceScalarFieldEnum = (typeof ProviderAbsenceScalarFieldEnum)[keyof typeof ProviderAbsenceScalarFieldEnum]
+
+
 export const WorkingHoursScalarFieldEnum = {
   id: 'id',
   providerId: 'providerId',
@@ -163,6 +174,7 @@ export const ServiceScalarFieldEnum = {
   name: 'name',
   durationMinutes: 'durationMinutes',
   price: 'price',
+  requiresAddress: 'requiresAddress',
   isActive: 'isActive'
 } as const
 
@@ -178,6 +190,9 @@ export const BookingScalarFieldEnum = {
   endsAt: 'endsAt',
   status: 'status',
   holdExpiresAt: 'holdExpiresAt',
+  address: 'address',
+  clientNotes: 'clientNotes',
+  cancellationReason: 'cancellationReason',
   createdAt: 'createdAt'
 } as const
 
@@ -188,6 +203,7 @@ export const PaymentScalarFieldEnum = {
   id: 'id',
   bookingId: 'bookingId',
   amount: 'amount',
+  method: 'method',
   status: 'status',
   gatewayRef: 'gatewayRef',
   createdAt: 'createdAt'
