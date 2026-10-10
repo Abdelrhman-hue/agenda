@@ -1,6 +1,7 @@
 import Credentials from "next-auth/providers/credentials";
+import Google from "next-auth/providers/google";
 import type { NextAuthConfig } from "next-auth";
-import { loginSchema } from "./utils/validation/login";
+import { loginSchema } from "./utils/validation/auth/login";
 import { prisma } from "./lib/prisma";
 import bcrypt from "bcryptjs";
 
@@ -24,10 +25,7 @@ export default {
           return null;
         }
 
-        const isPasswordMatched = await bcrypt.compare(
-          password,
-          user.password
-        );
+        const isPasswordMatched = await bcrypt.compare(password, user.password);
 
         if (!isPasswordMatched) {
           return null;
@@ -39,6 +37,13 @@ export default {
           email: user.email,
           role: user.role,
         };
+      },
+    }),
+    Google({
+      clientId: process.env.AUTH_GOOGLE_ID,
+      clientSecret: process.env.AUTH_GOOGLE_SECRET,
+      authorization: {
+        params: { prompt: "select_account" },
       },
     }),
   ],

@@ -1,10 +1,27 @@
+"use client"
+import { authWithGoogleAct } from "@/actions/auth.action";
+import { signIn } from "@/auth";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+
+
 
 export default function GoogleProvider() {
+  const router = useRouter()
+
+  const googleAuthHandler = async () => {
+    const result = await authWithGoogleAct()
+
+    // if (result.isSuccess) {
+    //   router.replace("/home")
+    // }
+    console.log(result.message)
+    
+  }
 
   return (
     <Button
-      type="button"
+      onClick={googleAuthHandler}
       variant="outline"
       className="
         h-11
