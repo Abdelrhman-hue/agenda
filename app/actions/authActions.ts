@@ -81,7 +81,7 @@ export async function registerUserAction(formData: {
           name: name.trim(),
           email,
           phone: formattedPhone,
-          passwordHash,
+          password: passwordHash,
           role: userRole as any,
           ...(accountType === "business"
             ? {
@@ -147,12 +147,12 @@ export async function loginUserAction(formData: {
         where: { email },
       });
 
-      if (!user || !user.passwordHash) {
+      if (!user || !user.password) {
         return { success: false, error: "البريد الإلكتروني أو كلمة المرور غير صحيحة." };
       }
 
       // Compare password hash
-      const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
+      const isPasswordValid = await bcrypt.compare(password, user.password);
       if (!isPasswordValid) {
         return { success: false, error: "البريد الإلكتروني أو كلمة المرور غير صحيحة." };
       }

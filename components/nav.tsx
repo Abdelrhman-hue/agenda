@@ -23,24 +23,24 @@ const navItems: NavItem[] = [
     href: "/",
   },
   {
+    label: "حجز موعد",
+    href: "/book",
+  },
+  {
+    label: "إدارة الحجوزات",
+    href: "/dashboard/bookings",
+  },
+  {
     label: "المميزات",
-    href: "#features",
-  },
-  {
-    label: "كيف تعمل",
-    href: "#how-it-works",
-  },
-  {
-    label: "لمن تناسب؟",
-    href: "#who-is-it-for",
+    href: "/#features",
   },
   {
     label: "الأسعار",
-    href: "#pricing",
+    href: "/#pricing",
   },
   {
     label: "الأسئلة الشائعة",
-    href: "#faq",
+    href: "/#faq",
   },
 ];
 
