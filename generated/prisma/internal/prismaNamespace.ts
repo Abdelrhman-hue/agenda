@@ -1264,6 +1264,10 @@ export const ProviderProfileScalarFieldEnum = {
   slug: 'slug',
   category: 'category',
   bio: 'bio',
+  onboardingCompleted: 'onboardingCompleted',
+  address: 'address',
+  locationUrl: 'locationUrl',
+  whatsappNumber: 'whatsappNumber',
   depositType: 'depositType',
   depositAmount: 'depositAmount',
   bufferMinutes: 'bufferMinutes',
@@ -1301,6 +1305,9 @@ export const ServiceScalarFieldEnum = {
   name: 'name',
   durationMinutes: 'durationMinutes',
   price: 'price',
+  mode: 'mode',
+  meetingUrl: 'meetingUrl',
+  depositAmount: 'depositAmount',
   requiresAddress: 'requiresAddress',
   isActive: 'isActive'
 } as const
@@ -1313,6 +1320,8 @@ export const BookingScalarFieldEnum = {
   providerId: 'providerId',
   serviceId: 'serviceId',
   clientId: 'clientId',
+  clientName: 'clientName',
+  clientPhone: 'clientPhone',
   startsAt: 'startsAt',
   endsAt: 'endsAt',
   status: 'status',
@@ -1320,6 +1329,8 @@ export const BookingScalarFieldEnum = {
   address: 'address',
   clientNotes: 'clientNotes',
   cancellationReason: 'cancellationReason',
+  source: 'source',
+  reminderSentAt: 'reminderSentAt',
   createdAt: 'createdAt'
 } as const
 
@@ -1440,6 +1451,13 @@ export type ListEnumProviderCategoryFieldRefInput<$PrismaModel> = FieldRefInputT
 
 
 /**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+/**
  * Reference to a field of type 'DepositType'
  */
 export type EnumDepositTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DepositType'>
@@ -1454,9 +1472,16 @@ export type ListEnumDepositTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$
 
 
 /**
- * Reference to a field of type 'Boolean'
+ * Reference to a field of type 'ServiceMode'
  */
-export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+export type EnumServiceModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ServiceMode'>
+    
+
+
+/**
+ * Reference to a field of type 'ServiceMode[]'
+ */
+export type ListEnumServiceModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ServiceMode[]'>
     
 
 
@@ -1471,6 +1496,20 @@ export type EnumBookingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$Pr
  * Reference to a field of type 'BookingStatus[]'
  */
 export type ListEnumBookingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BookingStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'BookingSource'
+ */
+export type EnumBookingSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BookingSource'>
+    
+
+
+/**
+ * Reference to a field of type 'BookingSource[]'
+ */
+export type ListEnumBookingSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BookingSource[]'>
     
 
 

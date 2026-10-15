@@ -29,6 +29,8 @@ export type BookingMinAggregateOutputType = {
   providerId: string | null
   serviceId: string | null
   clientId: string | null
+  clientName: string | null
+  clientPhone: string | null
   startsAt: Date | null
   endsAt: Date | null
   status: $Enums.BookingStatus | null
@@ -36,6 +38,8 @@ export type BookingMinAggregateOutputType = {
   address: string | null
   clientNotes: string | null
   cancellationReason: string | null
+  source: $Enums.BookingSource | null
+  reminderSentAt: Date | null
   createdAt: Date | null
 }
 
@@ -44,6 +48,8 @@ export type BookingMaxAggregateOutputType = {
   providerId: string | null
   serviceId: string | null
   clientId: string | null
+  clientName: string | null
+  clientPhone: string | null
   startsAt: Date | null
   endsAt: Date | null
   status: $Enums.BookingStatus | null
@@ -51,6 +57,8 @@ export type BookingMaxAggregateOutputType = {
   address: string | null
   clientNotes: string | null
   cancellationReason: string | null
+  source: $Enums.BookingSource | null
+  reminderSentAt: Date | null
   createdAt: Date | null
 }
 
@@ -59,6 +67,8 @@ export type BookingCountAggregateOutputType = {
   providerId: number
   serviceId: number
   clientId: number
+  clientName: number
+  clientPhone: number
   startsAt: number
   endsAt: number
   status: number
@@ -66,6 +76,8 @@ export type BookingCountAggregateOutputType = {
   address: number
   clientNotes: number
   cancellationReason: number
+  source: number
+  reminderSentAt: number
   createdAt: number
   _all: number
 }
@@ -76,6 +88,8 @@ export type BookingMinAggregateInputType = {
   providerId?: true
   serviceId?: true
   clientId?: true
+  clientName?: true
+  clientPhone?: true
   startsAt?: true
   endsAt?: true
   status?: true
@@ -83,6 +97,8 @@ export type BookingMinAggregateInputType = {
   address?: true
   clientNotes?: true
   cancellationReason?: true
+  source?: true
+  reminderSentAt?: true
   createdAt?: true
 }
 
@@ -91,6 +107,8 @@ export type BookingMaxAggregateInputType = {
   providerId?: true
   serviceId?: true
   clientId?: true
+  clientName?: true
+  clientPhone?: true
   startsAt?: true
   endsAt?: true
   status?: true
@@ -98,6 +116,8 @@ export type BookingMaxAggregateInputType = {
   address?: true
   clientNotes?: true
   cancellationReason?: true
+  source?: true
+  reminderSentAt?: true
   createdAt?: true
 }
 
@@ -106,6 +126,8 @@ export type BookingCountAggregateInputType = {
   providerId?: true
   serviceId?: true
   clientId?: true
+  clientName?: true
+  clientPhone?: true
   startsAt?: true
   endsAt?: true
   status?: true
@@ -113,6 +135,8 @@ export type BookingCountAggregateInputType = {
   address?: true
   clientNotes?: true
   cancellationReason?: true
+  source?: true
+  reminderSentAt?: true
   createdAt?: true
   _all?: true
 }
@@ -193,7 +217,9 @@ export type BookingGroupByOutputType = {
   id: string
   providerId: string
   serviceId: string
-  clientId: string
+  clientId: string | null
+  clientName: string | null
+  clientPhone: string | null
   startsAt: Date
   endsAt: Date
   status: $Enums.BookingStatus
@@ -201,6 +227,8 @@ export type BookingGroupByOutputType = {
   address: string | null
   clientNotes: string | null
   cancellationReason: string | null
+  source: $Enums.BookingSource
+  reminderSentAt: Date | null
   createdAt: Date
   _count: BookingCountAggregateOutputType | null
   _min: BookingMinAggregateOutputType | null
@@ -229,7 +257,9 @@ export type BookingWhereInput = {
   id?: Prisma.StringFilter<"Booking"> | string
   providerId?: Prisma.StringFilter<"Booking"> | string
   serviceId?: Prisma.StringFilter<"Booking"> | string
-  clientId?: Prisma.StringFilter<"Booking"> | string
+  clientId?: Prisma.StringNullableFilter<"Booking"> | string | null
+  clientName?: Prisma.StringNullableFilter<"Booking"> | string | null
+  clientPhone?: Prisma.StringNullableFilter<"Booking"> | string | null
   startsAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
   endsAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
   status?: Prisma.EnumBookingStatusFilter<"Booking"> | $Enums.BookingStatus
@@ -237,8 +267,10 @@ export type BookingWhereInput = {
   address?: Prisma.StringNullableFilter<"Booking"> | string | null
   clientNotes?: Prisma.StringNullableFilter<"Booking"> | string | null
   cancellationReason?: Prisma.StringNullableFilter<"Booking"> | string | null
+  source?: Prisma.EnumBookingSourceFilter<"Booking"> | $Enums.BookingSource
+  reminderSentAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
-  client?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  client?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   provider?: Prisma.XOR<Prisma.ProviderProfileScalarRelationFilter, Prisma.ProviderProfileWhereInput>
   service?: Prisma.XOR<Prisma.ServiceScalarRelationFilter, Prisma.ServiceWhereInput>
   payment?: Prisma.XOR<Prisma.PaymentNullableScalarRelationFilter, Prisma.PaymentWhereInput> | null
@@ -248,7 +280,9 @@ export type BookingOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   providerId?: Prisma.SortOrder
   serviceId?: Prisma.SortOrder
-  clientId?: Prisma.SortOrder
+  clientId?: Prisma.SortOrderInput | Prisma.SortOrder
+  clientName?: Prisma.SortOrderInput | Prisma.SortOrder
+  clientPhone?: Prisma.SortOrderInput | Prisma.SortOrder
   startsAt?: Prisma.SortOrder
   endsAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -256,6 +290,8 @@ export type BookingOrderByWithRelationInput = {
   address?: Prisma.SortOrderInput | Prisma.SortOrder
   clientNotes?: Prisma.SortOrderInput | Prisma.SortOrder
   cancellationReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  source?: Prisma.SortOrder
+  reminderSentAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   client?: Prisma.UserOrderByWithRelationInput
   provider?: Prisma.ProviderProfileOrderByWithRelationInput
@@ -265,13 +301,14 @@ export type BookingOrderByWithRelationInput = {
 
 export type BookingWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  providerId_startsAt?: Prisma.BookingProviderIdStartsAtCompoundUniqueInput
   AND?: Prisma.BookingWhereInput | Prisma.BookingWhereInput[]
   OR?: Prisma.BookingWhereInput[]
   NOT?: Prisma.BookingWhereInput | Prisma.BookingWhereInput[]
   providerId?: Prisma.StringFilter<"Booking"> | string
   serviceId?: Prisma.StringFilter<"Booking"> | string
-  clientId?: Prisma.StringFilter<"Booking"> | string
+  clientId?: Prisma.StringNullableFilter<"Booking"> | string | null
+  clientName?: Prisma.StringNullableFilter<"Booking"> | string | null
+  clientPhone?: Prisma.StringNullableFilter<"Booking"> | string | null
   startsAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
   endsAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
   status?: Prisma.EnumBookingStatusFilter<"Booking"> | $Enums.BookingStatus
@@ -279,18 +316,22 @@ export type BookingWhereUniqueInput = Prisma.AtLeast<{
   address?: Prisma.StringNullableFilter<"Booking"> | string | null
   clientNotes?: Prisma.StringNullableFilter<"Booking"> | string | null
   cancellationReason?: Prisma.StringNullableFilter<"Booking"> | string | null
+  source?: Prisma.EnumBookingSourceFilter<"Booking"> | $Enums.BookingSource
+  reminderSentAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
-  client?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  client?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   provider?: Prisma.XOR<Prisma.ProviderProfileScalarRelationFilter, Prisma.ProviderProfileWhereInput>
   service?: Prisma.XOR<Prisma.ServiceScalarRelationFilter, Prisma.ServiceWhereInput>
   payment?: Prisma.XOR<Prisma.PaymentNullableScalarRelationFilter, Prisma.PaymentWhereInput> | null
-}, "id" | "providerId_startsAt">
+}, "id">
 
 export type BookingOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   providerId?: Prisma.SortOrder
   serviceId?: Prisma.SortOrder
-  clientId?: Prisma.SortOrder
+  clientId?: Prisma.SortOrderInput | Prisma.SortOrder
+  clientName?: Prisma.SortOrderInput | Prisma.SortOrder
+  clientPhone?: Prisma.SortOrderInput | Prisma.SortOrder
   startsAt?: Prisma.SortOrder
   endsAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -298,6 +339,8 @@ export type BookingOrderByWithAggregationInput = {
   address?: Prisma.SortOrderInput | Prisma.SortOrder
   clientNotes?: Prisma.SortOrderInput | Prisma.SortOrder
   cancellationReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  source?: Prisma.SortOrder
+  reminderSentAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.BookingCountOrderByAggregateInput
   _max?: Prisma.BookingMaxOrderByAggregateInput
@@ -311,7 +354,9 @@ export type BookingScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Booking"> | string
   providerId?: Prisma.StringWithAggregatesFilter<"Booking"> | string
   serviceId?: Prisma.StringWithAggregatesFilter<"Booking"> | string
-  clientId?: Prisma.StringWithAggregatesFilter<"Booking"> | string
+  clientId?: Prisma.StringNullableWithAggregatesFilter<"Booking"> | string | null
+  clientName?: Prisma.StringNullableWithAggregatesFilter<"Booking"> | string | null
+  clientPhone?: Prisma.StringNullableWithAggregatesFilter<"Booking"> | string | null
   startsAt?: Prisma.DateTimeWithAggregatesFilter<"Booking"> | Date | string
   endsAt?: Prisma.DateTimeWithAggregatesFilter<"Booking"> | Date | string
   status?: Prisma.EnumBookingStatusWithAggregatesFilter<"Booking"> | $Enums.BookingStatus
@@ -319,11 +364,15 @@ export type BookingScalarWhereWithAggregatesInput = {
   address?: Prisma.StringNullableWithAggregatesFilter<"Booking"> | string | null
   clientNotes?: Prisma.StringNullableWithAggregatesFilter<"Booking"> | string | null
   cancellationReason?: Prisma.StringNullableWithAggregatesFilter<"Booking"> | string | null
+  source?: Prisma.EnumBookingSourceWithAggregatesFilter<"Booking"> | $Enums.BookingSource
+  reminderSentAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Booking"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Booking"> | Date | string
 }
 
 export type BookingCreateInput = {
   id?: string
+  clientName?: string | null
+  clientPhone?: string | null
   startsAt: Date | string
   endsAt: Date | string
   status?: $Enums.BookingStatus
@@ -331,8 +380,10 @@ export type BookingCreateInput = {
   address?: string | null
   clientNotes?: string | null
   cancellationReason?: string | null
+  source?: $Enums.BookingSource
+  reminderSentAt?: Date | string | null
   createdAt?: Date | string
-  client: Prisma.UserCreateNestedOneWithoutBookingsInput
+  client?: Prisma.UserCreateNestedOneWithoutBookingsInput
   provider: Prisma.ProviderProfileCreateNestedOneWithoutBookingsInput
   service: Prisma.ServiceCreateNestedOneWithoutBookingsInput
   payment?: Prisma.PaymentCreateNestedOneWithoutBookingInput
@@ -342,7 +393,9 @@ export type BookingUncheckedCreateInput = {
   id?: string
   providerId: string
   serviceId: string
-  clientId: string
+  clientId?: string | null
+  clientName?: string | null
+  clientPhone?: string | null
   startsAt: Date | string
   endsAt: Date | string
   status?: $Enums.BookingStatus
@@ -350,12 +403,16 @@ export type BookingUncheckedCreateInput = {
   address?: string | null
   clientNotes?: string | null
   cancellationReason?: string | null
+  source?: $Enums.BookingSource
+  reminderSentAt?: Date | string | null
   createdAt?: Date | string
   payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutBookingInput
 }
 
 export type BookingUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  clientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
@@ -363,8 +420,10 @@ export type BookingUpdateInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.EnumBookingSourceFieldUpdateOperationsInput | $Enums.BookingSource
+  reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  client?: Prisma.UserUpdateOneRequiredWithoutBookingsNestedInput
+  client?: Prisma.UserUpdateOneWithoutBookingsNestedInput
   provider?: Prisma.ProviderProfileUpdateOneRequiredWithoutBookingsNestedInput
   service?: Prisma.ServiceUpdateOneRequiredWithoutBookingsNestedInput
   payment?: Prisma.PaymentUpdateOneWithoutBookingNestedInput
@@ -374,7 +433,9 @@ export type BookingUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   providerId?: Prisma.StringFieldUpdateOperationsInput | string
   serviceId?: Prisma.StringFieldUpdateOperationsInput | string
-  clientId?: Prisma.StringFieldUpdateOperationsInput | string
+  clientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
@@ -382,6 +443,8 @@ export type BookingUncheckedUpdateInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.EnumBookingSourceFieldUpdateOperationsInput | $Enums.BookingSource
+  reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payment?: Prisma.PaymentUncheckedUpdateOneWithoutBookingNestedInput
 }
@@ -390,7 +453,9 @@ export type BookingCreateManyInput = {
   id?: string
   providerId: string
   serviceId: string
-  clientId: string
+  clientId?: string | null
+  clientName?: string | null
+  clientPhone?: string | null
   startsAt: Date | string
   endsAt: Date | string
   status?: $Enums.BookingStatus
@@ -398,11 +463,15 @@ export type BookingCreateManyInput = {
   address?: string | null
   clientNotes?: string | null
   cancellationReason?: string | null
+  source?: $Enums.BookingSource
+  reminderSentAt?: Date | string | null
   createdAt?: Date | string
 }
 
 export type BookingUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  clientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
@@ -410,6 +479,8 @@ export type BookingUpdateManyMutationInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.EnumBookingSourceFieldUpdateOperationsInput | $Enums.BookingSource
+  reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -417,7 +488,9 @@ export type BookingUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   providerId?: Prisma.StringFieldUpdateOperationsInput | string
   serviceId?: Prisma.StringFieldUpdateOperationsInput | string
-  clientId?: Prisma.StringFieldUpdateOperationsInput | string
+  clientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
@@ -425,6 +498,8 @@ export type BookingUncheckedUpdateManyInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.EnumBookingSourceFieldUpdateOperationsInput | $Enums.BookingSource
+  reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -438,16 +513,13 @@ export type BookingOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type BookingProviderIdStartsAtCompoundUniqueInput = {
-  providerId: string
-  startsAt: Date | string
-}
-
 export type BookingCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   providerId?: Prisma.SortOrder
   serviceId?: Prisma.SortOrder
   clientId?: Prisma.SortOrder
+  clientName?: Prisma.SortOrder
+  clientPhone?: Prisma.SortOrder
   startsAt?: Prisma.SortOrder
   endsAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -455,6 +527,8 @@ export type BookingCountOrderByAggregateInput = {
   address?: Prisma.SortOrder
   clientNotes?: Prisma.SortOrder
   cancellationReason?: Prisma.SortOrder
+  source?: Prisma.SortOrder
+  reminderSentAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -463,6 +537,8 @@ export type BookingMaxOrderByAggregateInput = {
   providerId?: Prisma.SortOrder
   serviceId?: Prisma.SortOrder
   clientId?: Prisma.SortOrder
+  clientName?: Prisma.SortOrder
+  clientPhone?: Prisma.SortOrder
   startsAt?: Prisma.SortOrder
   endsAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -470,6 +546,8 @@ export type BookingMaxOrderByAggregateInput = {
   address?: Prisma.SortOrder
   clientNotes?: Prisma.SortOrder
   cancellationReason?: Prisma.SortOrder
+  source?: Prisma.SortOrder
+  reminderSentAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -478,6 +556,8 @@ export type BookingMinOrderByAggregateInput = {
   providerId?: Prisma.SortOrder
   serviceId?: Prisma.SortOrder
   clientId?: Prisma.SortOrder
+  clientName?: Prisma.SortOrder
+  clientPhone?: Prisma.SortOrder
   startsAt?: Prisma.SortOrder
   endsAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -485,6 +565,8 @@ export type BookingMinOrderByAggregateInput = {
   address?: Prisma.SortOrder
   clientNotes?: Prisma.SortOrder
   cancellationReason?: Prisma.SortOrder
+  source?: Prisma.SortOrder
+  reminderSentAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -623,6 +705,10 @@ export type EnumBookingStatusFieldUpdateOperationsInput = {
   set?: $Enums.BookingStatus
 }
 
+export type EnumBookingSourceFieldUpdateOperationsInput = {
+  set?: $Enums.BookingSource
+}
+
 export type BookingCreateNestedOneWithoutPaymentInput = {
   create?: Prisma.XOR<Prisma.BookingCreateWithoutPaymentInput, Prisma.BookingUncheckedCreateWithoutPaymentInput>
   connectOrCreate?: Prisma.BookingCreateOrConnectWithoutPaymentInput
@@ -639,6 +725,8 @@ export type BookingUpdateOneRequiredWithoutPaymentNestedInput = {
 
 export type BookingCreateWithoutClientInput = {
   id?: string
+  clientName?: string | null
+  clientPhone?: string | null
   startsAt: Date | string
   endsAt: Date | string
   status?: $Enums.BookingStatus
@@ -646,6 +734,8 @@ export type BookingCreateWithoutClientInput = {
   address?: string | null
   clientNotes?: string | null
   cancellationReason?: string | null
+  source?: $Enums.BookingSource
+  reminderSentAt?: Date | string | null
   createdAt?: Date | string
   provider: Prisma.ProviderProfileCreateNestedOneWithoutBookingsInput
   service: Prisma.ServiceCreateNestedOneWithoutBookingsInput
@@ -656,6 +746,8 @@ export type BookingUncheckedCreateWithoutClientInput = {
   id?: string
   providerId: string
   serviceId: string
+  clientName?: string | null
+  clientPhone?: string | null
   startsAt: Date | string
   endsAt: Date | string
   status?: $Enums.BookingStatus
@@ -663,6 +755,8 @@ export type BookingUncheckedCreateWithoutClientInput = {
   address?: string | null
   clientNotes?: string | null
   cancellationReason?: string | null
+  source?: $Enums.BookingSource
+  reminderSentAt?: Date | string | null
   createdAt?: Date | string
   payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutBookingInput
 }
@@ -700,7 +794,9 @@ export type BookingScalarWhereInput = {
   id?: Prisma.StringFilter<"Booking"> | string
   providerId?: Prisma.StringFilter<"Booking"> | string
   serviceId?: Prisma.StringFilter<"Booking"> | string
-  clientId?: Prisma.StringFilter<"Booking"> | string
+  clientId?: Prisma.StringNullableFilter<"Booking"> | string | null
+  clientName?: Prisma.StringNullableFilter<"Booking"> | string | null
+  clientPhone?: Prisma.StringNullableFilter<"Booking"> | string | null
   startsAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
   endsAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
   status?: Prisma.EnumBookingStatusFilter<"Booking"> | $Enums.BookingStatus
@@ -708,11 +804,15 @@ export type BookingScalarWhereInput = {
   address?: Prisma.StringNullableFilter<"Booking"> | string | null
   clientNotes?: Prisma.StringNullableFilter<"Booking"> | string | null
   cancellationReason?: Prisma.StringNullableFilter<"Booking"> | string | null
+  source?: Prisma.EnumBookingSourceFilter<"Booking"> | $Enums.BookingSource
+  reminderSentAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
 }
 
 export type BookingCreateWithoutProviderInput = {
   id?: string
+  clientName?: string | null
+  clientPhone?: string | null
   startsAt: Date | string
   endsAt: Date | string
   status?: $Enums.BookingStatus
@@ -720,8 +820,10 @@ export type BookingCreateWithoutProviderInput = {
   address?: string | null
   clientNotes?: string | null
   cancellationReason?: string | null
+  source?: $Enums.BookingSource
+  reminderSentAt?: Date | string | null
   createdAt?: Date | string
-  client: Prisma.UserCreateNestedOneWithoutBookingsInput
+  client?: Prisma.UserCreateNestedOneWithoutBookingsInput
   service: Prisma.ServiceCreateNestedOneWithoutBookingsInput
   payment?: Prisma.PaymentCreateNestedOneWithoutBookingInput
 }
@@ -729,7 +831,9 @@ export type BookingCreateWithoutProviderInput = {
 export type BookingUncheckedCreateWithoutProviderInput = {
   id?: string
   serviceId: string
-  clientId: string
+  clientId?: string | null
+  clientName?: string | null
+  clientPhone?: string | null
   startsAt: Date | string
   endsAt: Date | string
   status?: $Enums.BookingStatus
@@ -737,6 +841,8 @@ export type BookingUncheckedCreateWithoutProviderInput = {
   address?: string | null
   clientNotes?: string | null
   cancellationReason?: string | null
+  source?: $Enums.BookingSource
+  reminderSentAt?: Date | string | null
   createdAt?: Date | string
   payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutBookingInput
 }
@@ -769,6 +875,8 @@ export type BookingUpdateManyWithWhereWithoutProviderInput = {
 
 export type BookingCreateWithoutServiceInput = {
   id?: string
+  clientName?: string | null
+  clientPhone?: string | null
   startsAt: Date | string
   endsAt: Date | string
   status?: $Enums.BookingStatus
@@ -776,8 +884,10 @@ export type BookingCreateWithoutServiceInput = {
   address?: string | null
   clientNotes?: string | null
   cancellationReason?: string | null
+  source?: $Enums.BookingSource
+  reminderSentAt?: Date | string | null
   createdAt?: Date | string
-  client: Prisma.UserCreateNestedOneWithoutBookingsInput
+  client?: Prisma.UserCreateNestedOneWithoutBookingsInput
   provider: Prisma.ProviderProfileCreateNestedOneWithoutBookingsInput
   payment?: Prisma.PaymentCreateNestedOneWithoutBookingInput
 }
@@ -785,7 +895,9 @@ export type BookingCreateWithoutServiceInput = {
 export type BookingUncheckedCreateWithoutServiceInput = {
   id?: string
   providerId: string
-  clientId: string
+  clientId?: string | null
+  clientName?: string | null
+  clientPhone?: string | null
   startsAt: Date | string
   endsAt: Date | string
   status?: $Enums.BookingStatus
@@ -793,6 +905,8 @@ export type BookingUncheckedCreateWithoutServiceInput = {
   address?: string | null
   clientNotes?: string | null
   cancellationReason?: string | null
+  source?: $Enums.BookingSource
+  reminderSentAt?: Date | string | null
   createdAt?: Date | string
   payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutBookingInput
 }
@@ -825,6 +939,8 @@ export type BookingUpdateManyWithWhereWithoutServiceInput = {
 
 export type BookingCreateWithoutPaymentInput = {
   id?: string
+  clientName?: string | null
+  clientPhone?: string | null
   startsAt: Date | string
   endsAt: Date | string
   status?: $Enums.BookingStatus
@@ -832,8 +948,10 @@ export type BookingCreateWithoutPaymentInput = {
   address?: string | null
   clientNotes?: string | null
   cancellationReason?: string | null
+  source?: $Enums.BookingSource
+  reminderSentAt?: Date | string | null
   createdAt?: Date | string
-  client: Prisma.UserCreateNestedOneWithoutBookingsInput
+  client?: Prisma.UserCreateNestedOneWithoutBookingsInput
   provider: Prisma.ProviderProfileCreateNestedOneWithoutBookingsInput
   service: Prisma.ServiceCreateNestedOneWithoutBookingsInput
 }
@@ -842,7 +960,9 @@ export type BookingUncheckedCreateWithoutPaymentInput = {
   id?: string
   providerId: string
   serviceId: string
-  clientId: string
+  clientId?: string | null
+  clientName?: string | null
+  clientPhone?: string | null
   startsAt: Date | string
   endsAt: Date | string
   status?: $Enums.BookingStatus
@@ -850,6 +970,8 @@ export type BookingUncheckedCreateWithoutPaymentInput = {
   address?: string | null
   clientNotes?: string | null
   cancellationReason?: string | null
+  source?: $Enums.BookingSource
+  reminderSentAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -871,6 +993,8 @@ export type BookingUpdateToOneWithWhereWithoutPaymentInput = {
 
 export type BookingUpdateWithoutPaymentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  clientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
@@ -878,8 +1002,10 @@ export type BookingUpdateWithoutPaymentInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.EnumBookingSourceFieldUpdateOperationsInput | $Enums.BookingSource
+  reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  client?: Prisma.UserUpdateOneRequiredWithoutBookingsNestedInput
+  client?: Prisma.UserUpdateOneWithoutBookingsNestedInput
   provider?: Prisma.ProviderProfileUpdateOneRequiredWithoutBookingsNestedInput
   service?: Prisma.ServiceUpdateOneRequiredWithoutBookingsNestedInput
 }
@@ -888,7 +1014,9 @@ export type BookingUncheckedUpdateWithoutPaymentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   providerId?: Prisma.StringFieldUpdateOperationsInput | string
   serviceId?: Prisma.StringFieldUpdateOperationsInput | string
-  clientId?: Prisma.StringFieldUpdateOperationsInput | string
+  clientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
@@ -896,6 +1024,8 @@ export type BookingUncheckedUpdateWithoutPaymentInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.EnumBookingSourceFieldUpdateOperationsInput | $Enums.BookingSource
+  reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -903,6 +1033,8 @@ export type BookingCreateManyClientInput = {
   id?: string
   providerId: string
   serviceId: string
+  clientName?: string | null
+  clientPhone?: string | null
   startsAt: Date | string
   endsAt: Date | string
   status?: $Enums.BookingStatus
@@ -910,11 +1042,15 @@ export type BookingCreateManyClientInput = {
   address?: string | null
   clientNotes?: string | null
   cancellationReason?: string | null
+  source?: $Enums.BookingSource
+  reminderSentAt?: Date | string | null
   createdAt?: Date | string
 }
 
 export type BookingUpdateWithoutClientInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  clientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
@@ -922,6 +1058,8 @@ export type BookingUpdateWithoutClientInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.EnumBookingSourceFieldUpdateOperationsInput | $Enums.BookingSource
+  reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   provider?: Prisma.ProviderProfileUpdateOneRequiredWithoutBookingsNestedInput
   service?: Prisma.ServiceUpdateOneRequiredWithoutBookingsNestedInput
@@ -932,6 +1070,8 @@ export type BookingUncheckedUpdateWithoutClientInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   providerId?: Prisma.StringFieldUpdateOperationsInput | string
   serviceId?: Prisma.StringFieldUpdateOperationsInput | string
+  clientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
@@ -939,6 +1079,8 @@ export type BookingUncheckedUpdateWithoutClientInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.EnumBookingSourceFieldUpdateOperationsInput | $Enums.BookingSource
+  reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payment?: Prisma.PaymentUncheckedUpdateOneWithoutBookingNestedInput
 }
@@ -947,6 +1089,8 @@ export type BookingUncheckedUpdateManyWithoutClientInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   providerId?: Prisma.StringFieldUpdateOperationsInput | string
   serviceId?: Prisma.StringFieldUpdateOperationsInput | string
+  clientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
@@ -954,13 +1098,17 @@ export type BookingUncheckedUpdateManyWithoutClientInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.EnumBookingSourceFieldUpdateOperationsInput | $Enums.BookingSource
+  reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type BookingCreateManyProviderInput = {
   id?: string
   serviceId: string
-  clientId: string
+  clientId?: string | null
+  clientName?: string | null
+  clientPhone?: string | null
   startsAt: Date | string
   endsAt: Date | string
   status?: $Enums.BookingStatus
@@ -968,11 +1116,15 @@ export type BookingCreateManyProviderInput = {
   address?: string | null
   clientNotes?: string | null
   cancellationReason?: string | null
+  source?: $Enums.BookingSource
+  reminderSentAt?: Date | string | null
   createdAt?: Date | string
 }
 
 export type BookingUpdateWithoutProviderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  clientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
@@ -980,8 +1132,10 @@ export type BookingUpdateWithoutProviderInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.EnumBookingSourceFieldUpdateOperationsInput | $Enums.BookingSource
+  reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  client?: Prisma.UserUpdateOneRequiredWithoutBookingsNestedInput
+  client?: Prisma.UserUpdateOneWithoutBookingsNestedInput
   service?: Prisma.ServiceUpdateOneRequiredWithoutBookingsNestedInput
   payment?: Prisma.PaymentUpdateOneWithoutBookingNestedInput
 }
@@ -989,7 +1143,9 @@ export type BookingUpdateWithoutProviderInput = {
 export type BookingUncheckedUpdateWithoutProviderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serviceId?: Prisma.StringFieldUpdateOperationsInput | string
-  clientId?: Prisma.StringFieldUpdateOperationsInput | string
+  clientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
@@ -997,6 +1153,8 @@ export type BookingUncheckedUpdateWithoutProviderInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.EnumBookingSourceFieldUpdateOperationsInput | $Enums.BookingSource
+  reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payment?: Prisma.PaymentUncheckedUpdateOneWithoutBookingNestedInput
 }
@@ -1004,7 +1162,9 @@ export type BookingUncheckedUpdateWithoutProviderInput = {
 export type BookingUncheckedUpdateManyWithoutProviderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serviceId?: Prisma.StringFieldUpdateOperationsInput | string
-  clientId?: Prisma.StringFieldUpdateOperationsInput | string
+  clientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
@@ -1012,13 +1172,17 @@ export type BookingUncheckedUpdateManyWithoutProviderInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.EnumBookingSourceFieldUpdateOperationsInput | $Enums.BookingSource
+  reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type BookingCreateManyServiceInput = {
   id?: string
   providerId: string
-  clientId: string
+  clientId?: string | null
+  clientName?: string | null
+  clientPhone?: string | null
   startsAt: Date | string
   endsAt: Date | string
   status?: $Enums.BookingStatus
@@ -1026,11 +1190,15 @@ export type BookingCreateManyServiceInput = {
   address?: string | null
   clientNotes?: string | null
   cancellationReason?: string | null
+  source?: $Enums.BookingSource
+  reminderSentAt?: Date | string | null
   createdAt?: Date | string
 }
 
 export type BookingUpdateWithoutServiceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  clientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
@@ -1038,8 +1206,10 @@ export type BookingUpdateWithoutServiceInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.EnumBookingSourceFieldUpdateOperationsInput | $Enums.BookingSource
+  reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  client?: Prisma.UserUpdateOneRequiredWithoutBookingsNestedInput
+  client?: Prisma.UserUpdateOneWithoutBookingsNestedInput
   provider?: Prisma.ProviderProfileUpdateOneRequiredWithoutBookingsNestedInput
   payment?: Prisma.PaymentUpdateOneWithoutBookingNestedInput
 }
@@ -1047,7 +1217,9 @@ export type BookingUpdateWithoutServiceInput = {
 export type BookingUncheckedUpdateWithoutServiceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   providerId?: Prisma.StringFieldUpdateOperationsInput | string
-  clientId?: Prisma.StringFieldUpdateOperationsInput | string
+  clientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
@@ -1055,6 +1227,8 @@ export type BookingUncheckedUpdateWithoutServiceInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.EnumBookingSourceFieldUpdateOperationsInput | $Enums.BookingSource
+  reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payment?: Prisma.PaymentUncheckedUpdateOneWithoutBookingNestedInput
 }
@@ -1062,7 +1236,9 @@ export type BookingUncheckedUpdateWithoutServiceInput = {
 export type BookingUncheckedUpdateManyWithoutServiceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   providerId?: Prisma.StringFieldUpdateOperationsInput | string
-  clientId?: Prisma.StringFieldUpdateOperationsInput | string
+  clientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
@@ -1070,6 +1246,8 @@ export type BookingUncheckedUpdateManyWithoutServiceInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.EnumBookingSourceFieldUpdateOperationsInput | $Enums.BookingSource
+  reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -1080,6 +1258,8 @@ export type BookingSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   providerId?: boolean
   serviceId?: boolean
   clientId?: boolean
+  clientName?: boolean
+  clientPhone?: boolean
   startsAt?: boolean
   endsAt?: boolean
   status?: boolean
@@ -1087,8 +1267,10 @@ export type BookingSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   address?: boolean
   clientNotes?: boolean
   cancellationReason?: boolean
+  source?: boolean
+  reminderSentAt?: boolean
   createdAt?: boolean
-  client?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  client?: boolean | Prisma.Booking$clientArgs<ExtArgs>
   provider?: boolean | Prisma.ProviderProfileDefaultArgs<ExtArgs>
   service?: boolean | Prisma.ServiceDefaultArgs<ExtArgs>
   payment?: boolean | Prisma.Booking$paymentArgs<ExtArgs>
@@ -1099,6 +1281,8 @@ export type BookingSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   providerId?: boolean
   serviceId?: boolean
   clientId?: boolean
+  clientName?: boolean
+  clientPhone?: boolean
   startsAt?: boolean
   endsAt?: boolean
   status?: boolean
@@ -1106,8 +1290,10 @@ export type BookingSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   address?: boolean
   clientNotes?: boolean
   cancellationReason?: boolean
+  source?: boolean
+  reminderSentAt?: boolean
   createdAt?: boolean
-  client?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  client?: boolean | Prisma.Booking$clientArgs<ExtArgs>
   provider?: boolean | Prisma.ProviderProfileDefaultArgs<ExtArgs>
   service?: boolean | Prisma.ServiceDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["booking"]>
@@ -1117,6 +1303,8 @@ export type BookingSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   providerId?: boolean
   serviceId?: boolean
   clientId?: boolean
+  clientName?: boolean
+  clientPhone?: boolean
   startsAt?: boolean
   endsAt?: boolean
   status?: boolean
@@ -1124,8 +1312,10 @@ export type BookingSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   address?: boolean
   clientNotes?: boolean
   cancellationReason?: boolean
+  source?: boolean
+  reminderSentAt?: boolean
   createdAt?: boolean
-  client?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  client?: boolean | Prisma.Booking$clientArgs<ExtArgs>
   provider?: boolean | Prisma.ProviderProfileDefaultArgs<ExtArgs>
   service?: boolean | Prisma.ServiceDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["booking"]>
@@ -1135,6 +1325,8 @@ export type BookingSelectScalar = {
   providerId?: boolean
   serviceId?: boolean
   clientId?: boolean
+  clientName?: boolean
+  clientPhone?: boolean
   startsAt?: boolean
   endsAt?: boolean
   status?: boolean
@@ -1142,23 +1334,25 @@ export type BookingSelectScalar = {
   address?: boolean
   clientNotes?: boolean
   cancellationReason?: boolean
+  source?: boolean
+  reminderSentAt?: boolean
   createdAt?: boolean
 }
 
-export type BookingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "providerId" | "serviceId" | "clientId" | "startsAt" | "endsAt" | "status" | "holdExpiresAt" | "address" | "clientNotes" | "cancellationReason" | "createdAt", ExtArgs["result"]["booking"]>
+export type BookingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "providerId" | "serviceId" | "clientId" | "clientName" | "clientPhone" | "startsAt" | "endsAt" | "status" | "holdExpiresAt" | "address" | "clientNotes" | "cancellationReason" | "source" | "reminderSentAt" | "createdAt", ExtArgs["result"]["booking"]>
 export type BookingInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  client?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  client?: boolean | Prisma.Booking$clientArgs<ExtArgs>
   provider?: boolean | Prisma.ProviderProfileDefaultArgs<ExtArgs>
   service?: boolean | Prisma.ServiceDefaultArgs<ExtArgs>
   payment?: boolean | Prisma.Booking$paymentArgs<ExtArgs>
 }
 export type BookingIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  client?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  client?: boolean | Prisma.Booking$clientArgs<ExtArgs>
   provider?: boolean | Prisma.ProviderProfileDefaultArgs<ExtArgs>
   service?: boolean | Prisma.ServiceDefaultArgs<ExtArgs>
 }
 export type BookingIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  client?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  client?: boolean | Prisma.Booking$clientArgs<ExtArgs>
   provider?: boolean | Prisma.ProviderProfileDefaultArgs<ExtArgs>
   service?: boolean | Prisma.ServiceDefaultArgs<ExtArgs>
 }
@@ -1166,7 +1360,7 @@ export type BookingIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
 export type $BookingPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Booking"
   objects: {
-    client: Prisma.$UserPayload<ExtArgs>
+    client: Prisma.$UserPayload<ExtArgs> | null
     provider: Prisma.$ProviderProfilePayload<ExtArgs>
     service: Prisma.$ServicePayload<ExtArgs>
     payment: Prisma.$PaymentPayload<ExtArgs> | null
@@ -1175,7 +1369,9 @@ export type $BookingPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     id: string
     providerId: string
     serviceId: string
-    clientId: string
+    clientId: string | null
+    clientName: string | null
+    clientPhone: string | null
     startsAt: Date
     endsAt: Date
     status: $Enums.BookingStatus
@@ -1183,6 +1379,8 @@ export type $BookingPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     address: string | null
     clientNotes: string | null
     cancellationReason: string | null
+    source: $Enums.BookingSource
+    reminderSentAt: Date | null
     createdAt: Date
   }, ExtArgs["result"]["booking"]>
   composites: {}
@@ -1578,7 +1776,7 @@ readonly fields: BookingFieldRefs;
  */
 export interface Prisma__BookingClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  client<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  client<T extends Prisma.Booking$clientArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Booking$clientArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   provider<T extends Prisma.ProviderProfileDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProviderProfileDefaultArgs<ExtArgs>>): Prisma.Prisma__ProviderProfileClient<runtime.Types.Result.GetResult<Prisma.$ProviderProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   service<T extends Prisma.ServiceDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ServiceDefaultArgs<ExtArgs>>): Prisma.Prisma__ServiceClient<runtime.Types.Result.GetResult<Prisma.$ServicePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   payment<T extends Prisma.Booking$paymentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Booking$paymentArgs<ExtArgs>>): Prisma.Prisma__PaymentClient<runtime.Types.Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -1615,6 +1813,8 @@ export interface BookingFieldRefs {
   readonly providerId: Prisma.FieldRef<"Booking", 'String'>
   readonly serviceId: Prisma.FieldRef<"Booking", 'String'>
   readonly clientId: Prisma.FieldRef<"Booking", 'String'>
+  readonly clientName: Prisma.FieldRef<"Booking", 'String'>
+  readonly clientPhone: Prisma.FieldRef<"Booking", 'String'>
   readonly startsAt: Prisma.FieldRef<"Booking", 'DateTime'>
   readonly endsAt: Prisma.FieldRef<"Booking", 'DateTime'>
   readonly status: Prisma.FieldRef<"Booking", 'BookingStatus'>
@@ -1622,6 +1822,8 @@ export interface BookingFieldRefs {
   readonly address: Prisma.FieldRef<"Booking", 'String'>
   readonly clientNotes: Prisma.FieldRef<"Booking", 'String'>
   readonly cancellationReason: Prisma.FieldRef<"Booking", 'String'>
+  readonly source: Prisma.FieldRef<"Booking", 'BookingSource'>
+  readonly reminderSentAt: Prisma.FieldRef<"Booking", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Booking", 'DateTime'>
 }
     
@@ -2021,6 +2223,25 @@ export type BookingDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Limit how many Bookings to delete.
    */
   limit?: number
+}
+
+/**
+ * Booking.client
+ */
+export type Booking$clientArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
 }
 
 /**

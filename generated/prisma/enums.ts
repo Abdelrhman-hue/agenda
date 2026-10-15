@@ -40,6 +40,23 @@ export const DepositType = {
 export type DepositType = (typeof DepositType)[keyof typeof DepositType]
 
 
+export const ServiceMode = {
+  ONSITE: 'ONSITE',
+  ONLINE: 'ONLINE',
+  HOME_VISIT: 'HOME_VISIT'
+} as const
+
+export type ServiceMode = (typeof ServiceMode)[keyof typeof ServiceMode]
+
+
+export const BookingSource = {
+  WEB: 'WEB',
+  WHATSAPP: 'WHATSAPP'
+} as const
+
+export type BookingSource = (typeof BookingSource)[keyof typeof BookingSource]
+
+
 export const BookingStatus = {
   HELD: 'HELD',
   CONFIRMED: 'CONFIRMED',

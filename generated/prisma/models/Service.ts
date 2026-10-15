@@ -29,11 +29,13 @@ export type AggregateService = {
 export type ServiceAvgAggregateOutputType = {
   durationMinutes: number | null
   price: number | null
+  depositAmount: number | null
 }
 
 export type ServiceSumAggregateOutputType = {
   durationMinutes: number | null
   price: number | null
+  depositAmount: number | null
 }
 
 export type ServiceMinAggregateOutputType = {
@@ -42,6 +44,9 @@ export type ServiceMinAggregateOutputType = {
   name: string | null
   durationMinutes: number | null
   price: number | null
+  mode: $Enums.ServiceMode | null
+  meetingUrl: string | null
+  depositAmount: number | null
   requiresAddress: boolean | null
   isActive: boolean | null
 }
@@ -52,6 +57,9 @@ export type ServiceMaxAggregateOutputType = {
   name: string | null
   durationMinutes: number | null
   price: number | null
+  mode: $Enums.ServiceMode | null
+  meetingUrl: string | null
+  depositAmount: number | null
   requiresAddress: boolean | null
   isActive: boolean | null
 }
@@ -62,6 +70,9 @@ export type ServiceCountAggregateOutputType = {
   name: number
   durationMinutes: number
   price: number
+  mode: number
+  meetingUrl: number
+  depositAmount: number
   requiresAddress: number
   isActive: number
   _all: number
@@ -71,11 +82,13 @@ export type ServiceCountAggregateOutputType = {
 export type ServiceAvgAggregateInputType = {
   durationMinutes?: true
   price?: true
+  depositAmount?: true
 }
 
 export type ServiceSumAggregateInputType = {
   durationMinutes?: true
   price?: true
+  depositAmount?: true
 }
 
 export type ServiceMinAggregateInputType = {
@@ -84,6 +97,9 @@ export type ServiceMinAggregateInputType = {
   name?: true
   durationMinutes?: true
   price?: true
+  mode?: true
+  meetingUrl?: true
+  depositAmount?: true
   requiresAddress?: true
   isActive?: true
 }
@@ -94,6 +110,9 @@ export type ServiceMaxAggregateInputType = {
   name?: true
   durationMinutes?: true
   price?: true
+  mode?: true
+  meetingUrl?: true
+  depositAmount?: true
   requiresAddress?: true
   isActive?: true
 }
@@ -104,6 +123,9 @@ export type ServiceCountAggregateInputType = {
   name?: true
   durationMinutes?: true
   price?: true
+  mode?: true
+  meetingUrl?: true
+  depositAmount?: true
   requiresAddress?: true
   isActive?: true
   _all?: true
@@ -201,6 +223,9 @@ export type ServiceGroupByOutputType = {
   name: string
   durationMinutes: number
   price: number
+  mode: $Enums.ServiceMode
+  meetingUrl: string | null
+  depositAmount: number | null
   requiresAddress: boolean
   isActive: boolean
   _count: ServiceCountAggregateOutputType | null
@@ -234,6 +259,9 @@ export type ServiceWhereInput = {
   name?: Prisma.StringFilter<"Service"> | string
   durationMinutes?: Prisma.IntFilter<"Service"> | number
   price?: Prisma.IntFilter<"Service"> | number
+  mode?: Prisma.EnumServiceModeFilter<"Service"> | $Enums.ServiceMode
+  meetingUrl?: Prisma.StringNullableFilter<"Service"> | string | null
+  depositAmount?: Prisma.IntNullableFilter<"Service"> | number | null
   requiresAddress?: Prisma.BoolFilter<"Service"> | boolean
   isActive?: Prisma.BoolFilter<"Service"> | boolean
   bookings?: Prisma.BookingListRelationFilter
@@ -246,6 +274,9 @@ export type ServiceOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   durationMinutes?: Prisma.SortOrder
   price?: Prisma.SortOrder
+  mode?: Prisma.SortOrder
+  meetingUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  depositAmount?: Prisma.SortOrderInput | Prisma.SortOrder
   requiresAddress?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   bookings?: Prisma.BookingOrderByRelationAggregateInput
@@ -261,6 +292,9 @@ export type ServiceWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringFilter<"Service"> | string
   durationMinutes?: Prisma.IntFilter<"Service"> | number
   price?: Prisma.IntFilter<"Service"> | number
+  mode?: Prisma.EnumServiceModeFilter<"Service"> | $Enums.ServiceMode
+  meetingUrl?: Prisma.StringNullableFilter<"Service"> | string | null
+  depositAmount?: Prisma.IntNullableFilter<"Service"> | number | null
   requiresAddress?: Prisma.BoolFilter<"Service"> | boolean
   isActive?: Prisma.BoolFilter<"Service"> | boolean
   bookings?: Prisma.BookingListRelationFilter
@@ -273,6 +307,9 @@ export type ServiceOrderByWithAggregationInput = {
   name?: Prisma.SortOrder
   durationMinutes?: Prisma.SortOrder
   price?: Prisma.SortOrder
+  mode?: Prisma.SortOrder
+  meetingUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  depositAmount?: Prisma.SortOrderInput | Prisma.SortOrder
   requiresAddress?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   _count?: Prisma.ServiceCountOrderByAggregateInput
@@ -291,6 +328,9 @@ export type ServiceScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"Service"> | string
   durationMinutes?: Prisma.IntWithAggregatesFilter<"Service"> | number
   price?: Prisma.IntWithAggregatesFilter<"Service"> | number
+  mode?: Prisma.EnumServiceModeWithAggregatesFilter<"Service"> | $Enums.ServiceMode
+  meetingUrl?: Prisma.StringNullableWithAggregatesFilter<"Service"> | string | null
+  depositAmount?: Prisma.IntNullableWithAggregatesFilter<"Service"> | number | null
   requiresAddress?: Prisma.BoolWithAggregatesFilter<"Service"> | boolean
   isActive?: Prisma.BoolWithAggregatesFilter<"Service"> | boolean
 }
@@ -300,6 +340,9 @@ export type ServiceCreateInput = {
   name: string
   durationMinutes: number
   price: number
+  mode?: $Enums.ServiceMode
+  meetingUrl?: string | null
+  depositAmount?: number | null
   requiresAddress?: boolean
   isActive?: boolean
   bookings?: Prisma.BookingCreateNestedManyWithoutServiceInput
@@ -312,6 +355,9 @@ export type ServiceUncheckedCreateInput = {
   name: string
   durationMinutes: number
   price: number
+  mode?: $Enums.ServiceMode
+  meetingUrl?: string | null
+  depositAmount?: number | null
   requiresAddress?: boolean
   isActive?: boolean
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutServiceInput
@@ -322,6 +368,9 @@ export type ServiceUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   durationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   price?: Prisma.IntFieldUpdateOperationsInput | number
+  mode?: Prisma.EnumServiceModeFieldUpdateOperationsInput | $Enums.ServiceMode
+  meetingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  depositAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   requiresAddress?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bookings?: Prisma.BookingUpdateManyWithoutServiceNestedInput
@@ -334,6 +383,9 @@ export type ServiceUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   durationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   price?: Prisma.IntFieldUpdateOperationsInput | number
+  mode?: Prisma.EnumServiceModeFieldUpdateOperationsInput | $Enums.ServiceMode
+  meetingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  depositAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   requiresAddress?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutServiceNestedInput
@@ -345,6 +397,9 @@ export type ServiceCreateManyInput = {
   name: string
   durationMinutes: number
   price: number
+  mode?: $Enums.ServiceMode
+  meetingUrl?: string | null
+  depositAmount?: number | null
   requiresAddress?: boolean
   isActive?: boolean
 }
@@ -354,6 +409,9 @@ export type ServiceUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   durationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   price?: Prisma.IntFieldUpdateOperationsInput | number
+  mode?: Prisma.EnumServiceModeFieldUpdateOperationsInput | $Enums.ServiceMode
+  meetingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  depositAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   requiresAddress?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
@@ -364,6 +422,9 @@ export type ServiceUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   durationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   price?: Prisma.IntFieldUpdateOperationsInput | number
+  mode?: Prisma.EnumServiceModeFieldUpdateOperationsInput | $Enums.ServiceMode
+  meetingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  depositAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   requiresAddress?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
@@ -384,6 +445,9 @@ export type ServiceCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   durationMinutes?: Prisma.SortOrder
   price?: Prisma.SortOrder
+  mode?: Prisma.SortOrder
+  meetingUrl?: Prisma.SortOrder
+  depositAmount?: Prisma.SortOrder
   requiresAddress?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
 }
@@ -391,6 +455,7 @@ export type ServiceCountOrderByAggregateInput = {
 export type ServiceAvgOrderByAggregateInput = {
   durationMinutes?: Prisma.SortOrder
   price?: Prisma.SortOrder
+  depositAmount?: Prisma.SortOrder
 }
 
 export type ServiceMaxOrderByAggregateInput = {
@@ -399,6 +464,9 @@ export type ServiceMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   durationMinutes?: Prisma.SortOrder
   price?: Prisma.SortOrder
+  mode?: Prisma.SortOrder
+  meetingUrl?: Prisma.SortOrder
+  depositAmount?: Prisma.SortOrder
   requiresAddress?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
 }
@@ -409,6 +477,9 @@ export type ServiceMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   durationMinutes?: Prisma.SortOrder
   price?: Prisma.SortOrder
+  mode?: Prisma.SortOrder
+  meetingUrl?: Prisma.SortOrder
+  depositAmount?: Prisma.SortOrder
   requiresAddress?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
 }
@@ -416,6 +487,7 @@ export type ServiceMinOrderByAggregateInput = {
 export type ServiceSumOrderByAggregateInput = {
   durationMinutes?: Prisma.SortOrder
   price?: Prisma.SortOrder
+  depositAmount?: Prisma.SortOrder
 }
 
 export type ServiceScalarRelationFilter = {
@@ -465,8 +537,8 @@ export type ServiceUncheckedUpdateManyWithoutProviderNestedInput = {
   deleteMany?: Prisma.ServiceScalarWhereInput | Prisma.ServiceScalarWhereInput[]
 }
 
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
+export type EnumServiceModeFieldUpdateOperationsInput = {
+  set?: $Enums.ServiceMode
 }
 
 export type ServiceCreateNestedOneWithoutBookingsInput = {
@@ -488,6 +560,9 @@ export type ServiceCreateWithoutProviderInput = {
   name: string
   durationMinutes: number
   price: number
+  mode?: $Enums.ServiceMode
+  meetingUrl?: string | null
+  depositAmount?: number | null
   requiresAddress?: boolean
   isActive?: boolean
   bookings?: Prisma.BookingCreateNestedManyWithoutServiceInput
@@ -498,6 +573,9 @@ export type ServiceUncheckedCreateWithoutProviderInput = {
   name: string
   durationMinutes: number
   price: number
+  mode?: $Enums.ServiceMode
+  meetingUrl?: string | null
+  depositAmount?: number | null
   requiresAddress?: boolean
   isActive?: boolean
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutServiceInput
@@ -538,6 +616,9 @@ export type ServiceScalarWhereInput = {
   name?: Prisma.StringFilter<"Service"> | string
   durationMinutes?: Prisma.IntFilter<"Service"> | number
   price?: Prisma.IntFilter<"Service"> | number
+  mode?: Prisma.EnumServiceModeFilter<"Service"> | $Enums.ServiceMode
+  meetingUrl?: Prisma.StringNullableFilter<"Service"> | string | null
+  depositAmount?: Prisma.IntNullableFilter<"Service"> | number | null
   requiresAddress?: Prisma.BoolFilter<"Service"> | boolean
   isActive?: Prisma.BoolFilter<"Service"> | boolean
 }
@@ -547,6 +628,9 @@ export type ServiceCreateWithoutBookingsInput = {
   name: string
   durationMinutes: number
   price: number
+  mode?: $Enums.ServiceMode
+  meetingUrl?: string | null
+  depositAmount?: number | null
   requiresAddress?: boolean
   isActive?: boolean
   provider: Prisma.ProviderProfileCreateNestedOneWithoutServicesInput
@@ -558,6 +642,9 @@ export type ServiceUncheckedCreateWithoutBookingsInput = {
   name: string
   durationMinutes: number
   price: number
+  mode?: $Enums.ServiceMode
+  meetingUrl?: string | null
+  depositAmount?: number | null
   requiresAddress?: boolean
   isActive?: boolean
 }
@@ -583,6 +670,9 @@ export type ServiceUpdateWithoutBookingsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   durationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   price?: Prisma.IntFieldUpdateOperationsInput | number
+  mode?: Prisma.EnumServiceModeFieldUpdateOperationsInput | $Enums.ServiceMode
+  meetingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  depositAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   requiresAddress?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   provider?: Prisma.ProviderProfileUpdateOneRequiredWithoutServicesNestedInput
@@ -594,6 +684,9 @@ export type ServiceUncheckedUpdateWithoutBookingsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   durationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   price?: Prisma.IntFieldUpdateOperationsInput | number
+  mode?: Prisma.EnumServiceModeFieldUpdateOperationsInput | $Enums.ServiceMode
+  meetingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  depositAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   requiresAddress?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
@@ -603,6 +696,9 @@ export type ServiceCreateManyProviderInput = {
   name: string
   durationMinutes: number
   price: number
+  mode?: $Enums.ServiceMode
+  meetingUrl?: string | null
+  depositAmount?: number | null
   requiresAddress?: boolean
   isActive?: boolean
 }
@@ -612,6 +708,9 @@ export type ServiceUpdateWithoutProviderInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   durationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   price?: Prisma.IntFieldUpdateOperationsInput | number
+  mode?: Prisma.EnumServiceModeFieldUpdateOperationsInput | $Enums.ServiceMode
+  meetingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  depositAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   requiresAddress?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bookings?: Prisma.BookingUpdateManyWithoutServiceNestedInput
@@ -622,6 +721,9 @@ export type ServiceUncheckedUpdateWithoutProviderInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   durationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   price?: Prisma.IntFieldUpdateOperationsInput | number
+  mode?: Prisma.EnumServiceModeFieldUpdateOperationsInput | $Enums.ServiceMode
+  meetingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  depositAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   requiresAddress?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutServiceNestedInput
@@ -632,6 +734,9 @@ export type ServiceUncheckedUpdateManyWithoutProviderInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   durationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   price?: Prisma.IntFieldUpdateOperationsInput | number
+  mode?: Prisma.EnumServiceModeFieldUpdateOperationsInput | $Enums.ServiceMode
+  meetingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  depositAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   requiresAddress?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
@@ -673,6 +778,9 @@ export type ServiceSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   name?: boolean
   durationMinutes?: boolean
   price?: boolean
+  mode?: boolean
+  meetingUrl?: boolean
+  depositAmount?: boolean
   requiresAddress?: boolean
   isActive?: boolean
   bookings?: boolean | Prisma.Service$bookingsArgs<ExtArgs>
@@ -686,6 +794,9 @@ export type ServiceSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   name?: boolean
   durationMinutes?: boolean
   price?: boolean
+  mode?: boolean
+  meetingUrl?: boolean
+  depositAmount?: boolean
   requiresAddress?: boolean
   isActive?: boolean
   provider?: boolean | Prisma.ProviderProfileDefaultArgs<ExtArgs>
@@ -697,6 +808,9 @@ export type ServiceSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   name?: boolean
   durationMinutes?: boolean
   price?: boolean
+  mode?: boolean
+  meetingUrl?: boolean
+  depositAmount?: boolean
   requiresAddress?: boolean
   isActive?: boolean
   provider?: boolean | Prisma.ProviderProfileDefaultArgs<ExtArgs>
@@ -708,11 +822,14 @@ export type ServiceSelectScalar = {
   name?: boolean
   durationMinutes?: boolean
   price?: boolean
+  mode?: boolean
+  meetingUrl?: boolean
+  depositAmount?: boolean
   requiresAddress?: boolean
   isActive?: boolean
 }
 
-export type ServiceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "providerId" | "name" | "durationMinutes" | "price" | "requiresAddress" | "isActive", ExtArgs["result"]["service"]>
+export type ServiceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "providerId" | "name" | "durationMinutes" | "price" | "mode" | "meetingUrl" | "depositAmount" | "requiresAddress" | "isActive", ExtArgs["result"]["service"]>
 export type ServiceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   bookings?: boolean | Prisma.Service$bookingsArgs<ExtArgs>
   provider?: boolean | Prisma.ProviderProfileDefaultArgs<ExtArgs>
@@ -737,6 +854,9 @@ export type $ServicePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     name: string
     durationMinutes: number
     price: number
+    mode: $Enums.ServiceMode
+    meetingUrl: string | null
+    depositAmount: number | null
     requiresAddress: boolean
     isActive: boolean
   }, ExtArgs["result"]["service"]>
@@ -1169,6 +1289,9 @@ export interface ServiceFieldRefs {
   readonly name: Prisma.FieldRef<"Service", 'String'>
   readonly durationMinutes: Prisma.FieldRef<"Service", 'Int'>
   readonly price: Prisma.FieldRef<"Service", 'Int'>
+  readonly mode: Prisma.FieldRef<"Service", 'ServiceMode'>
+  readonly meetingUrl: Prisma.FieldRef<"Service", 'String'>
+  readonly depositAmount: Prisma.FieldRef<"Service", 'Int'>
   readonly requiresAddress: Prisma.FieldRef<"Service", 'Boolean'>
   readonly isActive: Prisma.FieldRef<"Service", 'Boolean'>
 }
