@@ -71,6 +71,10 @@ model ProviderProfile {
   slug          String           @unique
   category      ProviderCategory
   bio           String?
+  onboardingCompleted Boolean          @default(false)
+  address       String?
+  locationUrl   String?
+  whatsappNumber String?               @unique
   depositType   DepositType      @default(FIXED)
   depositAmount Int              @default(0)
   bufferMinutes Int              @default(15)
@@ -111,6 +115,9 @@ model Service {
   name            String
   durationMinutes Int
   price           Int
+  mode            ServiceMode     @default(ONLINE)
+  meetingUrl      String?
+  depositAmount   Int?
   requiresAddress Boolean         @default(false)
   isActive        Boolean         @default(true)
   bookings        Booking[]
@@ -121,7 +128,9 @@ model Booking {
   id                 String        @id @default(cuid())
   providerId         String
   serviceId          String
-  clientId           String
+  clientId           String?
+  clientName         String?
+  clientPhone        String?
   startsAt           DateTime
   endsAt             DateTime
   status             BookingStatus @default(HELD)
@@ -129,14 +138,15 @@ model Booking {
   address            String?
   clientNotes         String?
   cancellationReason String?
+  source             BookingSource  @default(WEB)
+  reminderSentAt     DateTime?
   createdAt          DateTime      @default(now())
 
-  client   User            @relation(fields: [clientId], references: [id])
+  client   User?           @relation(fields: [clientId], references: [id])
   provider ProviderProfile @relation(fields: [providerId], references: [id], onDelete: Cascade)
   service  Service         @relation(fields: [serviceId], references: [id])
   payment  Payment?
 
-  @@unique([providerId, startsAt])
   @@index([providerId, startsAt])
   @@index([providerId, status])
 }
@@ -172,6 +182,17 @@ enum DepositType {
   NONE
   FIXED
   FULL
+}
+
+enum ServiceMode {
+  ONSITE
+  ONLINE
+  HOME_VISIT
+}
+
+enum BookingSource {
+  WEB
+  WHATSAPP
 }
 
 enum BookingStatus {

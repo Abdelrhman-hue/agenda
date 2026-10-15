@@ -42,6 +42,10 @@ export type ProviderProfileMinAggregateOutputType = {
   slug: string | null
   category: $Enums.ProviderCategory | null
   bio: string | null
+  onboardingCompleted: boolean | null
+  address: string | null
+  locationUrl: string | null
+  whatsappNumber: string | null
   depositType: $Enums.DepositType | null
   depositAmount: number | null
   bufferMinutes: number | null
@@ -55,6 +59,10 @@ export type ProviderProfileMaxAggregateOutputType = {
   slug: string | null
   category: $Enums.ProviderCategory | null
   bio: string | null
+  onboardingCompleted: boolean | null
+  address: string | null
+  locationUrl: string | null
+  whatsappNumber: string | null
   depositType: $Enums.DepositType | null
   depositAmount: number | null
   bufferMinutes: number | null
@@ -68,6 +76,10 @@ export type ProviderProfileCountAggregateOutputType = {
   slug: number
   category: number
   bio: number
+  onboardingCompleted: number
+  address: number
+  locationUrl: number
+  whatsappNumber: number
   depositType: number
   depositAmount: number
   bufferMinutes: number
@@ -93,6 +105,10 @@ export type ProviderProfileMinAggregateInputType = {
   slug?: true
   category?: true
   bio?: true
+  onboardingCompleted?: true
+  address?: true
+  locationUrl?: true
+  whatsappNumber?: true
   depositType?: true
   depositAmount?: true
   bufferMinutes?: true
@@ -106,6 +122,10 @@ export type ProviderProfileMaxAggregateInputType = {
   slug?: true
   category?: true
   bio?: true
+  onboardingCompleted?: true
+  address?: true
+  locationUrl?: true
+  whatsappNumber?: true
   depositType?: true
   depositAmount?: true
   bufferMinutes?: true
@@ -119,6 +139,10 @@ export type ProviderProfileCountAggregateInputType = {
   slug?: true
   category?: true
   bio?: true
+  onboardingCompleted?: true
+  address?: true
+  locationUrl?: true
+  whatsappNumber?: true
   depositType?: true
   depositAmount?: true
   bufferMinutes?: true
@@ -219,6 +243,10 @@ export type ProviderProfileGroupByOutputType = {
   slug: string
   category: $Enums.ProviderCategory
   bio: string | null
+  onboardingCompleted: boolean
+  address: string | null
+  locationUrl: string | null
+  whatsappNumber: string | null
   depositType: $Enums.DepositType
   depositAmount: number
   bufferMinutes: number
@@ -255,6 +283,10 @@ export type ProviderProfileWhereInput = {
   slug?: Prisma.StringFilter<"ProviderProfile"> | string
   category?: Prisma.EnumProviderCategoryFilter<"ProviderProfile"> | $Enums.ProviderCategory
   bio?: Prisma.StringNullableFilter<"ProviderProfile"> | string | null
+  onboardingCompleted?: Prisma.BoolFilter<"ProviderProfile"> | boolean
+  address?: Prisma.StringNullableFilter<"ProviderProfile"> | string | null
+  locationUrl?: Prisma.StringNullableFilter<"ProviderProfile"> | string | null
+  whatsappNumber?: Prisma.StringNullableFilter<"ProviderProfile"> | string | null
   depositType?: Prisma.EnumDepositTypeFilter<"ProviderProfile"> | $Enums.DepositType
   depositAmount?: Prisma.IntFilter<"ProviderProfile"> | number
   bufferMinutes?: Prisma.IntFilter<"ProviderProfile"> | number
@@ -273,6 +305,10 @@ export type ProviderProfileOrderByWithRelationInput = {
   slug?: Prisma.SortOrder
   category?: Prisma.SortOrder
   bio?: Prisma.SortOrderInput | Prisma.SortOrder
+  onboardingCompleted?: Prisma.SortOrder
+  address?: Prisma.SortOrderInput | Prisma.SortOrder
+  locationUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  whatsappNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   depositType?: Prisma.SortOrder
   depositAmount?: Prisma.SortOrder
   bufferMinutes?: Prisma.SortOrder
@@ -289,11 +325,15 @@ export type ProviderProfileWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   userId?: string
   slug?: string
+  whatsappNumber?: string
   AND?: Prisma.ProviderProfileWhereInput | Prisma.ProviderProfileWhereInput[]
   OR?: Prisma.ProviderProfileWhereInput[]
   NOT?: Prisma.ProviderProfileWhereInput | Prisma.ProviderProfileWhereInput[]
   category?: Prisma.EnumProviderCategoryFilter<"ProviderProfile"> | $Enums.ProviderCategory
   bio?: Prisma.StringNullableFilter<"ProviderProfile"> | string | null
+  onboardingCompleted?: Prisma.BoolFilter<"ProviderProfile"> | boolean
+  address?: Prisma.StringNullableFilter<"ProviderProfile"> | string | null
+  locationUrl?: Prisma.StringNullableFilter<"ProviderProfile"> | string | null
   depositType?: Prisma.EnumDepositTypeFilter<"ProviderProfile"> | $Enums.DepositType
   depositAmount?: Prisma.IntFilter<"ProviderProfile"> | number
   bufferMinutes?: Prisma.IntFilter<"ProviderProfile"> | number
@@ -304,7 +344,7 @@ export type ProviderProfileWhereUniqueInput = Prisma.AtLeast<{
   services?: Prisma.ServiceListRelationFilter
   workingHours?: Prisma.WorkingHoursListRelationFilter
   absences?: Prisma.ProviderAbsenceListRelationFilter
-}, "id" | "userId" | "slug">
+}, "id" | "userId" | "slug" | "whatsappNumber">
 
 export type ProviderProfileOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -312,6 +352,10 @@ export type ProviderProfileOrderByWithAggregationInput = {
   slug?: Prisma.SortOrder
   category?: Prisma.SortOrder
   bio?: Prisma.SortOrderInput | Prisma.SortOrder
+  onboardingCompleted?: Prisma.SortOrder
+  address?: Prisma.SortOrderInput | Prisma.SortOrder
+  locationUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  whatsappNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   depositType?: Prisma.SortOrder
   depositAmount?: Prisma.SortOrder
   bufferMinutes?: Prisma.SortOrder
@@ -333,6 +377,10 @@ export type ProviderProfileScalarWhereWithAggregatesInput = {
   slug?: Prisma.StringWithAggregatesFilter<"ProviderProfile"> | string
   category?: Prisma.EnumProviderCategoryWithAggregatesFilter<"ProviderProfile"> | $Enums.ProviderCategory
   bio?: Prisma.StringNullableWithAggregatesFilter<"ProviderProfile"> | string | null
+  onboardingCompleted?: Prisma.BoolWithAggregatesFilter<"ProviderProfile"> | boolean
+  address?: Prisma.StringNullableWithAggregatesFilter<"ProviderProfile"> | string | null
+  locationUrl?: Prisma.StringNullableWithAggregatesFilter<"ProviderProfile"> | string | null
+  whatsappNumber?: Prisma.StringNullableWithAggregatesFilter<"ProviderProfile"> | string | null
   depositType?: Prisma.EnumDepositTypeWithAggregatesFilter<"ProviderProfile"> | $Enums.DepositType
   depositAmount?: Prisma.IntWithAggregatesFilter<"ProviderProfile"> | number
   bufferMinutes?: Prisma.IntWithAggregatesFilter<"ProviderProfile"> | number
@@ -345,6 +393,10 @@ export type ProviderProfileCreateInput = {
   slug: string
   category: $Enums.ProviderCategory
   bio?: string | null
+  onboardingCompleted?: boolean
+  address?: string | null
+  locationUrl?: string | null
+  whatsappNumber?: string | null
   depositType?: $Enums.DepositType
   depositAmount?: number
   bufferMinutes?: number
@@ -363,6 +415,10 @@ export type ProviderProfileUncheckedCreateInput = {
   slug: string
   category: $Enums.ProviderCategory
   bio?: string | null
+  onboardingCompleted?: boolean
+  address?: string | null
+  locationUrl?: string | null
+  whatsappNumber?: string | null
   depositType?: $Enums.DepositType
   depositAmount?: number
   bufferMinutes?: number
@@ -379,6 +435,10 @@ export type ProviderProfileUpdateInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumProviderCategoryFieldUpdateOperationsInput | $Enums.ProviderCategory
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onboardingCompleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   depositType?: Prisma.EnumDepositTypeFieldUpdateOperationsInput | $Enums.DepositType
   depositAmount?: Prisma.IntFieldUpdateOperationsInput | number
   bufferMinutes?: Prisma.IntFieldUpdateOperationsInput | number
@@ -397,6 +457,10 @@ export type ProviderProfileUncheckedUpdateInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumProviderCategoryFieldUpdateOperationsInput | $Enums.ProviderCategory
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onboardingCompleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   depositType?: Prisma.EnumDepositTypeFieldUpdateOperationsInput | $Enums.DepositType
   depositAmount?: Prisma.IntFieldUpdateOperationsInput | number
   bufferMinutes?: Prisma.IntFieldUpdateOperationsInput | number
@@ -414,6 +478,10 @@ export type ProviderProfileCreateManyInput = {
   slug: string
   category: $Enums.ProviderCategory
   bio?: string | null
+  onboardingCompleted?: boolean
+  address?: string | null
+  locationUrl?: string | null
+  whatsappNumber?: string | null
   depositType?: $Enums.DepositType
   depositAmount?: number
   bufferMinutes?: number
@@ -426,6 +494,10 @@ export type ProviderProfileUpdateManyMutationInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumProviderCategoryFieldUpdateOperationsInput | $Enums.ProviderCategory
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onboardingCompleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   depositType?: Prisma.EnumDepositTypeFieldUpdateOperationsInput | $Enums.DepositType
   depositAmount?: Prisma.IntFieldUpdateOperationsInput | number
   bufferMinutes?: Prisma.IntFieldUpdateOperationsInput | number
@@ -439,6 +511,10 @@ export type ProviderProfileUncheckedUpdateManyInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumProviderCategoryFieldUpdateOperationsInput | $Enums.ProviderCategory
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onboardingCompleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   depositType?: Prisma.EnumDepositTypeFieldUpdateOperationsInput | $Enums.DepositType
   depositAmount?: Prisma.IntFieldUpdateOperationsInput | number
   bufferMinutes?: Prisma.IntFieldUpdateOperationsInput | number
@@ -457,6 +533,10 @@ export type ProviderProfileCountOrderByAggregateInput = {
   slug?: Prisma.SortOrder
   category?: Prisma.SortOrder
   bio?: Prisma.SortOrder
+  onboardingCompleted?: Prisma.SortOrder
+  address?: Prisma.SortOrder
+  locationUrl?: Prisma.SortOrder
+  whatsappNumber?: Prisma.SortOrder
   depositType?: Prisma.SortOrder
   depositAmount?: Prisma.SortOrder
   bufferMinutes?: Prisma.SortOrder
@@ -475,6 +555,10 @@ export type ProviderProfileMaxOrderByAggregateInput = {
   slug?: Prisma.SortOrder
   category?: Prisma.SortOrder
   bio?: Prisma.SortOrder
+  onboardingCompleted?: Prisma.SortOrder
+  address?: Prisma.SortOrder
+  locationUrl?: Prisma.SortOrder
+  whatsappNumber?: Prisma.SortOrder
   depositType?: Prisma.SortOrder
   depositAmount?: Prisma.SortOrder
   bufferMinutes?: Prisma.SortOrder
@@ -488,6 +572,10 @@ export type ProviderProfileMinOrderByAggregateInput = {
   slug?: Prisma.SortOrder
   category?: Prisma.SortOrder
   bio?: Prisma.SortOrder
+  onboardingCompleted?: Prisma.SortOrder
+  address?: Prisma.SortOrder
+  locationUrl?: Prisma.SortOrder
+  whatsappNumber?: Prisma.SortOrder
   depositType?: Prisma.SortOrder
   depositAmount?: Prisma.SortOrder
   bufferMinutes?: Prisma.SortOrder
@@ -539,6 +627,10 @@ export type ProviderProfileUncheckedUpdateOneWithoutUserNestedInput = {
 
 export type EnumProviderCategoryFieldUpdateOperationsInput = {
   set?: $Enums.ProviderCategory
+}
+
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
 }
 
 export type EnumDepositTypeFieldUpdateOperationsInput = {
@@ -614,6 +706,10 @@ export type ProviderProfileCreateWithoutUserInput = {
   slug: string
   category: $Enums.ProviderCategory
   bio?: string | null
+  onboardingCompleted?: boolean
+  address?: string | null
+  locationUrl?: string | null
+  whatsappNumber?: string | null
   depositType?: $Enums.DepositType
   depositAmount?: number
   bufferMinutes?: number
@@ -630,6 +726,10 @@ export type ProviderProfileUncheckedCreateWithoutUserInput = {
   slug: string
   category: $Enums.ProviderCategory
   bio?: string | null
+  onboardingCompleted?: boolean
+  address?: string | null
+  locationUrl?: string | null
+  whatsappNumber?: string | null
   depositType?: $Enums.DepositType
   depositAmount?: number
   bufferMinutes?: number
@@ -662,6 +762,10 @@ export type ProviderProfileUpdateWithoutUserInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumProviderCategoryFieldUpdateOperationsInput | $Enums.ProviderCategory
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onboardingCompleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   depositType?: Prisma.EnumDepositTypeFieldUpdateOperationsInput | $Enums.DepositType
   depositAmount?: Prisma.IntFieldUpdateOperationsInput | number
   bufferMinutes?: Prisma.IntFieldUpdateOperationsInput | number
@@ -678,6 +782,10 @@ export type ProviderProfileUncheckedUpdateWithoutUserInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumProviderCategoryFieldUpdateOperationsInput | $Enums.ProviderCategory
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onboardingCompleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   depositType?: Prisma.EnumDepositTypeFieldUpdateOperationsInput | $Enums.DepositType
   depositAmount?: Prisma.IntFieldUpdateOperationsInput | number
   bufferMinutes?: Prisma.IntFieldUpdateOperationsInput | number
@@ -694,6 +802,10 @@ export type ProviderProfileCreateWithoutAbsencesInput = {
   slug: string
   category: $Enums.ProviderCategory
   bio?: string | null
+  onboardingCompleted?: boolean
+  address?: string | null
+  locationUrl?: string | null
+  whatsappNumber?: string | null
   depositType?: $Enums.DepositType
   depositAmount?: number
   bufferMinutes?: number
@@ -711,6 +823,10 @@ export type ProviderProfileUncheckedCreateWithoutAbsencesInput = {
   slug: string
   category: $Enums.ProviderCategory
   bio?: string | null
+  onboardingCompleted?: boolean
+  address?: string | null
+  locationUrl?: string | null
+  whatsappNumber?: string | null
   depositType?: $Enums.DepositType
   depositAmount?: number
   bufferMinutes?: number
@@ -742,6 +858,10 @@ export type ProviderProfileUpdateWithoutAbsencesInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumProviderCategoryFieldUpdateOperationsInput | $Enums.ProviderCategory
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onboardingCompleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   depositType?: Prisma.EnumDepositTypeFieldUpdateOperationsInput | $Enums.DepositType
   depositAmount?: Prisma.IntFieldUpdateOperationsInput | number
   bufferMinutes?: Prisma.IntFieldUpdateOperationsInput | number
@@ -759,6 +879,10 @@ export type ProviderProfileUncheckedUpdateWithoutAbsencesInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumProviderCategoryFieldUpdateOperationsInput | $Enums.ProviderCategory
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onboardingCompleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   depositType?: Prisma.EnumDepositTypeFieldUpdateOperationsInput | $Enums.DepositType
   depositAmount?: Prisma.IntFieldUpdateOperationsInput | number
   bufferMinutes?: Prisma.IntFieldUpdateOperationsInput | number
@@ -774,6 +898,10 @@ export type ProviderProfileCreateWithoutWorkingHoursInput = {
   slug: string
   category: $Enums.ProviderCategory
   bio?: string | null
+  onboardingCompleted?: boolean
+  address?: string | null
+  locationUrl?: string | null
+  whatsappNumber?: string | null
   depositType?: $Enums.DepositType
   depositAmount?: number
   bufferMinutes?: number
@@ -791,6 +919,10 @@ export type ProviderProfileUncheckedCreateWithoutWorkingHoursInput = {
   slug: string
   category: $Enums.ProviderCategory
   bio?: string | null
+  onboardingCompleted?: boolean
+  address?: string | null
+  locationUrl?: string | null
+  whatsappNumber?: string | null
   depositType?: $Enums.DepositType
   depositAmount?: number
   bufferMinutes?: number
@@ -822,6 +954,10 @@ export type ProviderProfileUpdateWithoutWorkingHoursInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumProviderCategoryFieldUpdateOperationsInput | $Enums.ProviderCategory
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onboardingCompleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   depositType?: Prisma.EnumDepositTypeFieldUpdateOperationsInput | $Enums.DepositType
   depositAmount?: Prisma.IntFieldUpdateOperationsInput | number
   bufferMinutes?: Prisma.IntFieldUpdateOperationsInput | number
@@ -839,6 +975,10 @@ export type ProviderProfileUncheckedUpdateWithoutWorkingHoursInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumProviderCategoryFieldUpdateOperationsInput | $Enums.ProviderCategory
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onboardingCompleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   depositType?: Prisma.EnumDepositTypeFieldUpdateOperationsInput | $Enums.DepositType
   depositAmount?: Prisma.IntFieldUpdateOperationsInput | number
   bufferMinutes?: Prisma.IntFieldUpdateOperationsInput | number
@@ -854,6 +994,10 @@ export type ProviderProfileCreateWithoutServicesInput = {
   slug: string
   category: $Enums.ProviderCategory
   bio?: string | null
+  onboardingCompleted?: boolean
+  address?: string | null
+  locationUrl?: string | null
+  whatsappNumber?: string | null
   depositType?: $Enums.DepositType
   depositAmount?: number
   bufferMinutes?: number
@@ -871,6 +1015,10 @@ export type ProviderProfileUncheckedCreateWithoutServicesInput = {
   slug: string
   category: $Enums.ProviderCategory
   bio?: string | null
+  onboardingCompleted?: boolean
+  address?: string | null
+  locationUrl?: string | null
+  whatsappNumber?: string | null
   depositType?: $Enums.DepositType
   depositAmount?: number
   bufferMinutes?: number
@@ -902,6 +1050,10 @@ export type ProviderProfileUpdateWithoutServicesInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumProviderCategoryFieldUpdateOperationsInput | $Enums.ProviderCategory
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onboardingCompleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   depositType?: Prisma.EnumDepositTypeFieldUpdateOperationsInput | $Enums.DepositType
   depositAmount?: Prisma.IntFieldUpdateOperationsInput | number
   bufferMinutes?: Prisma.IntFieldUpdateOperationsInput | number
@@ -919,6 +1071,10 @@ export type ProviderProfileUncheckedUpdateWithoutServicesInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumProviderCategoryFieldUpdateOperationsInput | $Enums.ProviderCategory
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onboardingCompleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   depositType?: Prisma.EnumDepositTypeFieldUpdateOperationsInput | $Enums.DepositType
   depositAmount?: Prisma.IntFieldUpdateOperationsInput | number
   bufferMinutes?: Prisma.IntFieldUpdateOperationsInput | number
@@ -934,6 +1090,10 @@ export type ProviderProfileCreateWithoutBookingsInput = {
   slug: string
   category: $Enums.ProviderCategory
   bio?: string | null
+  onboardingCompleted?: boolean
+  address?: string | null
+  locationUrl?: string | null
+  whatsappNumber?: string | null
   depositType?: $Enums.DepositType
   depositAmount?: number
   bufferMinutes?: number
@@ -951,6 +1111,10 @@ export type ProviderProfileUncheckedCreateWithoutBookingsInput = {
   slug: string
   category: $Enums.ProviderCategory
   bio?: string | null
+  onboardingCompleted?: boolean
+  address?: string | null
+  locationUrl?: string | null
+  whatsappNumber?: string | null
   depositType?: $Enums.DepositType
   depositAmount?: number
   bufferMinutes?: number
@@ -982,6 +1146,10 @@ export type ProviderProfileUpdateWithoutBookingsInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumProviderCategoryFieldUpdateOperationsInput | $Enums.ProviderCategory
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onboardingCompleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   depositType?: Prisma.EnumDepositTypeFieldUpdateOperationsInput | $Enums.DepositType
   depositAmount?: Prisma.IntFieldUpdateOperationsInput | number
   bufferMinutes?: Prisma.IntFieldUpdateOperationsInput | number
@@ -999,6 +1167,10 @@ export type ProviderProfileUncheckedUpdateWithoutBookingsInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumProviderCategoryFieldUpdateOperationsInput | $Enums.ProviderCategory
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onboardingCompleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   depositType?: Prisma.EnumDepositTypeFieldUpdateOperationsInput | $Enums.DepositType
   depositAmount?: Prisma.IntFieldUpdateOperationsInput | number
   bufferMinutes?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1073,6 +1245,10 @@ export type ProviderProfileSelect<ExtArgs extends runtime.Types.Extensions.Inter
   slug?: boolean
   category?: boolean
   bio?: boolean
+  onboardingCompleted?: boolean
+  address?: boolean
+  locationUrl?: boolean
+  whatsappNumber?: boolean
   depositType?: boolean
   depositAmount?: boolean
   bufferMinutes?: boolean
@@ -1092,6 +1268,10 @@ export type ProviderProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   slug?: boolean
   category?: boolean
   bio?: boolean
+  onboardingCompleted?: boolean
+  address?: boolean
+  locationUrl?: boolean
+  whatsappNumber?: boolean
   depositType?: boolean
   depositAmount?: boolean
   bufferMinutes?: boolean
@@ -1106,6 +1286,10 @@ export type ProviderProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   slug?: boolean
   category?: boolean
   bio?: boolean
+  onboardingCompleted?: boolean
+  address?: boolean
+  locationUrl?: boolean
+  whatsappNumber?: boolean
   depositType?: boolean
   depositAmount?: boolean
   bufferMinutes?: boolean
@@ -1120,6 +1304,10 @@ export type ProviderProfileSelectScalar = {
   slug?: boolean
   category?: boolean
   bio?: boolean
+  onboardingCompleted?: boolean
+  address?: boolean
+  locationUrl?: boolean
+  whatsappNumber?: boolean
   depositType?: boolean
   depositAmount?: boolean
   bufferMinutes?: boolean
@@ -1127,7 +1315,7 @@ export type ProviderProfileSelectScalar = {
   createdAt?: boolean
 }
 
-export type ProviderProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "slug" | "category" | "bio" | "depositType" | "depositAmount" | "bufferMinutes" | "timezone" | "createdAt", ExtArgs["result"]["providerProfile"]>
+export type ProviderProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "slug" | "category" | "bio" | "onboardingCompleted" | "address" | "locationUrl" | "whatsappNumber" | "depositType" | "depositAmount" | "bufferMinutes" | "timezone" | "createdAt", ExtArgs["result"]["providerProfile"]>
 export type ProviderProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   bookings?: boolean | Prisma.ProviderProfile$bookingsArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1158,6 +1346,10 @@ export type $ProviderProfilePayload<ExtArgs extends runtime.Types.Extensions.Int
     slug: string
     category: $Enums.ProviderCategory
     bio: string | null
+    onboardingCompleted: boolean
+    address: string | null
+    locationUrl: string | null
+    whatsappNumber: string | null
     depositType: $Enums.DepositType
     depositAmount: number
     bufferMinutes: number
@@ -1596,6 +1788,10 @@ export interface ProviderProfileFieldRefs {
   readonly slug: Prisma.FieldRef<"ProviderProfile", 'String'>
   readonly category: Prisma.FieldRef<"ProviderProfile", 'ProviderCategory'>
   readonly bio: Prisma.FieldRef<"ProviderProfile", 'String'>
+  readonly onboardingCompleted: Prisma.FieldRef<"ProviderProfile", 'Boolean'>
+  readonly address: Prisma.FieldRef<"ProviderProfile", 'String'>
+  readonly locationUrl: Prisma.FieldRef<"ProviderProfile", 'String'>
+  readonly whatsappNumber: Prisma.FieldRef<"ProviderProfile", 'String'>
   readonly depositType: Prisma.FieldRef<"ProviderProfile", 'DepositType'>
   readonly depositAmount: Prisma.FieldRef<"ProviderProfile", 'Int'>
   readonly bufferMinutes: Prisma.FieldRef<"ProviderProfile", 'Int'>

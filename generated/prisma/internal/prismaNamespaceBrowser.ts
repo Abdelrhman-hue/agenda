@@ -138,6 +138,10 @@ export const ProviderProfileScalarFieldEnum = {
   slug: 'slug',
   category: 'category',
   bio: 'bio',
+  onboardingCompleted: 'onboardingCompleted',
+  address: 'address',
+  locationUrl: 'locationUrl',
+  whatsappNumber: 'whatsappNumber',
   depositType: 'depositType',
   depositAmount: 'depositAmount',
   bufferMinutes: 'bufferMinutes',
@@ -175,6 +179,9 @@ export const ServiceScalarFieldEnum = {
   name: 'name',
   durationMinutes: 'durationMinutes',
   price: 'price',
+  mode: 'mode',
+  meetingUrl: 'meetingUrl',
+  depositAmount: 'depositAmount',
   requiresAddress: 'requiresAddress',
   isActive: 'isActive'
 } as const
@@ -187,6 +194,8 @@ export const BookingScalarFieldEnum = {
   providerId: 'providerId',
   serviceId: 'serviceId',
   clientId: 'clientId',
+  clientName: 'clientName',
+  clientPhone: 'clientPhone',
   startsAt: 'startsAt',
   endsAt: 'endsAt',
   status: 'status',
@@ -194,6 +203,8 @@ export const BookingScalarFieldEnum = {
   address: 'address',
   clientNotes: 'clientNotes',
   cancellationReason: 'cancellationReason',
+  source: 'source',
+  reminderSentAt: 'reminderSentAt',
   createdAt: 'createdAt'
 } as const
 
