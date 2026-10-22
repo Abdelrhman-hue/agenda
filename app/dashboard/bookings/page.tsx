@@ -32,6 +32,8 @@ interface BookingItem {
   providerId: string;
   serviceId: string;
   clientId: string;
+  clientName: string | null;
+  clientPhone: string | null;
   startsAt: string;
   endsAt: string;
   status: BookingStatus;
@@ -97,7 +99,9 @@ export default function BookingsDashboardPage() {
   const [filterDate, setFilterDate] = useState("");
 
   // Modals state
-  const [rescheduleTarget, setRescheduleTarget] = useState<BookingItem | null>(null);
+  const [rescheduleTarget, setRescheduleTarget] = useState<BookingItem | null>(
+    null,
+  );
   const [cancelTarget, setCancelTarget] = useState<BookingItem | null>(null);
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
 
@@ -129,7 +133,10 @@ export default function BookingsDashboardPage() {
   }, [fetchBookings]);
 
   // Handle direct status updates (CONFIRM, COMPLETE)
-  const handleQuickStatusUpdate = async (id: string, action: "CONFIRM" | "COMPLETE") => {
+  const handleQuickStatusUpdate = async (
+    id: string,
+    action: "CONFIRM" | "COMPLETE",
+  ) => {
     setActionLoadingId(id);
     try {
       const res = await fetch(`/api/bookings/${id}`, {
@@ -209,7 +216,8 @@ export default function BookingsDashboardPage() {
               إدارة الحجوزات والمواعيد
             </h1>
             <p className="mt-1 text-body-md text-neutral-muted">
-              متابعة مواعيد العملاء، تحصيل العربون، وتعديل أو إلغاء الحجوزات لحظياً
+              متابعة مواعيد العملاء، تحصيل العربون، وتعديل أو إلغاء الحجوزات
+              لحظياً
             </p>
           </div>
 
@@ -218,7 +226,9 @@ export default function BookingsDashboardPage() {
               onClick={fetchBookings}
               className="inline-flex items-center gap-2 rounded-[10px] border border-border-subtle bg-surface px-4 py-2.5 text-label-lg font-medium text-neutral-primary hover:bg-neutral-50 shadow-level1 transition-all"
             >
-              <RefreshCw className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`} />
+              <RefreshCw
+                className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`}
+              />
               تحديث
             </button>
             <Link
@@ -235,7 +245,9 @@ export default function BookingsDashboardPage() {
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
           {/* Total */}
           <div className="rounded-[16px] border border-border-subtle bg-surface p-5 shadow-level1">
-            <div className="text-body-sm text-neutral-muted">إجمالي الحجوزات</div>
+            <div className="text-body-sm text-neutral-muted">
+              إجمالي الحجوزات
+            </div>
             <div className="mt-2 text-headline-lg font-bold text-neutral-primary tabular-nums">
               {metrics.total}
             </div>
@@ -263,7 +275,9 @@ export default function BookingsDashboardPage() {
 
           {/* Completed */}
           <div className="rounded-[16px] border border-primary/20 bg-primary/5 p-5 shadow-level1">
-            <div className="text-body-sm font-medium text-primary">المكتملة</div>
+            <div className="text-body-sm font-medium text-primary">
+              المكتملة
+            </div>
             <div className="mt-2 text-headline-lg font-bold text-primary tabular-nums">
               {metrics.completed}
             </div>
@@ -271,7 +285,9 @@ export default function BookingsDashboardPage() {
 
           {/* Cancelled */}
           <div className="rounded-[16px] border border-status-error/20 bg-status-error/5 p-5 shadow-level1">
-            <div className="text-body-sm font-medium text-status-error">الملغية</div>
+            <div className="text-body-sm font-medium text-status-error">
+              الملغية
+            </div>
             <div className="mt-2 text-headline-lg font-bold text-status-error tabular-nums">
               {metrics.cancelled}
             </div>
@@ -353,7 +369,8 @@ export default function BookingsDashboardPage() {
                 لا توجد حجوزات مطابقة
               </h3>
               <p className="mt-1 text-body-md text-neutral-muted">
-                لم يتم العثور على أي مواعيد وفقاً لخيارات البحث أو الفلترة المحددة.
+                لم يتم العثور على أي مواعيد وفقاً لخيارات البحث أو الفلترة
+                المحددة.
               </p>
               <button
                 onClick={() => {
@@ -394,11 +411,19 @@ export default function BookingsDashboardPage() {
                         {/* Client Info */}
                         <td className="py-4 px-4">
                           <div className="font-semibold text-neutral-primary text-body-md">
-                            {booking.client.name || "عميل"}
+                            <span>
+                              {booking.clientPhone ||
+                                booking.client.phone ||
+                                "—"}
+                            </span>
                           </div>
                           <div className="flex items-center gap-1.5 text-neutral-muted text-body-sm mt-0.5 tabular-nums">
                             <Phone className="h-3.5 w-3.5" />
-                            <span>{booking.client.phone || "—"}</span>
+                            <span>
+                              {booking.clientPhone ||
+                                booking.client.phone ||
+                                "—"}
+                            </span>
                           </div>
                           {booking.address && (
                             <div className="flex items-center gap-1.5 text-neutral-muted text-[11px] mt-1">
@@ -453,18 +478,26 @@ export default function BookingsDashboardPage() {
                             <div>
                               <div className="font-bold text-neutral-primary tabular-nums">
                                 {booking.payment.amount > 0 ? (
-                                  <span>{booking.payment.amount} ج.م عربون</span>
+                                  <span>
+                                    {booking.payment.amount} ج.م عربون
+                                  </span>
                                 ) : (
-                                  <span className="text-neutral-muted">بدون عربون</span>
+                                  <span className="text-neutral-muted">
+                                    بدون عربون
+                                  </span>
                                 )}
                               </div>
                               <div className="text-[11px] text-neutral-muted mt-0.5">
                                 {booking.payment.method === "INSTAPAY"
                                   ? "انستاباي"
                                   : booking.payment.method === "VODAFONE_CASH"
-                                  ? "فودافون كاش"
-                                  : booking.payment.method}{" "}
-                                ({booking.payment.status === "PAID" ? "تم السداد" : "قيد السداد"})
+                                    ? "فودافون كاش"
+                                    : booking.payment.method}{" "}
+                                (
+                                {booking.payment.status === "PAID"
+                                  ? "تم السداد"
+                                  : "قيد السداد"}
+                                )
                               </div>
                             </div>
                           ) : (
@@ -476,7 +509,10 @@ export default function BookingsDashboardPage() {
                         <td className="py-4 px-4">
                           {renderStatusBadge(booking.status)}
                           {booking.cancellationReason && (
-                            <div className="text-[11px] text-status-error mt-1 truncate max-w-[140px]" title={booking.cancellationReason}>
+                            <div
+                              className="text-[11px] text-status-error mt-1 truncate max-w-[140px]"
+                              title={booking.cancellationReason}
+                            >
                               السبب: {booking.cancellationReason}
                             </div>
                           )}
@@ -486,24 +522,27 @@ export default function BookingsDashboardPage() {
                         <td className="py-4 px-4 text-center">
                           <div className="flex items-center justify-center gap-1.5 flex-wrap">
                             {/* Reschedule Button */}
-                            {booking.status !== "CANCELLED" && booking.status !== "COMPLETED" && (
-                              <button
-                                type="button"
-                                onClick={() => setRescheduleTarget(booking)}
-                                className="rounded-lg border border-border-subtle bg-surface px-2.5 py-1.5 text-body-sm font-medium text-neutral-primary hover:border-primary hover:text-primary transition-all flex items-center gap-1"
-                                title="نقل الموعد"
-                              >
-                                <RotateCcw className="h-3.5 w-3.5" />
-                                <span>نقل</span>
-                              </button>
-                            )}
+                            {booking.status !== "CANCELLED" &&
+                              booking.status !== "COMPLETED" && (
+                                <button
+                                  type="button"
+                                  onClick={() => setRescheduleTarget(booking)}
+                                  className="rounded-lg border border-border-subtle bg-surface px-2.5 py-1.5 text-body-sm font-medium text-neutral-primary hover:border-primary hover:text-primary transition-all flex items-center gap-1"
+                                  title="نقل الموعد"
+                                >
+                                  <RotateCcw className="h-3.5 w-3.5" />
+                                  <span>نقل</span>
+                                </button>
+                              )}
 
                             {/* Confirm Quick Button for HELD status */}
                             {isHeld && (
                               <button
                                 type="button"
                                 disabled={isActionBusy}
-                                onClick={() => handleQuickStatusUpdate(booking.id, "CONFIRM")}
+                                onClick={() =>
+                                  handleQuickStatusUpdate(booking.id, "CONFIRM")
+                                }
                                 className="rounded-lg bg-status-success/15 px-2.5 py-1.5 text-body-sm font-semibold text-status-success hover:bg-status-success/25 transition-all flex items-center gap-1"
                                 title="تأكيد الحجز واستلام العربون"
                               >
@@ -517,7 +556,12 @@ export default function BookingsDashboardPage() {
                               <button
                                 type="button"
                                 disabled={isActionBusy}
-                                onClick={() => handleQuickStatusUpdate(booking.id, "COMPLETE")}
+                                onClick={() =>
+                                  handleQuickStatusUpdate(
+                                    booking.id,
+                                    "COMPLETE",
+                                  )
+                                }
                                 className="rounded-lg bg-primary/10 px-2.5 py-1.5 text-body-sm font-semibold text-primary hover:bg-primary/20 transition-all flex items-center gap-1"
                                 title="اكتمال الزيارة"
                               >
@@ -527,17 +571,18 @@ export default function BookingsDashboardPage() {
                             )}
 
                             {/* Cancel Button */}
-                            {booking.status !== "CANCELLED" && booking.status !== "COMPLETED" && (
-                              <button
-                                type="button"
-                                onClick={() => setCancelTarget(booking)}
-                                className="rounded-lg border border-border-subtle bg-surface px-2.5 py-1.5 text-body-sm font-medium text-status-error hover:bg-status-error/10 transition-all flex items-center gap-1"
-                                title="إلغاء الحجز"
-                              >
-                                <XCircle className="h-3.5 w-3.5" />
-                                <span>إلغاء</span>
-                              </button>
-                            )}
+                            {booking.status !== "CANCELLED" &&
+                              booking.status !== "COMPLETED" && (
+                                <button
+                                  type="button"
+                                  onClick={() => setCancelTarget(booking)}
+                                  className="rounded-lg border border-border-subtle bg-surface px-2.5 py-1.5 text-body-sm font-medium text-status-error hover:bg-status-error/10 transition-all flex items-center gap-1"
+                                  title="إلغاء الحجز"
+                                >
+                                  <XCircle className="h-3.5 w-3.5" />
+                                  <span>إلغاء</span>
+                                </button>
+                              )}
                           </div>
                         </td>
                       </tr>
@@ -557,7 +602,7 @@ export default function BookingsDashboardPage() {
           bookingId={rescheduleTarget.id}
           providerId={rescheduleTarget.providerId}
           serviceId={rescheduleTarget.serviceId}
-          clientName={rescheduleTarget.client.name || "العميل"}
+          clientName={rescheduleTarget.clientName || rescheduleTarget.client.name || "العميل"}
           currentStartsAt={rescheduleTarget.startsAt}
           onClose={() => setRescheduleTarget(null)}
           onSuccess={() => {
@@ -572,12 +617,15 @@ export default function BookingsDashboardPage() {
         <CancelModal
           isOpen={Boolean(cancelTarget)}
           bookingId={cancelTarget.id}
-          clientName={cancelTarget.client.name || "العميل"}
+          clientName={cancelTarget.clientName || cancelTarget.client.name || "العميل"}
           serviceName={cancelTarget.service.name}
-          appointmentTime={new Date(cancelTarget.startsAt).toLocaleString("ar-EG", {
-            dateStyle: "medium",
-            timeStyle: "short",
-          })}
+          appointmentTime={new Date(cancelTarget.startsAt).toLocaleString(
+            "ar-EG",
+            {
+              dateStyle: "medium",
+              timeStyle: "short",
+            },
+          )}
           onClose={() => setCancelTarget(null)}
           onSuccess={() => {
             setCancelTarget(null);

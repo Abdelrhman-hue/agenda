@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
-import {
-  createBookingSchema,
-} from "@/utils/validation/booking";
+import { HttpError, handleError } from "@/lib/api";
+import { getBookingScope, scopeWhere } from "@/lib/bookingAccess";
+import { createBookingSchema } from "@/utils/validation/booking";
 import {
   expireOverdueHeldBookings,
   resolveProviderProfile,
@@ -24,10 +24,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           status: "fail",
-          message: validation.error.issues[0]?.message || "بيانات الحجز غير صحيحة",
+          message:
+            validation.error.issues[0]?.message || "بيانات الحجز غير صحيحة",
           errors: validation.error.issues,
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -46,23 +47,25 @@ export async function POST(request: NextRequest) {
     if (!provider) {
       return NextResponse.json(
         { status: "fail", message: "مقدم الخدمة غير مسجل أو غير متاح" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
     // 3. Resolve Service
-    const service = provider.services.find((s) => s.id === body.serviceId && s.isActive);
+    const service = provider.services.find(
+      (s) => s.id === body.serviceId && s.isActive,
+    );
     if (!service) {
       return NextResponse.json(
         { status: "fail", message: "الخدمة المطلوبة غير متوفرة حالياً" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
     if (service.requiresAddress && !body.address?.trim()) {
       return NextResponse.json(
         { status: "fail", message: "عنوان الحضور مطلوب لإتمام حجز هذه الخدمة" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -73,18 +76,20 @@ export async function POST(request: NextRequest) {
     if (isNaN(startsAt.getTime())) {
       return NextResponse.json(
         { status: "fail", message: "صيغة تاريخ ووقت الحجز غير صحيحة" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (startsAt < now) {
       return NextResponse.json(
         { status: "fail", message: "لا يمكن حجز موعد في وقت مضى" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
-    const endsAt = new Date(startsAt.getTime() + service.durationMinutes * 60 * 1000);
+    const endsAt = new Date(
+      startsAt.getTime() + service.durationMinutes * 60 * 1000,
+    );
 
     // 5. Check Provider Absence
     const dateStart = new Date(startsAt);
@@ -108,18 +113,23 @@ export async function POST(request: NextRequest) {
           status: "fail",
           message: `مقدم الخدمة غير متاح في هذا التاريخ ${absence.reason ? `(${absence.reason})` : ""}`,
         },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
     // 6. Check Provider Working Hours
     const dayOfWeek = startsAt.getDay(); // 0 = Sunday, 1 = Monday ... 6 = Saturday
-    const workingHour = provider.workingHours.find((wh) => wh.dayOfWeek === dayOfWeek);
+    const workingHour = provider.workingHours.find(
+      (wh) => wh.dayOfWeek === dayOfWeek,
+    );
 
     if (!workingHour) {
       return NextResponse.json(
-        { status: "fail", message: "مقدم الخدمة في يوم عطلة أسبوعية في هذا اليوم" },
-        { status: 409 }
+        {
+          status: "fail",
+          message: "مقدم الخدمة في يوم عطلة أسبوعية في هذا اليوم",
+        },
+        { status: 409 },
       );
     }
 
@@ -127,13 +137,16 @@ export async function POST(request: NextRequest) {
     const slotStartStr = startsAt.toTimeString().slice(0, 5); // "HH:MM"
     const slotEndStr = endsAt.toTimeString().slice(0, 5); // "HH:MM"
 
-    if (slotStartStr < workingHour.startTime || slotEndStr > workingHour.endTime) {
+    if (
+      slotStartStr < workingHour.startTime ||
+      slotEndStr > workingHour.endTime
+    ) {
       return NextResponse.json(
         {
           status: "fail",
           message: `الموعد خارج ساعات العمل الرسمية (${workingHour.startTime} إلى ${workingHour.endTime})`,
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -147,10 +160,7 @@ export async function POST(request: NextRequest) {
           { startsAt: startsAt },
           // overlap condition: startsAt < existing.endsAt AND endsAt > existing.startsAt
           {
-            AND: [
-              { startsAt: { lt: endsAt } },
-              { endsAt: { gt: startsAt } },
-            ],
+            AND: [{ startsAt: { lt: endsAt } }, { endsAt: { gt: startsAt } }],
           },
         ],
       },
@@ -160,15 +170,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           status: "fail",
-          message: "هذا الموعد محجوز بالفعل أو محجوز مؤقتاً لعميل آخر، يرجى اختيار موعد آخر",
+          message:
+            "هذا الموعد محجوز بالفعل أو محجوز مؤقتاً لعميل آخر، يرجى اختيار موعد آخر",
         },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
     // 8. Resolve Client User
     const session = await auth();
-    let clientId = session?.user?.id || body.clientId;
+    let clientId = session?.user?.id;
 
     if (!clientId) {
       // Find or create a client record by phone or email
@@ -210,10 +221,11 @@ export async function POST(request: NextRequest) {
     });
 
     const isZeroDeposit = pricing.depositAmount === 0;
-    const initialStatus = isZeroDeposit ? BookingStatus.CONFIRMED : BookingStatus.HELD;
-    // 10-minute hold window for deposit settlement (as specified in Agendah Design System)
-    const holdExpiresAt = isZeroDeposit ? null : new Date(Date.now() + 10 * 60 * 1000);
-
+    const initialStatus = isZeroDeposit
+      ? BookingStatus.CONFIRMED
+      : BookingStatus.HELD;
+    // الموعد بيفضل مقفول لحد ما صاحب الخدمة يؤكد أو يلغي (من غير مهلة تلقائية)
+    const holdExpiresAt = null;
     // 10. Persist Booking & Payment in Transaction
     const result = await prisma.$transaction(async (tx) => {
       const booking = await tx.booking.create({
@@ -221,6 +233,8 @@ export async function POST(request: NextRequest) {
           providerId: provider.id,
           serviceId: service.id,
           clientId: clientId!,
+          clientName: body.clientName?.trim() || null,
+          clientPhone: body.clientPhone?.trim() || null,
           startsAt,
           endsAt,
           status: initialStatus,
@@ -258,7 +272,7 @@ export async function POST(request: NextRequest) {
         status: "success",
         message: isZeroDeposit
           ? "تم تأكيد حجز الموعد بنجاح دون الحاجة لعربون"
-          : "تم إنشاء الحجز وقفل الموعد مؤقتاً لمدة 10 دقائق، يرجى سداد العربون لتأكيد الحجز",
+          : "تم إنشاء الحجز وبانتظار تأكيد صاحب الخدمة بعد سداد العربون",
         data: {
           bookingId: result.booking.id,
           startsAt: result.booking.startsAt,
@@ -289,7 +303,7 @@ export async function POST(request: NextRequest) {
           },
         },
       },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error: any) {
     console.error("POST /api/bookings error:", error);
@@ -301,7 +315,7 @@ export async function POST(request: NextRequest) {
           status: "fail",
           message: "هذا الموعد تم حجزه للتو، يرجى اختيار موعد آخر",
         },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
@@ -309,9 +323,10 @@ export async function POST(request: NextRequest) {
       {
         status: "error",
         message: "حدث خطأ غير متوقع أثناء معالجة الحجز",
-        error: process.env.NODE_ENV === "development" ? error.message : undefined,
+        error:
+          process.env.NODE_ENV === "development" ? error.message : undefined,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -322,14 +337,12 @@ export async function POST(request: NextRequest) {
  */
 export async function GET(request: NextRequest) {
   try {
+    // 401 لو مش مسجل. نطاق الحجوزات بيتحدد من الجلسة
+    const { scope } = await getBookingScope();
     const { searchParams } = new URL(request.url);
 
-    // Expire any stale holds
     await expireOverdueHeldBookings();
 
-    const providerId = searchParams.get("providerId") || searchParams.get("businessId");
-    const slug = searchParams.get("slug");
-    const clientId = searchParams.get("clientId");
     const status = searchParams.get("status") as BookingStatus | null;
     const date = searchParams.get("date"); // "YYYY-MM-DD"
     const startDate = searchParams.get("startDate");
@@ -337,51 +350,39 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get("search")?.trim();
 
     const page = Math.max(1, parseInt(searchParams.get("page") || "1", 10));
-    const limit = Math.max(1, Math.min(100, parseInt(searchParams.get("limit") || "20", 10)));
+    const limit = Math.max(
+      1,
+      Math.min(100, parseInt(searchParams.get("limit") || "20", 10)),
+    );
     const skip = (page - 1) * limit;
 
-    // Resolve provider ID if slug or businessId provided
-    let resolvedProviderId = providerId || undefined;
-    if (!resolvedProviderId && slug) {
-      const p = await prisma.providerProfile.findUnique({
-        where: { slug },
-        select: { id: true },
-      });
-      if (p) resolvedProviderId = p.id;
-    }
+    // صاحب الخدمة = حجوزات نشاطه، العميل = حجوزاته هو
+    const where: any = { ...scopeWhere(scope) };
 
-    // Build Prisma filter
-    const where: any = {};
-
-    if (resolvedProviderId) {
-      where.providerId = resolvedProviderId;
-    }
-
-    if (clientId) {
-      where.clientId = clientId;
+    // الأدمن بس يقدر يفلتر بنشاط أو عميل معيّن
+    if (scope.kind === "ADMIN") {
+      const providerId = searchParams.get("providerId");
+      const clientId = searchParams.get("clientId");
+      if (providerId) where.providerId = providerId;
+      if (clientId) where.clientId = clientId;
     }
 
     if (status && Object.values(BookingStatus).includes(status)) {
       where.status = status;
     }
 
-    // Date filtering
     if (date) {
       const dStart = new Date(date);
       dStart.setHours(0, 0, 0, 0);
       const dEnd = new Date(date);
       dEnd.setHours(23, 59, 59, 999);
-      where.startsAt = {
-        gte: dStart,
-        lte: dEnd,
-      };
+      where.startsAt = { gte: dStart, lte: dEnd };
     } else if (startDate || endDate) {
       where.startsAt = {};
       if (startDate) where.startsAt.gte = new Date(startDate);
       if (endDate) where.startsAt.lte = new Date(endDate);
     }
 
-    // Search query by client name, client phone, or service name
     if (search) {
       where.OR = [
         { client: { name: { contains: search, mode: "insensitive" } } },
@@ -392,7 +393,12 @@ export async function GET(request: NextRequest) {
       ];
     }
 
-    // Query data in parallel with total count and status metrics
+    // الإحصائيات بنفس نطاق المستخدم
+    const statsWhere = {
+      ...(where.providerId ? { providerId: where.providerId } : {}),
+      ...(where.clientId ? { clientId: where.clientId } : {}),
+    };
+
     const [bookings, totalCount, statsGroup] = await Promise.all([
       prisma.booking.findMany({
         where,
@@ -427,24 +433,31 @@ export async function GET(request: NextRequest) {
         skip,
         take: limit,
       }),
-
       prisma.booking.count({ where }),
-
       prisma.booking.groupBy({
         by: ["status"],
-        where: resolvedProviderId ? { providerId: resolvedProviderId } : {},
+        where: statsWhere,
         _count: { _all: true },
       }),
     ]);
 
-    // Metrics summary for dashboard
     const metrics = {
       total: totalCount,
-      confirmed: statsGroup.find((s) => s.status === BookingStatus.CONFIRMED)?._count._all || 0,
-      held: statsGroup.find((s) => s.status === BookingStatus.HELD)?._count._all || 0,
-      cancelled: statsGroup.find((s) => s.status === BookingStatus.CANCELLED)?._count._all || 0,
-      completed: statsGroup.find((s) => s.status === BookingStatus.COMPLETED)?._count._all || 0,
-      noShow: statsGroup.find((s) => s.status === BookingStatus.NO_SHOW)?._count._all || 0,
+      confirmed:
+        statsGroup.find((s) => s.status === BookingStatus.CONFIRMED)?._count
+          ._all || 0,
+      held:
+        statsGroup.find((s) => s.status === BookingStatus.HELD)?._count._all ||
+        0,
+      cancelled:
+        statsGroup.find((s) => s.status === BookingStatus.CANCELLED)?._count
+          ._all || 0,
+      completed:
+        statsGroup.find((s) => s.status === BookingStatus.COMPLETED)?._count
+          ._all || 0,
+      noShow:
+        statsGroup.find((s) => s.status === BookingStatus.NO_SHOW)?._count
+          ._all || 0,
     };
 
     return NextResponse.json({
@@ -459,14 +472,16 @@ export async function GET(request: NextRequest) {
       data: bookings,
     });
   } catch (error: any) {
+    if (error instanceof HttpError) return handleError(error, "bookings GET");
     console.error("GET /api/bookings error:", error);
     return NextResponse.json(
       {
         status: "error",
         message: "حدث خطأ أثناء جلب قائمة الحجوزات",
-        error: process.env.NODE_ENV === "development" ? error.message : undefined,
+        error:
+          process.env.NODE_ENV === "development" ? error.message : undefined,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

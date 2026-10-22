@@ -46,20 +46,25 @@ interface ProviderItem {
   };
   services: ServiceItem[];
 }
-
+// تاريخ بالتوقيت المحلي (مش UTC) بصيغة YYYY-MM-DD
+const toYMD = (d: Date) =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 export default function BookingPage() {
   const [providers, setProviders] = useState<ProviderItem[]>([]);
   const [isLoadingProviders, setIsLoadingProviders] = useState(true);
 
   // Selection states
-  const [selectedProvider, setSelectedProvider] = useState<ProviderItem | null>(null);
-  const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
+  const [selectedProvider, setSelectedProvider] = useState<ProviderItem | null>(
+    null,
+  );
+  const [selectedService, setSelectedService] = useState<ServiceItem | null>(
+    null,
+  );
 
   // Date selection state (YYYY-MM-DD)
-  const [selectedDate, setSelectedDate] = useState<string>(() => {
-    const today = new Date();
-    return today.toISOString().split("T")[0];
-  });
+  const [selectedDate, setSelectedDate] = useState<string>(() =>
+    toYMD(new Date()),
+  );
 
   // Slots availability state
   const [slots, setSlots] = useState<IAvailabilitySlot[]>([]);
@@ -67,7 +72,9 @@ export default function BookingPage() {
   const [isAbsent, setIsAbsent] = useState(false);
   const [absenceReason, setAbsenceReason] = useState<string | null>(null);
   const [isWorkingDay, setIsWorkingDay] = useState(true);
-  const [selectedSlot, setSelectedSlot] = useState<IAvailabilitySlot | null>(null);
+  const [selectedSlot, setSelectedSlot] = useState<IAvailabilitySlot | null>(
+    null,
+  );
 
   // Client form inputs
   const [clientName, setClientName] = useState("");
@@ -111,10 +118,12 @@ export default function BookingPage() {
     setSelectedSlot(null);
     setSubmitError(null);
 
-    const serviceParam = selectedService ? `&serviceId=${selectedService.id}` : "";
+    const serviceParam = selectedService
+      ? `&serviceId=${selectedService.id}`
+      : "";
 
     fetch(
-      `/api/providers/availability?providerId=${selectedProvider.id}&date=${selectedDate}${serviceParam}`
+      `/api/providers/availability?providerId=${selectedProvider.id}&date=${selectedDate}${serviceParam}`,
     )
       .then((res) => res.json())
       .then((res) => {
@@ -138,7 +147,7 @@ export default function BookingPage() {
   const datesList = Array.from({ length: 14 }).map((_, i) => {
     const d = new Date();
     d.setDate(d.getDate() + i);
-    const dateStr = d.toISOString().split("T")[0];
+    const dateStr = toYMD(d);
     const dayName = d.toLocaleDateString("ar-EG", { weekday: "short" });
     const dayNum = d.toLocaleDateString("ar-EG", { day: "numeric" });
     const monthName = d.toLocaleDateString("ar-EG", { month: "short" });
@@ -152,7 +161,10 @@ export default function BookingPage() {
   if (depositType === "FULL") {
     depositAmount = servicePrice;
   } else if (depositType === "FIXED") {
-    depositAmount = Math.min(selectedProvider?.depositAmount || 0, servicePrice);
+    depositAmount = Math.min(
+      selectedProvider?.depositAmount || 0,
+      servicePrice,
+    );
   }
   const remainingAmount = Math.max(servicePrice - depositAmount, 0);
 
@@ -226,7 +238,9 @@ export default function BookingPage() {
       <div className="flex min-h-[60vh] items-center justify-center bg-canvas">
         <div className="flex flex-col items-center gap-3">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          <p className="text-body-md text-neutral-muted">جاري تجهيز جدول المواعيد...</p>
+          <p className="text-body-md text-neutral-muted">
+            جاري تجهيز جدول المواعيد...
+          </p>
         </div>
       </div>
     );
@@ -235,7 +249,10 @@ export default function BookingPage() {
   // Success view
   if (successBooking) {
     return (
-      <div className="min-h-screen bg-canvas py-12 px-4 sm:px-6 lg:px-8" dir="rtl">
+      <div
+        className="min-h-screen bg-canvas py-12 px-4 sm:px-6 lg:px-8"
+        dir="rtl"
+      >
         <div className="mx-auto max-w-2xl">
           <div className="rounded-[16px] border border-border-subtle bg-surface p-8 shadow-level3 text-center">
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-status-success/15 text-status-success mb-4">
@@ -245,7 +262,7 @@ export default function BookingPage() {
             <h2 className="text-headline-lg font-bold text-neutral-primary">
               {successBooking.status === "CONFIRMED"
                 ? "تم تأكيد موعدك بنجاح!"
-                : "تم حجز الموعد بنجاح وقفل الخانة مؤقتاً"}
+                : "تم حجز الموعد بنجاح، وبانتظار تأكيد صاحب الخدمة"}
             </h2>
             <p className="mt-2 text-body-md text-neutral-muted max-w-md mx-auto">
               رقم الحجز المرجعي:{" "}
@@ -257,7 +274,9 @@ export default function BookingPage() {
             {/* Receipt Summary Card */}
             <div className="mt-6 rounded-2xl bg-canvas p-5 border border-border-subtle/80 text-right space-y-3">
               <div className="flex justify-between items-center border-b border-border-subtle/60 pb-3">
-                <span className="text-body-sm text-neutral-muted">مقدم الخدمة:</span>
+                <span className="text-body-sm text-neutral-muted">
+                  مقدم الخدمة:
+                </span>
                 <span className="font-semibold text-neutral-primary text-body-md">
                   {successBooking.provider.name}
                 </span>
@@ -269,7 +288,9 @@ export default function BookingPage() {
                 </span>
               </div>
               <div className="flex justify-between items-center border-b border-border-subtle/60 pb-3">
-                <span className="text-body-sm text-neutral-muted">الموعد المحدد:</span>
+                <span className="text-body-sm text-neutral-muted">
+                  الموعد المحدد:
+                </span>
                 <span className="font-semibold text-primary text-body-md tabular-nums">
                   {new Date(successBooking.startsAt).toLocaleString("ar-EG", {
                     dateStyle: "full",
@@ -278,19 +299,24 @@ export default function BookingPage() {
                 </span>
               </div>
               <div className="flex justify-between items-center border-b border-border-subtle/60 pb-3">
-                <span className="text-body-sm text-neutral-muted">مبلغ العربون المطلوب:</span>
+                <span className="text-body-sm text-neutral-muted">
+                  مبلغ العربون المطلوب:
+                </span>
                 <span className="font-bold text-headline-md text-primary tabular-nums">
-                  {successBooking.pricing.depositAmount.toLocaleString("ar-EG")} ج.م
+                  {successBooking.pricing.depositAmount.toLocaleString("ar-EG")}{" "}
+                  ج.م
                 </span>
               </div>
               <div className="flex justify-between items-center pt-1">
-                <span className="text-body-sm text-neutral-muted">طريقة السداد:</span>
+                <span className="text-body-sm text-neutral-muted">
+                  طريقة السداد:
+                </span>
                 <span className="font-medium text-neutral-primary text-body-md">
                   {successBooking.payment.method === "INSTAPAY"
                     ? "انستاباي (InstaPay)"
                     : successBooking.payment.method === "VODAFONE_CASH"
-                    ? "فودافون كاش"
-                    : successBooking.payment.method}
+                      ? "فودافون كاش"
+                      : successBooking.payment.method}
                 </span>
               </div>
             </div>
@@ -303,8 +329,11 @@ export default function BookingPage() {
                 </h4>
                 <p className="text-body-sm text-neutral-primary leading-relaxed">
                   يرجى تحويل مبلغ{" "}
-                  <strong>{successBooking.pricing.depositAmount} ج.م</strong> عبر{" "}
-                  {successBooking.payment.method === "INSTAPAY" ? "InstaPay" : "المحفظة"}{" "}
+                  <strong>{successBooking.pricing.depositAmount} ج.م</strong>{" "}
+                  عبر{" "}
+                  {successBooking.payment.method === "INSTAPAY"
+                    ? "InstaPay"
+                    : "المحفظة"}{" "}
                   إلى الرقم:{" "}
                   <strong className="font-mono text-primary">
                     {successBooking.provider.phone || "01012345678"}
@@ -352,7 +381,8 @@ export default function BookingPage() {
             اختر موعدك وثبّت حجزك مع أجندة
           </h1>
           <p className="mt-2 text-body-md text-neutral-muted max-w-2xl">
-            مواعيد دقيقة، بدون انتظار، مع تأكيد فوري عبر نظام تحصيل العربون الذكي.
+            مواعيد دقيقة، بدون انتظار، مع تأكيد فوري عبر نظام تحصيل العربون
+            الذكي.
           </p>
         </div>
 
@@ -378,10 +408,13 @@ export default function BookingPage() {
                   <select
                     value={selectedProvider?.id || ""}
                     onChange={(e) => {
-                      const p = providers.find((prov) => prov.id === e.target.value);
+                      const p = providers.find(
+                        (prov) => prov.id === e.target.value,
+                      );
                       if (p) {
                         setSelectedProvider(p);
-                        if (p.services.length > 0) setSelectedService(p.services[0]);
+                        if (p.services.length > 0)
+                          setSelectedService(p.services[0]);
                       }
                     }}
                     className="w-full rounded-input border border-border-subtle bg-surface p-2.5 text-body-md text-neutral-primary focus:border-primary focus:outline-none"
@@ -445,7 +478,7 @@ export default function BookingPage() {
                 <input
                   type="date"
                   value={selectedDate}
-                  min={new Date().toISOString().split("T")[0]}
+                  min={toYMD(new Date())}
                   onChange={(e) => setSelectedDate(e.target.value)}
                   className="rounded-lg border border-border-subtle bg-canvas px-3 py-1.5 text-body-sm text-neutral-primary focus:border-primary focus:outline-none"
                 />
@@ -468,7 +501,9 @@ export default function BookingPage() {
                     >
                       <span
                         className={`text-body-sm ${
-                          isSelected ? "text-white font-medium" : "text-neutral-muted"
+                          isSelected
+                            ? "text-white font-medium"
+                            : "text-neutral-muted"
                         }`}
                       >
                         {item.dayName}
@@ -725,9 +760,7 @@ export default function BookingPage() {
                 </>
               ) : selectedSlot ? (
                 <>
-                  <span>
-                    تأكيد حجز الموعد ({selectedSlot.time})
-                  </span>
+                  <span>تأكيد حجز الموعد ({selectedSlot.time})</span>
                   <ChevronLeft className="h-5 w-5" />
                 </>
               ) : (
