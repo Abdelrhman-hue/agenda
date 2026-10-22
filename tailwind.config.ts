@@ -3,11 +3,10 @@ import type { Config } from "tailwindcss";
 const config: Config = {
   darkMode: "class",
   content: [
-  "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-  "./components/**/*.{js,ts,jsx,tsx,mdx}",
-  "./app/**/*.{js,ts,jsx,tsx,mdx}",
-  "./src/**/*.{js,ts,jsx,tsx,mdx}", // تحسباً لو استخدمت src مستقبلاً
-],
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
   theme: {
     extend: {
       fontFamily: {
@@ -46,20 +45,6 @@ const config: Config = {
         level2: "0 4px 12px -2px rgba(8, 127, 106, 0.08), 0 2px 6px -1px rgba(23, 32, 30, 0.04)",
         level3: "0 10px 24px -4px rgba(23, 32, 30, 0.08), 0 4px 8px -2px rgba(23, 32, 30, 0.04)",
         level4: "0 20px 40px -8px rgba(23, 32, 30, 0.16)",
-      },
-      // تخزين جميع مقاييس الطباعة كمتغيرات (Font Scale)
-      fontSize: {
-        "display-lg": ["40px", { lineHeight: "54px", fontWeight: "700" }],
-        "display-lg-mobile": ["30px", { lineHeight: "42px", fontWeight: "700" }],
-        "headline-lg": ["28px", { lineHeight: "40px", fontWeight: "600" }],
-        "headline-md": ["20px", { lineHeight: "30px", fontWeight: "600" }],
-        "title-lg": ["18px", { lineHeight: "28px", fontWeight: "600" }],
-        "title-md": ["16px", { lineHeight: "26px", fontWeight: "500" }],
-        "body-lg": ["16px", { lineHeight: "26px", fontWeight: "400" }],
-        "body-md": ["14px", { lineHeight: "24px", fontWeight: "400" }],
-        "body-sm": ["12px", { lineHeight: "20px", fontWeight: "400" }],
-        "label-lg": ["14px", { lineHeight: "22px", fontWeight: "600" }],
-        "label-md": ["12px", { lineHeight: "18px", fontWeight: "500" }],
       },
     },
   },
