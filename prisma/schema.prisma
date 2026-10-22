@@ -7,160 +7,6 @@ datasource db {
   provider = "postgresql"
 }
 
-model User {
-  id            String    @id @default(cuid())
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?  
-  phone         String?   @unique
-  password      String?
-  name          String?
-  role          Role      @default(CLIENT)
-  createdAt     DateTime  @default(now())
-
-  bookings        Booking[]
-  providerProfile ProviderProfile?
-
-  accounts Account[]
-  sessions Session[]
-}
-
-model Account {
-  id                String  @id @default(cuid())
-  userId            String  @map("user_id")
-  type              String
-  provider          String
-  providerAccountId String  @map("provider_account_id")
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String? @db.Text
-  session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
-  @@map("accounts")
-}
-
-model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique @map("session_token")
-  userId       String   @map("user_id")
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("sessions")
-}
-
-model VerificationToken {
-  identifier String   @id @default(cuid())
-  token      String
-  email      String
-  expires    DateTime
-
-  @@unique([email, token])
-  @@map("verification_tokens")
-}
-
-model ProviderProfile {
-  id            String           @id @default(cuid())
-  userId        String           @unique
-  slug          String           @unique
-  category      ProviderCategory
-  bio           String?
-  onboardingCompleted Boolean          @default(false)
-  address       String?
-  locationUrl   String?
-  whatsappNumber String?               @unique
-  depositType   DepositType      @default(FIXED)
-  depositAmount Int              @default(0)
-  bufferMinutes Int              @default(15)
-  timezone      String           @default("Africa/Cairo")
-  createdAt     DateTime         @default(now())
-
-  bookings     Booking[]
-  user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  services     Service[]
-  workingHours WorkingHours[]
-  absences     ProviderAbsence[]
-}
-
-model ProviderAbsence {
-  id         String          @id @default(cuid())
-  providerId String
-  date       DateTime        @db.Date
-  reason     String?
-  provider   ProviderProfile @relation(fields: [providerId], references: [id], onDelete: Cascade)
-
-  @@unique([providerId, date])
-}
-
-model WorkingHours {
-  id         String          @id @default(cuid())
-  providerId String
-  dayOfWeek  Int
-  startTime  String
-  endTime    String
-  provider   ProviderProfile @relation(fields: [providerId], references: [id], onDelete: Cascade)
-
-  @@unique([providerId, dayOfWeek, startTime])
-}
-
-model Service {
-  id              String          @id @default(cuid())
-  providerId      String
-  name            String
-  durationMinutes Int
-  price           Int
-  mode            ServiceMode     @default(ONLINE)
-  meetingUrl      String?
-  depositAmount   Int?
-  requiresAddress Boolean         @default(false)
-  isActive        Boolean         @default(true)
-  bookings        Booking[]
-  provider        ProviderProfile @relation(fields: [providerId], references: [id], onDelete: Cascade)
-}
-
-model Booking {
-  id                 String        @id @default(cuid())
-  providerId         String
-  serviceId          String
-  clientId           String?
-  clientName         String?
-  clientPhone        String?
-  startsAt           DateTime
-  endsAt             DateTime
-  status             BookingStatus @default(HELD)
-  holdExpiresAt      DateTime?
-  address            String?
-  clientNotes         String?
-  cancellationReason String?
-  source             BookingSource  @default(WEB)
-  reminderSentAt     DateTime?
-  createdAt          DateTime      @default(now())
-
-  client   User?           @relation(fields: [clientId], references: [id])
-  provider ProviderProfile @relation(fields: [providerId], references: [id], onDelete: Cascade)
-  service  Service         @relation(fields: [serviceId], references: [id])
-  payment  Payment?
-
-  @@index([providerId, startsAt])
-  @@index([providerId, status])
-}
-
-model Payment {
-  id         String        @id @default(cuid())
-  bookingId  String        @unique
-  amount     Int
-  method     PaymentMethod @default(INSTAPAY)
-  status     PaymentStatus @default(PENDING)
-  gatewayRef String?
-  createdAt  DateTime      @default(now())
-  booking    Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
-}
 
 enum Role {
   ADMIN
@@ -174,7 +20,6 @@ enum ProviderCategory {
   GYM
   CONSULTANT
   BEAUTY
-  CRAFTSMAN
   OTHER
 }
 
@@ -182,17 +27,6 @@ enum DepositType {
   NONE
   FIXED
   FULL
-}
-
-enum ServiceMode {
-  ONSITE
-  ONLINE
-  HOME_VISIT
-}
-
-enum BookingSource {
-  WEB
-  WHATSAPP
 }
 
 enum BookingStatus {
@@ -211,9 +45,86 @@ enum PaymentStatus {
   REFUNDED
 }
 
-enum PaymentMethod {
-  INSTAPAY
-  VODAFONE_CASH
-  CARD
-  CASH
+
+model User {
+  id        String   @id @default(cuid())
+  email     String?  @unique
+  phone     String?  @unique
+  name      String?
+  role      Role
+  createdAt DateTime @default(now())
+
+  providerProfile ProviderProfile?
+  bookings        Booking[]
+}
+
+model ProviderProfile {
+  id            String           @id @default(cuid())
+  userId        String           @unique
+  user          User             @relation(fields: [userId], references: [id])
+  slug          String           @unique
+  category      ProviderCategory
+  bio           String?
+  depositType   DepositType      @default(FIXED)
+  depositAmount Int              @default(0) // بالقرش أو الجنيه حسب اختيارك
+  bufferMinutes Int              @default(15)
+  timezone      String           @default("Africa/Cairo")
+  createdAt     DateTime         @default(now())
+
+  services     Service[]
+  workingHours WorkingHours[]
+  bookings     Booking[]
+}
+
+model WorkingHours {
+  id         String          @id @default(cuid())
+  providerId String
+  provider   ProviderProfile @relation(fields: [providerId], references: [id])
+  dayOfWeek  Int // 0 = الأحد ... 6 = السبت
+  startTime  String // "09:00"
+  endTime    String // "17:00"
+
+  @@unique([providerId, dayOfWeek, startTime])
+}
+
+model Service {
+  id              String          @id @default(cuid())
+  providerId      String
+  provider        ProviderProfile @relation(fields: [providerId], references: [id])
+  name            String
+  durationMinutes Int
+  price           Int
+  isActive        Boolean         @default(true)
+
+  bookings Booking[]
+}
+
+model Booking {
+  id            String          @id @default(cuid())
+  providerId    String
+  provider      ProviderProfile @relation(fields: [providerId], references: [id])
+  serviceId     String
+  service       Service         @relation(fields: [serviceId], references: [id])
+  clientId      String
+  client        User            @relation(fields: [clientId], references: [id])
+  startsAt      DateTime
+  endsAt        DateTime
+  status        BookingStatus   @default(HELD)
+  holdExpiresAt DateTime?
+  createdAt     DateTime        @default(now())
+
+  payment Payment?
+
+  @@unique([providerId, startsAt]) // يمنع الحجز المزدوج
+  @@index([providerId, startsAt])
+}
+
+model Payment {
+  id          String        @id @default(cuid())
+  bookingId   String        @unique
+  booking     Booking       @relation(fields: [bookingId], references: [id])
+  amount      Int
+  status      PaymentStatus @default(PENDING)
+  gatewayRef  String?
+  createdAt   DateTime      @default(now())
 }
