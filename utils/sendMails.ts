@@ -1,16 +1,25 @@
-import { Resend } from "resend"
-export const sendVerficationTokenMails = async (email: string, token: string) => {
-
+import { Resend } from "resend";
+import nodemailer from "nodemailer";
+export const sendVerficationTokenMails = async (
+  email: string,
+  token: string,
+) => {
   // handle link will go if he click on verify in gmail
-  const link = `http://localhost:3000/auth/verify?token=${token}`
+  const link = `http://localhost:3000/auth/verify?token=${token}`;
   // send email
-  const resend = new Resend(process.env.RESEND_API_KEY);
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.GMAIL_USER,
+      pass: process.env.GMAIL_APP_PASSWORD,
+    },
+  });
 
   try {
-    await resend.emails.send({
-      from: 'onboarding@resend.dev',
+    await transporter.sendMail({
+      from: `"Agendah" <${process.env.GMAIL_USER}>`,
       to: email,
-      subject: 'Verify Your Account',
+      subject: "Verify Your Account",
       html: `
             <!DOCTYPE html>
 <html lang="ar" dir="rtl">
@@ -385,10 +394,7 @@ export const sendVerficationTokenMails = async (email: string, token: string) =>
 </html>
          `,
     });
-
-
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-
-}
+};

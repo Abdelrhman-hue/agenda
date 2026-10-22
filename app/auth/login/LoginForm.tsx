@@ -1,11 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import LoginInput from "./LoginInput";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, AtSign, Lock, Loader2, AlertCircle, Check } from "lucide-react";
+import {
+  ArrowLeft,
+  AtSign,
+  Lock,
+  Loader2,
+  AlertCircle,
+  Check,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
@@ -48,19 +55,19 @@ export default function LoginForm() {
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           email,
-          password
-        })
-      })
+          password,
+        }),
+      });
 
       const data = await res.json();
 
       if (!res.ok) {
         setServerError(
-          data.message || "خطأ في البريد الإلكتروني أو كلمة المرور."
+          data.message || "خطأ في البريد الإلكتروني أو كلمة المرور.",
         );
         return;
       }
@@ -71,25 +78,28 @@ export default function LoginForm() {
       }
 
       if (data.code === "LOGIN_SUCCESS") {
-        setServerSuccess(
-          "تم تسجيل الدخول بنجاح! جاري التوجيه إلى لوحة التحكم..."
-        );
+        setServerSuccess("تم تسجيل الدخول بنجاح! جاري التوجيه...");
 
+        // العميل يروح /home، وصاحب الخدمة /dashboard (والـ proxy يحوّله للـ onboarding لو لسه مخلّصش)
+        const target = data.data?.role === "CLIENT" ? "/home" : "/dashboard";
         setTimeout(() => {
-          router.push("/home");
-        }, 1800);
+          router.push(target);
+          router.refresh();
+        }, 1200);
       }
-
-
-
     } catch (err) {
-      console.log(err)
+      console.log(err);
       setServerError("تعذر الاتصال بالخادم. يرجى المحاولة مرة أخرى.");
     } finally {
       setIsSubmitting(false);
     }
   };
-
+  useEffect(() => {
+    return () => {
+      setServerError(null);
+      setServerSuccess(null);
+    };
+  }, []);
   return (
     <form onSubmit={handleSubmit} className="w-full space-y-4" dir="rtl">
       {serverError && (
@@ -135,7 +145,9 @@ export default function LoginForm() {
             onCheckedChange={(val) => setRememberMe(!!val)}
             className="size-4 rounded-xs border-border-subtle data-[state=checked]:bg-primary data-[state=checked]:border-primary"
           />
-          <span className="text-body-sm font-medium text-neutral-primary">تذكرني على هذا الجهاز</span>
+          <span className="text-body-sm font-medium text-neutral-primary">
+            تذكرني على هذا الجهاز
+          </span>
         </label>
 
         <Link

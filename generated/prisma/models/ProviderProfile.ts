@@ -629,10 +629,6 @@ export type EnumProviderCategoryFieldUpdateOperationsInput = {
   set?: $Enums.ProviderCategory
 }
 
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
-}
-
 export type EnumDepositTypeFieldUpdateOperationsInput = {
   set?: $Enums.DepositType
 }

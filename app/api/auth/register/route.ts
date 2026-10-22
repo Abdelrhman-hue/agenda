@@ -7,47 +7,48 @@ import bcrypt from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
 
 export const POST = async (request: NextRequest) => {
-   try {
+  try {
+    const body = (await request.json()) as TRegisterUser;
+    const { name, email, password, phone, accountType } = body;
 
-      const body = (await request.json()) as TRegisterUser
+    const isValid = registerSchema.safeParse({ name, email, password, phone, accountType });
+    if (!isValid.success) {
+      return NextResponse.json(
+        { message: isValid.error.issues[0].message, status: "fail" },
+        { status: 400 }
+      );
+    }
 
-      const { name, email, password, phone, accountType } = body
+    // إيميل أو تليفون مسجّل قبل كده
+    const existing = await prisma.user.findFirst({
+      where: { OR: [{ email }, ...(phone ? [{ phone }] : [])] },
+      select: { email: true },
+    });
+    if (existing) {
+      const message =
+        existing.email === email ? "البريد الإلكتروني مسجل بالفعل" : "رقم الهاتف مسجل بالفعل";
+      return NextResponse.json({ message, status: "fail" }, { status: 409 });
+    }
 
-      // validation check
-      const isValid = registerSchema.safeParse({ name, email, password, phone, accountType })
-      if (!isValid.success) {
-         return NextResponse.json({ message: isValid.error.issues[0].message, status: "fail" }, { status: 400 })
-      }
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-      // CHECK USER EXISTED
-      const isUserExist = await prisma.user.findUnique({ where: { email } })
-      if (isUserExist) {
-         return NextResponse.json({ message: "الحساب موجود بالفعل", status: "fail" }, { status: 409 }) // conflict
-      }
+    await prisma.user.create({
+      data: { name, email, password: hashedPassword, role: accountType, phone: phone || null },
+    });
 
-      // hashing password
-      const hashedPassword = await bcrypt.hash(password, 10)
+    const verificationToken = await generateVerificationToken(email);
+    await sendVerficationTokenMails(verificationToken.email, verificationToken.token);
 
-      //  register user
-      await prisma.user.create({
-         data: {
-            name,
-            email,
-            password: hashedPassword,
-            role: accountType,
-            phone,
-         }
-      })
-
-      const verificationToken = await generateVerificationToken(email)
-      await sendVerficationTokenMails(verificationToken.email, verificationToken.token)
-
-      
-
-      return NextResponse.json({ message: "تم إرسال رابط التحقق إلى بريدك الإلكتروني. يرجى التحقق من صندوق الوارد.", status: "success", data: { name } }, { status: 201 })
-
-   } catch (error) {
-      console.log(error)
-      return NextResponse.json({ messgae: "حدث خطأ فى السيرفر", status: "error" }, { status: 500 })
-   }
+    return NextResponse.json(
+      {
+        message: "تم إرسال رابط التحقق إلى بريدك الإلكتروني. يرجى التحقق من صندوق الوارد.",
+        status: "success",
+        data: { name },
+      },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.log(error);
+    return NextResponse.json({ message: "حدث خطأ فى السيرفر", status: "error" }, { status: 500 });
+  }
 };

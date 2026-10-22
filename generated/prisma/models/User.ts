@@ -34,6 +34,7 @@ export type UserMinAggregateOutputType = {
   name: string | null
   role: $Enums.Role | null
   createdAt: Date | null
+  roleChosen: boolean | null
 }
 
 export type UserMaxAggregateOutputType = {
@@ -46,6 +47,7 @@ export type UserMaxAggregateOutputType = {
   name: string | null
   role: $Enums.Role | null
   createdAt: Date | null
+  roleChosen: boolean | null
 }
 
 export type UserCountAggregateOutputType = {
@@ -58,6 +60,7 @@ export type UserCountAggregateOutputType = {
   name: number
   role: number
   createdAt: number
+  roleChosen: number
   _all: number
 }
 
@@ -72,6 +75,7 @@ export type UserMinAggregateInputType = {
   name?: true
   role?: true
   createdAt?: true
+  roleChosen?: true
 }
 
 export type UserMaxAggregateInputType = {
@@ -84,6 +88,7 @@ export type UserMaxAggregateInputType = {
   name?: true
   role?: true
   createdAt?: true
+  roleChosen?: true
 }
 
 export type UserCountAggregateInputType = {
@@ -96,6 +101,7 @@ export type UserCountAggregateInputType = {
   name?: true
   role?: true
   createdAt?: true
+  roleChosen?: true
   _all?: true
 }
 
@@ -181,6 +187,7 @@ export type UserGroupByOutputType = {
   name: string | null
   role: $Enums.Role
   createdAt: Date
+  roleChosen: boolean
   _count: UserCountAggregateOutputType | null
   _min: UserMinAggregateOutputType | null
   _max: UserMaxAggregateOutputType | null
@@ -214,6 +221,7 @@ export type UserWhereInput = {
   name?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  roleChosen?: Prisma.BoolFilter<"User"> | boolean
   bookings?: Prisma.BookingListRelationFilter
   providerProfile?: Prisma.XOR<Prisma.ProviderProfileNullableScalarRelationFilter, Prisma.ProviderProfileWhereInput> | null
   accounts?: Prisma.AccountListRelationFilter
@@ -230,6 +238,7 @@ export type UserOrderByWithRelationInput = {
   name?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  roleChosen?: Prisma.SortOrder
   bookings?: Prisma.BookingOrderByRelationAggregateInput
   providerProfile?: Prisma.ProviderProfileOrderByWithRelationInput
   accounts?: Prisma.AccountOrderByRelationAggregateInput
@@ -249,6 +258,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  roleChosen?: Prisma.BoolFilter<"User"> | boolean
   bookings?: Prisma.BookingListRelationFilter
   providerProfile?: Prisma.XOR<Prisma.ProviderProfileNullableScalarRelationFilter, Prisma.ProviderProfileWhereInput> | null
   accounts?: Prisma.AccountListRelationFilter
@@ -265,6 +275,7 @@ export type UserOrderByWithAggregationInput = {
   name?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  roleChosen?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
   _min?: Prisma.UserMinOrderByAggregateInput
@@ -283,6 +294,7 @@ export type UserScalarWhereWithAggregatesInput = {
   name?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   role?: Prisma.EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
+  roleChosen?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
 }
 
 export type UserCreateInput = {
@@ -295,6 +307,7 @@ export type UserCreateInput = {
   name?: string | null
   role?: $Enums.Role
   createdAt?: Date | string
+  roleChosen?: boolean
   bookings?: Prisma.BookingCreateNestedManyWithoutClientInput
   providerProfile?: Prisma.ProviderProfileCreateNestedOneWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
@@ -311,6 +324,7 @@ export type UserUncheckedCreateInput = {
   name?: string | null
   role?: $Enums.Role
   createdAt?: Date | string
+  roleChosen?: boolean
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutClientInput
   providerProfile?: Prisma.ProviderProfileUncheckedCreateNestedOneWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
@@ -327,6 +341,7 @@ export type UserUpdateInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  roleChosen?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bookings?: Prisma.BookingUpdateManyWithoutClientNestedInput
   providerProfile?: Prisma.ProviderProfileUpdateOneWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
@@ -343,6 +358,7 @@ export type UserUncheckedUpdateInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  roleChosen?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutClientNestedInput
   providerProfile?: Prisma.ProviderProfileUncheckedUpdateOneWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
@@ -359,6 +375,7 @@ export type UserCreateManyInput = {
   name?: string | null
   role?: $Enums.Role
   createdAt?: Date | string
+  roleChosen?: boolean
 }
 
 export type UserUpdateManyMutationInput = {
@@ -371,6 +388,7 @@ export type UserUpdateManyMutationInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  roleChosen?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type UserUncheckedUpdateManyInput = {
@@ -383,6 +401,7 @@ export type UserUncheckedUpdateManyInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  roleChosen?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type UserCountOrderByAggregateInput = {
@@ -395,6 +414,7 @@ export type UserCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   role?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  roleChosen?: Prisma.SortOrder
 }
 
 export type UserMaxOrderByAggregateInput = {
@@ -407,6 +427,7 @@ export type UserMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   role?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  roleChosen?: Prisma.SortOrder
 }
 
 export type UserMinOrderByAggregateInput = {
@@ -419,6 +440,7 @@ export type UserMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   role?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  roleChosen?: Prisma.SortOrder
 }
 
 export type UserScalarRelationFilter = {
@@ -449,6 +471,10 @@ export type EnumRoleFieldUpdateOperationsInput = {
 
 export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
+}
+
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
 }
 
 export type UserCreateNestedOneWithoutAccountsInput = {
@@ -519,6 +545,7 @@ export type UserCreateWithoutAccountsInput = {
   name?: string | null
   role?: $Enums.Role
   createdAt?: Date | string
+  roleChosen?: boolean
   bookings?: Prisma.BookingCreateNestedManyWithoutClientInput
   providerProfile?: Prisma.ProviderProfileCreateNestedOneWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -534,6 +561,7 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   name?: string | null
   role?: $Enums.Role
   createdAt?: Date | string
+  roleChosen?: boolean
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutClientInput
   providerProfile?: Prisma.ProviderProfileUncheckedCreateNestedOneWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -565,6 +593,7 @@ export type UserUpdateWithoutAccountsInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  roleChosen?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bookings?: Prisma.BookingUpdateManyWithoutClientNestedInput
   providerProfile?: Prisma.ProviderProfileUpdateOneWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
@@ -580,6 +609,7 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  roleChosen?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutClientNestedInput
   providerProfile?: Prisma.ProviderProfileUncheckedUpdateOneWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -595,6 +625,7 @@ export type UserCreateWithoutSessionsInput = {
   name?: string | null
   role?: $Enums.Role
   createdAt?: Date | string
+  roleChosen?: boolean
   bookings?: Prisma.BookingCreateNestedManyWithoutClientInput
   providerProfile?: Prisma.ProviderProfileCreateNestedOneWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
@@ -610,6 +641,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   name?: string | null
   role?: $Enums.Role
   createdAt?: Date | string
+  roleChosen?: boolean
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutClientInput
   providerProfile?: Prisma.ProviderProfileUncheckedCreateNestedOneWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
@@ -641,6 +673,7 @@ export type UserUpdateWithoutSessionsInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  roleChosen?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bookings?: Prisma.BookingUpdateManyWithoutClientNestedInput
   providerProfile?: Prisma.ProviderProfileUpdateOneWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
@@ -656,6 +689,7 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  roleChosen?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutClientNestedInput
   providerProfile?: Prisma.ProviderProfileUncheckedUpdateOneWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
@@ -671,6 +705,7 @@ export type UserCreateWithoutProviderProfileInput = {
   name?: string | null
   role?: $Enums.Role
   createdAt?: Date | string
+  roleChosen?: boolean
   bookings?: Prisma.BookingCreateNestedManyWithoutClientInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -686,6 +721,7 @@ export type UserUncheckedCreateWithoutProviderProfileInput = {
   name?: string | null
   role?: $Enums.Role
   createdAt?: Date | string
+  roleChosen?: boolean
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutClientInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -717,6 +753,7 @@ export type UserUpdateWithoutProviderProfileInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  roleChosen?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bookings?: Prisma.BookingUpdateManyWithoutClientNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
@@ -732,6 +769,7 @@ export type UserUncheckedUpdateWithoutProviderProfileInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  roleChosen?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutClientNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -747,6 +785,7 @@ export type UserCreateWithoutBookingsInput = {
   name?: string | null
   role?: $Enums.Role
   createdAt?: Date | string
+  roleChosen?: boolean
   providerProfile?: Prisma.ProviderProfileCreateNestedOneWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -762,6 +801,7 @@ export type UserUncheckedCreateWithoutBookingsInput = {
   name?: string | null
   role?: $Enums.Role
   createdAt?: Date | string
+  roleChosen?: boolean
   providerProfile?: Prisma.ProviderProfileUncheckedCreateNestedOneWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -793,6 +833,7 @@ export type UserUpdateWithoutBookingsInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  roleChosen?: Prisma.BoolFieldUpdateOperationsInput | boolean
   providerProfile?: Prisma.ProviderProfileUpdateOneWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
@@ -808,6 +849,7 @@ export type UserUncheckedUpdateWithoutBookingsInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  roleChosen?: Prisma.BoolFieldUpdateOperationsInput | boolean
   providerProfile?: Prisma.ProviderProfileUncheckedUpdateOneWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -872,6 +914,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   name?: boolean
   role?: boolean
   createdAt?: boolean
+  roleChosen?: boolean
   bookings?: boolean | Prisma.User$bookingsArgs<ExtArgs>
   providerProfile?: boolean | Prisma.User$providerProfileArgs<ExtArgs>
   accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>
@@ -889,6 +932,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   name?: boolean
   role?: boolean
   createdAt?: boolean
+  roleChosen?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -901,6 +945,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   name?: boolean
   role?: boolean
   createdAt?: boolean
+  roleChosen?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectScalar = {
@@ -913,9 +958,10 @@ export type UserSelectScalar = {
   name?: boolean
   role?: boolean
   createdAt?: boolean
+  roleChosen?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "emailVerified" | "image" | "phone" | "password" | "name" | "role" | "createdAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "emailVerified" | "image" | "phone" | "password" | "name" | "role" | "createdAt" | "roleChosen", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   bookings?: boolean | Prisma.User$bookingsArgs<ExtArgs>
   providerProfile?: boolean | Prisma.User$providerProfileArgs<ExtArgs>
@@ -944,6 +990,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     name: string | null
     role: $Enums.Role
     createdAt: Date
+    roleChosen: boolean
   }, ExtArgs["result"]["user"]>
   composites: {}
 }
@@ -1380,6 +1427,7 @@ export interface UserFieldRefs {
   readonly name: Prisma.FieldRef<"User", 'String'>
   readonly role: Prisma.FieldRef<"User", 'Role'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
+  readonly roleChosen: Prisma.FieldRef<"User", 'Boolean'>
 }
     
 

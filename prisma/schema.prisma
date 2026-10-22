@@ -17,7 +17,7 @@ model User {
   name          String?
   role          Role      @default(CLIENT)
   createdAt     DateTime  @default(now())
-
+  roleChosen Boolean @default(true)
   bookings        Booking[]
   providerProfile ProviderProfile?
 

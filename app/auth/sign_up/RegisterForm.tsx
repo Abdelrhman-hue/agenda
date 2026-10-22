@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Check,
   Eye,
@@ -25,13 +25,10 @@ import { Separator } from "@/components/ui/separator";
 import { RegisterInput } from "./RegisterInput";
 import Link from "next/link";
 import GoogleProvider from "../GoogleProvider";
-import { useRouter } from "next/navigation";
-
 
 type AccountType = "PROVIDER" | "CLIENT";
 
 export function RegisterForm() {
-  const router = useRouter();
   const [accountType, setAccountType] = useState<AccountType>("PROVIDER");
 
   // Form State
@@ -47,7 +44,14 @@ export function RegisterForm() {
   const [serverError, setServerError] = useState<string | null>(null);
   const [serverSuccess, setServerSuccess] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [registeredEmail, setRegisteredEmail] = useState<string | null>(null);
 
+  useEffect(() => {
+    return () => {
+      setServerError(null);
+      setServerSuccess(null);
+    };
+  }, []);
   // Password strength calculations
   const hasMinLength = password.length >= 8;
   const hasSpecialOrNum = /[0-9!@#$%^&*(),.?":{}|<>]/.test(password);
@@ -63,7 +67,8 @@ export function RegisterForm() {
     if (!cleanPhone) {
       newErrors.phone = "رقم الهاتف المحمول مطلوب.";
     } else if (!/^01[0125]\d{8}$/.test(cleanPhone)) {
-      newErrors.phone = "أدخل رقم هاتف مصري صحيح مكون من 11 رقمًا (مثال: 01012345678).";
+      newErrors.phone =
+        "أدخل رقم هاتف مصري صحيح مكون من 11 رقمًا (مثال: 01012345678).";
     }
 
     if (!email.trim()) {
@@ -79,7 +84,8 @@ export function RegisterForm() {
     }
 
     if (!termsAccepted) {
-      newErrors.terms = "يجب الموافقة على شروط الاستخدام وسياسة الخصوصية للاستمرار.";
+      newErrors.terms =
+        "يجب الموافقة على شروط الاستخدام وسياسة الخصوصية للاستمرار.";
     }
 
     setErrors(newErrors);
@@ -87,7 +93,6 @@ export function RegisterForm() {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-
     e.preventDefault();
 
     setServerError(null);
@@ -120,28 +125,50 @@ export function RegisterForm() {
         setServerError(data.message || "حدث خطأ أثناء التسجيل.");
         return;
       }
-
-
-      setServerSuccess(data.message);
-
-      setTimeout(() => {
-        router.push("/auth/login?registered=true");
-      }, 1500);
-
+      setRegisteredEmail(email.trim());
     } catch (error) {
-      console.log(error)
+      console.log(error);
       setServerError(
-        "تعذر الاتصال بالخادم. يرجى التأكد من اتصال الإنترنت والمحاولة مجددًا."
+        "تعذر الاتصال بالخادم. يرجى التأكد من اتصال الإنترنت والمحاولة مجددًا.",
       );
     } finally {
       setIsSubmitting(false);
     }
-
-
   };
-
+  if (registeredEmail) {
+    return (
+      <div
+        dir="rtl"
+        className="w-full space-y-4 rounded-[16px] bg-surface p-6 text-center shadow-level1 sm:p-8"
+      >
+        <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-[#DDF4EE] text-[#16855B]">
+          <Mail className="size-7" />
+        </div>
+        <h2 className="text-headline-md font-bold text-neutral-primary">
+          افتح بريدك لتفعيل الحساب
+        </h2>
+        <p className="text-body-md text-neutral-muted">
+          أرسلنا رابط التفعيل إلى{" "}
+          <strong dir="ltr" className="text-neutral-primary">
+            {registeredEmail}
+          </strong>
+          . اضغط على الرابط في الرسالة، وبعدها سجّل دخولك. لو الرسالة ماوصلتش
+          شوف مجلد الـ Spam.
+        </p>
+        <Link
+          href="/auth/login"
+          className="inline-flex h-11 items-center justify-center rounded-[10px] bg-[#087F6A] px-6 text-label-lg font-semibold text-white hover:bg-[#066857]"
+        >
+          الذهاب لتسجيل الدخول
+        </Link>
+      </div>
+    );
+  }
   return (
-    <div dir="rtl" className="w-full bg-surface p-5 sm:p-7 rounded-[16px] shadow-level1 text-right">
+    <div
+      dir="rtl"
+      className="w-full bg-surface p-5 sm:p-7 rounded-[16px] shadow-level1 text-right"
+    >
       {/* Header */}
       <div className="mb-6">
         <Badge className="rounded-full bg-primary-light text-primary-dark font-medium text-label-md px-3 py-1 border-0 inline-flex items-center gap-1.5">
@@ -192,24 +219,32 @@ export function RegisterForm() {
                 flex cursor-pointer items-center gap-3
                 rounded-[10px] border p-3.5
                 transition-all duration-200
-                ${accountType === "PROVIDER"
-                  ? "border-primary bg-[#EAF6F3] shadow-level1"
-                  : "border-border-subtle bg-surface hover:border-primary/50"
+                ${
+                  accountType === "PROVIDER"
+                    ? "border-primary bg-[#EAF6F3] shadow-level1"
+                    : "border-border-subtle bg-surface hover:border-primary/50"
                 }
               `}
             >
-              <RadioGroupItem id="type-business" value="PROVIDER" className="sr-only" />
+              <RadioGroupItem
+                id="type-business"
+                value="PROVIDER"
+                className="sr-only"
+              />
 
               <div
                 className={`
                   flex size-5 shrink-0 items-center justify-center rounded-full border transition-colors
-                  ${accountType === "PROVIDER"
-                    ? "border-primary bg-primary"
-                    : "border-[#AAB8B4] bg-surface"
+                  ${
+                    accountType === "PROVIDER"
+                      ? "border-primary bg-primary"
+                      : "border-[#AAB8B4] bg-surface"
                   }
                 `}
               >
-                {accountType === "PROVIDER" && <Check className="size-3 text-white" strokeWidth={3} />}
+                {accountType === "PROVIDER" && (
+                  <Check className="size-3 text-white" strokeWidth={3} />
+                )}
               </div>
 
               <div
@@ -222,8 +257,12 @@ export function RegisterForm() {
               </div>
 
               <div className="min-w-0 flex-1">
-                <p className="text-body-md font-semibold text-neutral-primary">صاحب خدمة أو نشاط</p>
-                <p className="text-body-sm text-neutral-muted">عيادة، صالون، أكاديمية، مستقل</p>
+                <p className="text-body-md font-semibold text-neutral-primary">
+                  صاحب خدمة أو نشاط
+                </p>
+                <p className="text-body-sm text-neutral-muted">
+                  عيادة، صالون، أكاديمية، مستقل
+                </p>
               </div>
             </Label>
 
@@ -234,24 +273,32 @@ export function RegisterForm() {
                 flex cursor-pointer items-center gap-3
                 rounded-[10px] border p-3.5
                 transition-all duration-200
-                ${accountType === "CLIENT"
-                  ? "border-primary bg-[#EAF6F3] shadow-level1"
-                  : "border-border-subtle bg-surface hover:border-primary/50"
+                ${
+                  accountType === "CLIENT"
+                    ? "border-primary bg-[#EAF6F3] shadow-level1"
+                    : "border-border-subtle bg-surface hover:border-primary/50"
                 }
               `}
             >
-              <RadioGroupItem id="type-client" value="CLIENT" className="sr-only" />
+              <RadioGroupItem
+                id="type-client"
+                value="CLIENT"
+                className="sr-only"
+              />
 
               <div
                 className={`
                   flex size-5 shrink-0 items-center justify-center rounded-full border transition-colors
-                  ${accountType === "CLIENT"
-                    ? "border-primary bg-primary"
-                    : "border-[#AAB8B4] bg-surface"
+                  ${
+                    accountType === "CLIENT"
+                      ? "border-primary bg-primary"
+                      : "border-[#AAB8B4] bg-surface"
                   }
                 `}
               >
-                {accountType === "CLIENT" && <Check className="size-3 text-white" strokeWidth={3} />}
+                {accountType === "CLIENT" && (
+                  <Check className="size-3 text-white" strokeWidth={3} />
+                )}
               </div>
 
               <div
@@ -264,8 +311,12 @@ export function RegisterForm() {
               </div>
 
               <div className="min-w-0 flex-1">
-                <p className="text-body-md font-semibold text-neutral-primary">عميل مستفيد</p>
-                <p className="text-body-sm text-neutral-muted">لحجز ومتابعة مواعيدك</p>
+                <p className="text-body-md font-semibold text-neutral-primary">
+                  عميل مستفيد
+                </p>
+                <p className="text-body-sm text-neutral-muted">
+                  لحجز ومتابعة مواعيدك
+                </p>
               </div>
             </Label>
           </RadioGroup>
@@ -294,7 +345,9 @@ export function RegisterForm() {
               {/* Country Code Prefix */}
               <div className="flex h-full shrink-0 items-center gap-1.5 border-l border-border-subtle bg-[#EAF5F2] px-3.5 text-body-sm font-semibold text-neutral-primary select-none">
                 <span>EG</span>
-                <span dir="ltr" className="tabular-numbers">+20</span>
+                <span dir="ltr" className="tabular-numbers">
+                  +20
+                </span>
               </div>
 
               <Input
@@ -312,7 +365,9 @@ export function RegisterForm() {
             </div>
 
             {errors.phone ? (
-              <p className="text-body-sm text-[#D94B4B] font-medium">{errors.phone}</p>
+              <p className="text-body-sm text-[#D94B4B] font-medium">
+                {errors.phone}
+              </p>
             ) : (
               <p className="text-body-sm text-neutral-muted">
                 لتفعيل حسابك وإرسال إشعارات الحجز والواتساب المباشرة
@@ -338,7 +393,9 @@ export function RegisterForm() {
                 كلمة المرور
                 <span className="text-[#D94B4B]">*</span>
               </Label>
-              <span className="text-body-sm text-neutral-muted">8 أحرف على الأقل</span>
+              <span className="text-body-sm text-neutral-muted">
+                8 أحرف على الأقل
+              </span>
             </div>
 
             <div className="relative">
@@ -363,24 +420,38 @@ export function RegisterForm() {
                 onClick={() => setShowPassword((prev) => !prev)}
                 className="absolute left-1 top-1/2 size-9 -translate-y-1/2 text-neutral-muted hover:text-neutral-primary cursor-pointer"
               >
-                {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                {showPassword ? (
+                  <EyeOff className="size-4" />
+                ) : (
+                  <Eye className="size-4" />
+                )}
               </Button>
             </div>
 
             {/* Live Password Indicator */}
             <div className="flex flex-wrap items-center justify-between gap-2 pt-1 text-body-sm">
-              <span className={`flex items-center gap-1 ${hasMinLength ? "text-[#16855B]" : "text-neutral-muted"}`}>
-                <Check className={`size-3.5 ${hasMinLength ? "opacity-100" : "opacity-40"}`} />
+              <span
+                className={`flex items-center gap-1 ${hasMinLength ? "text-[#16855B]" : "text-neutral-muted"}`}
+              >
+                <Check
+                  className={`size-3.5 ${hasMinLength ? "opacity-100" : "opacity-40"}`}
+                />
                 <span>8 أحرف على الأقل</span>
               </span>
-              <span className={`flex items-center gap-1 ${hasSpecialOrNum ? "text-[#16855B]" : "text-neutral-muted"}`}>
-                <Check className={`size-3.5 ${hasSpecialOrNum ? "opacity-100" : "opacity-40"}`} />
+              <span
+                className={`flex items-center gap-1 ${hasSpecialOrNum ? "text-[#16855B]" : "text-neutral-muted"}`}
+              >
+                <Check
+                  className={`size-3.5 ${hasSpecialOrNum ? "opacity-100" : "opacity-40"}`}
+                />
                 <span>رقم أو رمز خاص</span>
               </span>
             </div>
 
             {errors.password && (
-              <p className="text-body-sm text-[#D94B4B] font-medium">{errors.password}</p>
+              <p className="text-body-sm text-[#D94B4B] font-medium">
+                {errors.password}
+              </p>
             )}
           </div>
         </div>
@@ -388,7 +459,10 @@ export function RegisterForm() {
         {/* Security Hashing Notice */}
         <div className="flex items-center gap-2 p-2.5 rounded-[10px] bg-[#EAF6F3] border border-[#DDF4EE] text-body-sm text-primary-dark">
           <ShieldCheck className="size-4.5 shrink-0 text-primary" />
-          <span>تتم حماية وتشفير كلمة المرور بتقنية <strong>Bcrypt Hash (Salt 12)</strong> عالية الأمان.</span>
+          <span>
+            تتم حماية وتشفير كلمة المرور بتقنية{" "}
+            <strong>Bcrypt Hash (Salt 12)</strong> عالية الأمان.
+          </span>
         </div>
 
         {/* Terms Agreement */}
@@ -401,20 +475,31 @@ export function RegisterForm() {
               className="mt-1 size-4 rounded-xs border-border-subtle data-[state=checked]:bg-primary data-[state=checked]:border-primary"
             />
 
-            <Label htmlFor="terms" className="cursor-pointer text-body-sm leading-5 text-neutral-primary font-normal">
+            <Label
+              htmlFor="terms"
+              className="cursor-pointer text-body-sm leading-5 text-neutral-primary font-normal"
+            >
               أوافق على{" "}
-              <Link href="/terms" className="font-semibold text-primary hover:underline">
+              <Link
+                href="/terms"
+                className="font-semibold text-primary hover:underline"
+              >
                 شروط الاستخدام
               </Link>{" "}
               و{" "}
-              <Link href="/privacy" className="font-semibold text-primary hover:underline">
+              <Link
+                href="/privacy"
+                className="font-semibold text-primary hover:underline"
+              >
                 سياسة الخصوصية
               </Link>{" "}
               الخاصة بمنصة أجندة وموافق على استلام إشعارات الحجز المباشرة.
             </Label>
           </div>
           {errors.terms && (
-            <p className="text-body-sm text-[#D94B4B] font-medium pr-6">{errors.terms}</p>
+            <p className="text-body-sm text-[#D94B4B] font-medium pr-6">
+              {errors.terms}
+            </p>
           )}
         </div>
 
@@ -423,8 +508,8 @@ export function RegisterForm() {
           type="submit"
           disabled={isSubmitting}
           className="
-            h-11 w-full rounded-[10px] bg-primary text-surface text-label-lg font-semibold
-            hover:bg-primary-dark transition-all duration-200 cursor-pointer shadow-level2
+            h-11 w-full rounded-[10px] bg-[#087F6A] text-white text-label-lg font-semibold
+hover:bg-[#066857] transition-all duration-200 cursor-pointer shadow-level2
             disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2
           "
         >
@@ -451,7 +536,10 @@ export function RegisterForm() {
         {/* Existing Account Link */}
         <p className="mt-4 text-center text-body-sm text-neutral-muted">
           لديك حساب بالفعل على أجندة؟{" "}
-          <Link href="/auth/login" className="font-semibold text-primary hover:underline">
+          <Link
+            href="/auth/login"
+            className="font-semibold text-primary hover:underline"
+          >
             تسجيل الدخول
           </Link>
         </p>
