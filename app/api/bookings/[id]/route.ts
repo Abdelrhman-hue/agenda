@@ -4,6 +4,7 @@ import { updateBookingSchema } from "@/utils/validation/booking";
 import { BookingStatus, PaymentStatus } from "@/generated/prisma/enums";
 import { HttpError, handleError } from "@/lib/api";
 import { getBookingScope, scopeWhere } from "@/lib/bookingAccess";
+import { dateInTimezone, timeInTimezone, weekdayInTimezone } from "@/lib/time";
 type RouteContext = {
   params: Promise<{ id: string }>;
 };
@@ -145,15 +146,12 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
       );
 
       // Check Provider Absence on the new date
-      const dateStart = new Date(newStartsAt);
-      dateStart.setHours(0, 0, 0, 0);
-      const dateEnd = new Date(newStartsAt);
-      dateEnd.setHours(23, 59, 59, 999);
+      const providerDate = dateInTimezone(newStartsAt, booking.provider.timezone);
 
       const absence = await prisma.providerAbsence.findFirst({
         where: {
           providerId: booking.providerId,
-          date: { gte: dateStart, lte: dateEnd },
+          date: new Date(`${providerDate}T00:00:00.000Z`),
         },
       });
 
@@ -168,81 +166,64 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
       }
 
       // Check Working Hours
-      const dayOfWeek = newStartsAt.getDay();
-      const workingHour = booking.provider.workingHours.find(
-        (wh) => wh.dayOfWeek === dayOfWeek,
-      );
+      const dayOfWeek = weekdayInTimezone(newStartsAt, booking.provider.timezone);
+      const workingHours = booking.provider.workingHours.filter((wh) => wh.dayOfWeek === dayOfWeek);
 
-      if (!workingHour) {
+      if (workingHours.length === 0) {
         return NextResponse.json(
           { status: "fail", message: "مقدم الخدمة لا يعمل في هذا اليوم" },
           { status: 409 },
         );
       }
 
-      const slotStartStr = newStartsAt.toTimeString().slice(0, 5);
-      const slotEndStr = newEndsAt.toTimeString().slice(0, 5);
+      const slotStartStr = timeInTimezone(newStartsAt, booking.provider.timezone);
+      const slotEndStr = timeInTimezone(newEndsAt, booking.provider.timezone);
 
-      if (
-        slotStartStr < workingHour.startTime ||
-        slotEndStr > workingHour.endTime
-      ) {
+      const fitsWorkingHours = workingHours.some(
+        (wh) => slotStartStr >= wh.startTime && slotEndStr <= wh.endTime,
+      );
+      if (!fitsWorkingHours) {
+        const ranges = workingHours.map((wh) => `${wh.startTime} - ${wh.endTime}`).join("، ");
         return NextResponse.json(
           {
             status: "fail",
-            message: `الموعد الجديد يقع خارج ساعات العمل الرسمية (${workingHour.startTime} - ${workingHour.endTime})`,
+            message: `الموعد الجديد يقع خارج ساعات العمل الرسمية (${ranges})`,
           },
           { status: 400 },
         );
       }
 
       // Check Conflicts (excluding current booking)
-      const conflict = await prisma.booking.findFirst({
-        where: {
-          id: { not: id },
-          providerId: booking.providerId,
-          status: { in: [BookingStatus.HELD, BookingStatus.CONFIRMED] },
-          OR: [
-            { startsAt: newStartsAt },
-            {
-              AND: [
-                { startsAt: { lt: newEndsAt } },
-                { endsAt: { gt: newStartsAt } },
-              ],
-            },
-          ],
-        },
-      });
-
-      if (conflict) {
-        return NextResponse.json(
-          {
-            status: "fail",
-            message: "الموعد المختار محجوز بالفعل، يرجى اختيار موعد آخر",
-          },
-          { status: 409 },
-        );
-      }
-
       // Reset hold window if it was in HELD status
       const updatedHold = booking.holdExpiresAt;
 
-      const updated = await prisma.booking.update({
-        where: { id },
-        data: {
-          startsAt: newStartsAt,
-          endsAt: newEndsAt,
-          holdExpiresAt: updatedHold,
-          clientNotes:
-            body.clientNotes !== undefined
-              ? body.clientNotes
-              : booking.clientNotes,
-        },
-        include: {
-          client: { select: { id: true, name: true, phone: true } },
-          service: true,
-          payment: true,
-        },
+      const updated = await prisma.$transaction(async (tx) => {
+        await tx.$queryRaw`SELECT "id" FROM "ProviderProfile" WHERE "id" = ${booking.providerId} FOR UPDATE`;
+        const conflict = await tx.booking.findFirst({
+          where: {
+            id: { not: id },
+            providerId: booking.providerId,
+            status: { in: [BookingStatus.HELD, BookingStatus.CONFIRMED] },
+            startsAt: { lt: newEndsAt },
+            endsAt: { gt: newStartsAt },
+          },
+          select: { id: true },
+        });
+        if (conflict) throw new HttpError(409, "الموعد المختار محجوز بالفعل، يرجى اختيار موعد آخر");
+        return tx.booking.update({
+          where: { id },
+          data: {
+            startsAt: newStartsAt,
+            endsAt: newEndsAt,
+            holdExpiresAt: updatedHold,
+            clientNotes: body.clientNotes !== undefined ? body.clientNotes : booking.clientNotes,
+          },
+          include: {
+            client: { select: { id: true, name: true, phone: true } },
+            service: true,
+            payment: true,
+          },
+        });
       });
 
       return NextResponse.json({

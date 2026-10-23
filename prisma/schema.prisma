@@ -16,6 +16,7 @@ model User {
   password      String?
   name          String?
   role          Role      @default(CLIENT)
+  roleChosen    Boolean   @default(true)
   createdAt     DateTime  @default(now())
 
   bookings        Booking[]

@@ -5,6 +5,7 @@ import { sendVerficationTokenMails } from "@/utils/sendMails";
 import { registerSchema } from "@/utils/validation/auth/register";
 import bcrypt from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
+import { createEmailVerificationStatusToken } from "@/lib/email-verification-status";
 
 export const POST = async (request: NextRequest) => {
    try {
@@ -44,7 +45,11 @@ export const POST = async (request: NextRequest) => {
 
       
 
-      return NextResponse.json({ message: "تم إرسال رابط التحقق إلى بريدك الإلكتروني. يرجى التحقق من صندوق الوارد.", status: "success", data: { name } }, { status: 201 })
+      return NextResponse.json({
+         message: "تم إرسال رابط التحقق إلى بريدك الإلكتروني. يرجى التحقق من صندوق الوارد.",
+         status: "success",
+         data: { name, verificationStatusToken: createEmailVerificationStatusToken(email) },
+      }, { status: 201 })
 
    } catch (error) {
       console.log(error)

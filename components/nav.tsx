@@ -92,7 +92,7 @@ export default async function Navbar() {
           {isLoggedIn ? (
             <>
               <Link
-                href="/auth/profile"
+                href="/profile"
                 aria-label="الملف الشخصي"
                 className="inline-flex items-center justify-center rounded-full bg-emerald-700 p-2.5 text-white shadow-sm transition-colors hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2"
               >
@@ -167,7 +167,7 @@ export default async function Navbar() {
               {isLoggedIn ? (
                 <>
                   <Link
-                    href="/auth/profile"
+                    href="/profile"
                     className="inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-700 px-4 py-3 text-sm font-semibold text-white hover:bg-emerald-800"
                   >
                     <UserRound className="h-4 w-4" />

@@ -7,6 +7,7 @@ import {
 } from "@/lib/bookingHelper";
 import { BookingStatus } from "@/generated/prisma/enums";
 import { IAvailabilitySlot, IProviderAvailabilityResponse } from "@/utils/dto/booking";
+import { startOfDateInTimezone, weekdayInTimezone, zonedDateTimeToUtc } from "@/lib/time";
 
 /**
  * GET /api/providers/availability
@@ -77,20 +78,17 @@ export async function GET(request: NextRequest) {
     const month = parseInt(monthStr, 10) - 1;
     const day = parseInt(dayStr, 10);
 
-    const targetDate = new Date(year, month, day);
-    const dayOfWeek = targetDate.getDay(); // 0 = Sunday, 6 = Saturday
-
-    const dayStart = new Date(Date.UTC(year, month, day, 0, 0, 0));
-    const dayEnd = new Date(Date.UTC(year, month, day, 23, 59, 59, 999));
+    const normalizedDate = `${yearStr}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+    const nextDate = new Date(Date.UTC(year, month, day + 1)).toISOString().slice(0, 10);
+    const dayStart = startOfDateInTimezone(normalizedDate, provider.timezone);
+    const dayEnd = startOfDateInTimezone(nextDate, provider.timezone);
+    const dayOfWeek = weekdayInTimezone(dayStart, provider.timezone);
 
     // 5. Check Provider Absence on this date
     const absence = await prisma.providerAbsence.findFirst({
       where: {
         providerId: provider.id,
-        date: {
-          gte: dayStart,
-          lte: dayEnd,
-        },
+        date: new Date(`${normalizedDate}T00:00:00.000Z`),
       },
     });
 
@@ -152,10 +150,8 @@ export async function GET(request: NextRequest) {
       where: {
         providerId: provider.id,
         status: { in: [BookingStatus.HELD, BookingStatus.CONFIRMED] },
-        startsAt: {
-          gte: new Date(year, month, day, 0, 0, 0),
-          lte: new Date(year, month, day, 23, 59, 59, 999),
-        },
+        startsAt: { lt: dayEnd },
+        endsAt: { gt: dayStart },
       },
       select: {
         id: true,
@@ -195,8 +191,8 @@ export async function GET(request: NextRequest) {
       const timeStr = formatTime(slotStartH, slotStartM);
       const endTimeStr = formatTime(slotEndH, slotEndM);
 
-      const slotStartDate = new Date(year, month, day, slotStartH, slotStartM, 0);
-      const slotEndDate = new Date(year, month, day, slotEndH, slotEndM, 0);
+      const slotStartDate = zonedDateTimeToUtc(normalizedDate, timeStr, provider.timezone);
+      const slotEndDate = zonedDateTimeToUtc(normalizedDate, endTimeStr, provider.timezone);
 
       // Check if slot is in the past
       const isPast = slotStartDate.getTime() <= now.getTime();

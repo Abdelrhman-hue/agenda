@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "ok": false,
+  "command": "finalize",
+  "status": "fail",
+  "type": "tree",
+  "quality": "showcase",
+  "specification": {
+    "path": "F:\\اجندة\\Agenda project\\agenda\\.archify\\tree-project-structure-20261022-000000\\candidate.json",
+    "sha256": "0abe86bca64c9102025f3232986fa5f7d2dc9e3d4cffa7ba24a564de2489d9a9",
+    "bytes": 15111
+  },
+  "artifact": {
+    "path": "F:\\اجندة\\Agenda project\\agenda\\.archify\\tree-project-structure-20261022-000000\\project-structure.html",
+    "sha256": "e61ae632387b51070e29924223a876c750cc0585a1583f9c25bcad5360a57137",
+    "bytes": 889275
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "fail"
+  },
+  "failedStage": "browser-check",
+  "diagnostics": [
+    {
+      "code": "viewer/evidence-path-conflict",
+      "severity": "error",
+      "message": "browser-check will not replace the existing unowned evidence path \"F:\\اجندة\\Agenda project\\agenda\\.archify\\tree-project-structure-20261022-000000\\project-structure.browser-check.json\".",
+      "subject": {
+        "artifact": "F:\\اجندة\\Agenda project\\agenda\\.archify\\tree-project-structure-20261022-000000\\project-structure.html",
+        "evidencePath": "F:\\اجندة\\Agenda project\\agenda\\.archify\\tree-project-structure-20261022-000000\\project-structure.browser-check.json"
+      },
+      "evidence": {
+        "reason": {
+          "code": "ownership-artifact-mismatch"
+        }
+      },
+      "supportedFixes": [
+        "move the conflicting file aside, or choose a separate --out-dir, then rerun browser-check"
+      ]
+    }
+  ],
+  "diagnosticSummary": {
+    "total": 1,
+    "shown": 1,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "F:\\اجندة\\Agenda project\\agenda\\.archify\\tree-project-structure-20261022-000000\\project-structure.finalize.json",
+    "summaryReceipt": "F:\\اجندة\\Agenda project\\agenda\\.archify\\tree-project-structure-20261022-000000\\project-structure.finalize-summary.json",
+    "browserCheckReceipt": "F:\\اجندة\\Agenda project\\agenda\\.archify\\tree-project-structure-20261022-000000\\project-structure.browser-check.json"
+  },
+  "visualReview": "not-requested",
+  "durationMs": 3526,
+  "browserCheck": {
+    "requested": true,
+    "ran": false
+  }
+}

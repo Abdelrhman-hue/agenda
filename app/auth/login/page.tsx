@@ -9,10 +9,11 @@ import GoogleProvider from "../GoogleProvider";
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ registered?: string }>;
+  searchParams: Promise<{ registered?: string; verified?: string }>;
 }) {
   const params = await searchParams;
   const isRegistered = params.registered === "true";
+  const isVerified = params.verified === "true";
 
   return (
     <main className="min-h-screen w-full bg-canvas py-8 px-4 sm:px-6 lg:px-8 flex items-center justify-center" dir="rtl">
@@ -41,6 +42,13 @@ export default async function LoginPage({
               <div className="p-3.5 rounded-[10px] bg-[#DDF4EE] border border-[#16855B]/30 flex items-center gap-2.5 text-body-md text-[#16855B]">
                 <CheckCircle2 className="size-5 shrink-0" />
                 <span>تم إنشاء حسابك بنجاح! يمكنك الآن تسجيل الدخول إلى حسابك.</span>
+              </div>
+            )}
+
+            {isVerified && (
+              <div className="p-3.5 rounded-[10px] bg-[#DDF4EE] border border-[#16855B]/30 flex items-center gap-2.5 text-body-md text-[#16855B]">
+                <CheckCircle2 className="size-5 shrink-0" />
+                <span>تم تأكيد بريدك الإلكتروني بنجاح. يمكنك تسجيل الدخول الآن.</span>
               </div>
             )}
 

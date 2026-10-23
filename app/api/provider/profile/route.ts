@@ -10,9 +10,15 @@ const PROFILE_SELECT = {
   slug: true,
   category: true,
   bio: true,
+  address: true,
+  locationUrl: true,
+  whatsappNumber: true,
+  depositType: true,
+  depositAmount: true,
+  bufferMinutes: true,
+  timezone: true,
   onboardingCompleted: true,
 } as const;
-
 
 export async function GET() {
   try {
@@ -43,6 +49,9 @@ export async function PUT(req: NextRequest) {
     if (!existing && !data.category) throw new HttpError(400, "اختر القطاع أولًا");
 
     const bio = data.bio === undefined ? undefined : data.bio === "" ? null : data.bio;
+    const address = data.address === undefined ? undefined : data.address === "" ? null : data.address;
+    const locationUrl = data.locationUrl === undefined ? undefined : data.locationUrl === "" ? null : data.locationUrl;
+    const whatsappNumber = data.whatsappNumber === undefined ? undefined : data.whatsappNumber === "" ? null : data.whatsappNumber;
 
     try {
       const profile = existing
@@ -52,22 +61,28 @@ export async function PUT(req: NextRequest) {
               ...(data.category ? { category: data.category } : {}),
               ...(data.slug ? { slug: data.slug } : {}),
               ...(bio !== undefined ? { bio } : {}),
+              ...(address !== undefined ? { address } : {}),
+              ...(locationUrl !== undefined ? { locationUrl } : {}),
+              ...(whatsappNumber !== undefined ? { whatsappNumber } : {}),
             },
             select: PROFILE_SELECT,
           })
         : await prisma.providerProfile.create({
             data: {
               userId,
-              category: data.category!, 
+              category: data.category!,
               slug: data.slug ?? generateTempSlug(),
               bio: bio ?? null,
+              address: address ?? null,
+              locationUrl: locationUrl ?? null,
+              whatsappNumber: whatsappNumber ?? null,
             },
             select: PROFILE_SELECT,
           });
       return ok("تم حفظ بيانات النشاط", { profile });
     } catch (e) {
       if (isUniqueError(e)) {
-        throw new HttpError(409, "رابط الحجز ده مستخدم بالفعل، اختر رابطاً آخر");
+        throw new HttpError(409, "رابط الحجز أو رقم الواتساب مستخدم بالفعل، اختر قيمة أخرى");
       }
       throw e;
     }

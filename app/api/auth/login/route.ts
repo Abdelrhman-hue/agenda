@@ -5,6 +5,8 @@ import { sendVerficationTokenMails } from "@/utils/sendMails";
 import { loginSchema } from "@/utils/validation/auth/login";
 import { AuthError } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
+import { createEmailVerificationStatusToken } from "@/lib/email-verification-status";
+import bcrypt from "bcryptjs";
 
 export const POST = async (request: NextRequest) => {
   try {
@@ -26,7 +28,24 @@ export const POST = async (request: NextRequest) => {
 
     const user = await prisma.user.findUnique({ where: { email } })
 
-    if (!user?.emailVerified) {
+    if (!user) {
+      return NextResponse.json(
+        { status: "fail", message: "البريد الإلكتروني أو كلمة المرور غير صحيحة" },
+        { status: 401 },
+      );
+    }
+
+    if (!user.emailVerified) {
+      const passwordMatches = user.password
+        ? await bcrypt.compare(password, user.password)
+        : false;
+      if (!passwordMatches) {
+        return NextResponse.json(
+          { status: "fail", message: "البريد الإلكتروني أو كلمة المرور غير صحيحة" },
+          { status: 401 },
+        );
+      }
+
       const verificationToken = await generateVerificationToken(email)
       await sendVerficationTokenMails(verificationToken.email, verificationToken.token)
 
@@ -36,6 +55,7 @@ export const POST = async (request: NextRequest) => {
           code: "EMAIL_NOT_VERIFIED",
           message:
             "تم إرسال رابط التحقق إلى بريدك الإلكتروني. يرجى التحقق من صندوق الوارد.",
+          verificationStatusToken: createEmailVerificationStatusToken(email),
         },
         { status: 200 }
       );

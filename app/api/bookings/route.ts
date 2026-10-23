@@ -10,6 +10,7 @@ import {
   calculateDeposit,
 } from "@/lib/bookingHelper";
 import { BookingStatus, PaymentStatus, Role } from "@/generated/prisma/enums";
+import { dateInTimezone, timeInTimezone, weekdayInTimezone, zonedDateTimeToUtc } from "@/lib/time";
 
 /**
  * POST /api/bookings
@@ -70,40 +71,32 @@ export async function POST(request: NextRequest) {
     }
 
     // 4. Timing calculations
-    const startsAt = new Date(body.startsAt);
+    const requestedStart = new Date(body.startsAt);
     const now = new Date();
 
-    if (isNaN(startsAt.getTime())) {
+    if (isNaN(requestedStart.getTime())) {
       return NextResponse.json(
         { status: "fail", message: "صيغة تاريخ ووقت الحجز غير صحيحة" },
         { status: 400 },
       );
     }
 
-    if (startsAt < now) {
+    if (requestedStart < now) {
       return NextResponse.json(
         { status: "fail", message: "لا يمكن حجز موعد في وقت مضى" },
         { status: 400 },
       );
     }
 
-    const endsAt = new Date(
-      startsAt.getTime() + service.durationMinutes * 60 * 1000,
-    );
+    const startsAt = requestedStart;
+    const endsAt = new Date(startsAt.getTime() + service.durationMinutes * 60 * 1000);
+    const providerDate = dateInTimezone(startsAt, provider.timezone);
 
     // 5. Check Provider Absence
-    const dateStart = new Date(startsAt);
-    dateStart.setHours(0, 0, 0, 0);
-    const dateEnd = new Date(startsAt);
-    dateEnd.setHours(23, 59, 59, 999);
-
     const absence = await prisma.providerAbsence.findFirst({
       where: {
         providerId: provider.id,
-        date: {
-          gte: dateStart,
-          lte: dateEnd,
-        },
+        date: new Date(`${providerDate}T00:00:00.000Z`),
       },
     });
 
@@ -118,12 +111,10 @@ export async function POST(request: NextRequest) {
     }
 
     // 6. Check Provider Working Hours
-    const dayOfWeek = startsAt.getDay(); // 0 = Sunday, 1 = Monday ... 6 = Saturday
-    const workingHour = provider.workingHours.find(
-      (wh) => wh.dayOfWeek === dayOfWeek,
-    );
+    const dayOfWeek = weekdayInTimezone(startsAt, provider.timezone);
+    const workingHours = provider.workingHours.filter((wh) => wh.dayOfWeek === dayOfWeek);
 
-    if (!workingHour) {
+    if (workingHours.length === 0) {
       return NextResponse.json(
         {
           status: "fail",
@@ -134,49 +125,24 @@ export async function POST(request: NextRequest) {
     }
 
     // Convert slot hours to comparison
-    const slotStartStr = startsAt.toTimeString().slice(0, 5); // "HH:MM"
-    const slotEndStr = endsAt.toTimeString().slice(0, 5); // "HH:MM"
+    const slotStartStr = timeInTimezone(startsAt, provider.timezone);
+    const slotEndStr = timeInTimezone(endsAt, provider.timezone);
 
-    if (
-      slotStartStr < workingHour.startTime ||
-      slotEndStr > workingHour.endTime
-    ) {
+    const fitsWorkingHours = workingHours.some(
+      (wh) => slotStartStr >= wh.startTime && slotEndStr <= wh.endTime,
+    );
+    if (!fitsWorkingHours) {
+      const ranges = workingHours.map((wh) => `${wh.startTime} إلى ${wh.endTime}`).join("، ");
       return NextResponse.json(
         {
           status: "fail",
-          message: `الموعد خارج ساعات العمل الرسمية (${workingHour.startTime} إلى ${workingHour.endTime})`,
+          message: `الموعد خارج ساعات العمل الرسمية (${ranges})`,
         },
         { status: 400 },
       );
     }
 
     // 7. Check for Slot Conflicts (overlapping bookings)
-    const existingConflict = await prisma.booking.findFirst({
-      where: {
-        providerId: provider.id,
-        status: { in: [BookingStatus.HELD, BookingStatus.CONFIRMED] },
-        OR: [
-          // exact start match
-          { startsAt: startsAt },
-          // overlap condition: startsAt < existing.endsAt AND endsAt > existing.startsAt
-          {
-            AND: [{ startsAt: { lt: endsAt } }, { endsAt: { gt: startsAt } }],
-          },
-        ],
-      },
-    });
-
-    if (existingConflict) {
-      return NextResponse.json(
-        {
-          status: "fail",
-          message:
-            "هذا الموعد محجوز بالفعل أو محجوز مؤقتاً لعميل آخر، يرجى اختيار موعد آخر",
-        },
-        { status: 409 },
-      );
-    }
-
     // 8. Resolve Client User
     const session = await auth();
     let clientId = session?.user?.id;
@@ -228,6 +194,19 @@ export async function POST(request: NextRequest) {
     const holdExpiresAt = null;
     // 10. Persist Booking & Payment in Transaction
     const result = await prisma.$transaction(async (tx) => {
+      // Serialize booking writes for this provider so overlapping ranges cannot race.
+      await tx.$queryRaw`SELECT "id" FROM "ProviderProfile" WHERE "id" = ${provider.id} FOR UPDATE`;
+      const existingConflict = await tx.booking.findFirst({
+        where: {
+          providerId: provider.id,
+          status: { in: [BookingStatus.HELD, BookingStatus.CONFIRMED] },
+          startsAt: { lt: endsAt },
+          endsAt: { gt: startsAt },
+        },
+        select: { id: true },
+      });
+      if (existingConflict) throw new HttpError(409, "هذا الموعد محجوز بالفعل أو محجوز مؤقتاً لعميل آخر، يرجى اختيار موعد آخر");
+
       const booking = await tx.booking.create({
         data: {
           providerId: provider.id,
@@ -307,6 +286,8 @@ export async function POST(request: NextRequest) {
     );
   } catch (error: any) {
     console.error("POST /api/bookings error:", error);
+
+    if (error instanceof HttpError) return handleError(error, "bookings POST");
 
     // Check Prisma unique constraint violation (P2002 on @@unique([providerId, startsAt]))
     if (error?.code === "P2002") {
@@ -394,10 +375,7 @@ export async function GET(request: NextRequest) {
     }
 
     // الإحصائيات بنفس نطاق المستخدم
-    const statsWhere = {
-      ...(where.providerId ? { providerId: where.providerId } : {}),
-      ...(where.clientId ? { clientId: where.clientId } : {}),
-    };
+    const statsWhere = scopeWhere(scope);
 
     const [bookings, totalCount, statsGroup] = await Promise.all([
       prisma.booking.findMany({

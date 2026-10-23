@@ -108,7 +108,7 @@ export function RegisterForm() {
         body: JSON.stringify({
           name: fullName,
           phone,
-          email,
+          email: email.trim(),
           password,
           accountType,
         }),
@@ -125,7 +125,13 @@ export function RegisterForm() {
       setServerSuccess(data.message);
 
       setTimeout(() => {
-        router.push("/auth/login?registered=true");
+        const statusToken = data.data?.verificationStatusToken;
+        if (!statusToken) {
+          router.push("/auth/login?registered=true");
+          return;
+        }
+        const params = new URLSearchParams({ email: email.trim(), token: statusToken });
+        router.push(`/auth/verify-email?${params.toString()}`);
       }, 1500);
 
     } catch (error) {

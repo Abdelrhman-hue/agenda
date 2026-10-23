@@ -66,17 +66,23 @@ export default function LoginForm() {
       }
 
       if (data.code === "EMAIL_NOT_VERIFIED") {
-        setServerSuccess(data.message);
+        const params = new URLSearchParams({
+          email: email.trim(),
+          token: data.verificationStatusToken,
+        });
+        router.push(`/auth/verify-email?${params.toString()}`);
         return;
       }
 
       if (data.code === "LOGIN_SUCCESS") {
         setServerSuccess(
-          "تم تسجيل الدخول بنجاح! جاري التوجيه إلى لوحة التحكم..."
+          "تم تسجيل الدخول بنجاح! جاري توجيهك إلى حسابك..."
         );
 
         setTimeout(() => {
-          router.push("/home");
+          // الـ proxy يوجّه مقدم الخدمة غير المكتمل إلى onboarding،
+          // ومقدم الخدمة المكتمل إلى لوحة التحكم، والعميل إلى الصفحة الرئيسية.
+          router.push("/dashboard");
         }, 1800);
       }
 
