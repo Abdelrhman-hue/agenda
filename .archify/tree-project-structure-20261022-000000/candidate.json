@@ -1,0 +1,620 @@
+{
+  "schema_version": 1,
+  "diagram_type": "tree",
+  "meta": {
+    "title": "هيكل مشروع أجندة",
+    "locale": "ar",
+    "subtitle": "خريطة المصدر بعد آخر pull — الصفحات وواجهات API ومكونات المجالات؛ تستثني الاعتماديات والملفات المولّدة",
+    "output": ".archify/tree-project-structure-20261022-000000/project-structure.html",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/Abdelrhman-hue/agenda.git",
+      "provider": "github",
+      "link_mode": "web",
+      "revision": "c5a958b6d164974c57e8c130de7de65d130283ba"
+    }
+  },
+  "layout": {
+    "direction": "right",
+    "gapX": 24,
+    "gapY": 24,
+    "nodeW": 176,
+    "nodeMaxW": 220
+  },
+  "nodes": [
+    {
+      "id": "root",
+      "label": "agenda",
+      "sources": [
+        {
+          "end_line": 15,
+          "line": 1,
+          "path": "package.json"
+        }
+      ],
+      "sublabel": "Next.js 16 · React 19"
+    },
+    {
+      "parent": "root",
+      "id": "app",
+      "label": "app/",
+      "sources": [
+        {
+          "end_line": 30,
+          "line": 13,
+          "path": "app/layout.tsx"
+        }
+      ],
+      "sublabel": "صفحات التطبيق ومسارات HTTP"
+    },
+    {
+      "parent": "app",
+      "id": "layout",
+      "label": "layout.tsx",
+      "sources": [
+        {
+          "end_line": 30,
+          "line": 13,
+          "path": "app/layout.tsx"
+        }
+      ],
+      "sublabel": "تخطيط الغلاف العام"
+    },
+    {
+      "parent": "app",
+      "id": "home",
+      "label": "home/",
+      "sources": [
+        {
+          "end_line": 29,
+          "line": 1,
+          "path": "app/home/page.tsx"
+        }
+      ],
+      "sublabel": "الصفحة الرئيسية"
+    },
+    {
+      "parent": "app",
+      "id": "booking_pages",
+      "label": "book/ · bookings/",
+      "sources": [
+        {
+          "end_line": 10,
+          "line": 1,
+          "path": "app/book/page.tsx"
+        },
+        {
+          "end_line": 4,
+          "line": 1,
+          "path": "app/bookings/page.tsx"
+        }
+      ],
+      "sublabel": "إنشاء الحجز وعرض الحجوزات"
+    },
+    {
+      "parent": "app",
+      "id": "dashboard",
+      "label": "dashboard/",
+      "sources": [
+        {
+          "end_line": 8,
+          "line": 1,
+          "path": "app/dashboard/page.tsx"
+        },
+        {
+          "end_line": 12,
+          "line": 1,
+          "path": "app/dashboard/bookings/page.tsx"
+        }
+      ],
+      "sublabel": "لوحة المزود وإدارة الحجوزات"
+    },
+    {
+      "parent": "dashboard",
+      "id": "service_page",
+      "label": "services/",
+      "sources": [
+        {
+          "end_line": 8,
+          "line": 1,
+          "path": "app/dashboard/services/page.tsx"
+        }
+      ],
+      "sublabel": "إدارة الخدمات"
+    },
+    {
+      "parent": "dashboard",
+      "id": "availability_page",
+      "label": "availability/",
+      "sources": [
+        {
+          "end_line": 10,
+          "line": 1,
+          "path": "app/dashboard/availability/page.tsx"
+        }
+      ],
+      "sublabel": "ساعات العمل والغياب"
+    },
+    {
+      "parent": "app",
+      "id": "onboarding_page",
+      "label": "onboarding/",
+      "sources": [
+        {
+          "end_line": 10,
+          "line": 1,
+          "path": "app/onboarding/page.tsx"
+        }
+      ],
+      "sublabel": "تهيئة ملف مقدم الخدمة"
+    },
+    {
+      "parent": "app",
+      "id": "auth_pages",
+      "label": "auth/",
+      "sources": [
+        {
+          "end_line": 10,
+          "line": 1,
+          "path": "app/auth/login/page.tsx"
+        },
+        {
+          "end_line": 10,
+          "line": 1,
+          "path": "app/auth/role-choose/page.tsx"
+        },
+        {
+          "end_line": 8,
+          "line": 1,
+          "path": "app/auth/sign_up/page.tsx"
+        }
+      ],
+      "sublabel": "الدخول والتسجيل والتحقق واختيار الدور"
+    },
+    {
+      "parent": "app",
+      "id": "api",
+      "label": "api/",
+      "sources": [
+        {
+          "end_line": 8,
+          "line": 1,
+          "path": "app/api/bookings/route.ts"
+        },
+        {
+          "end_line": 4,
+          "line": 1,
+          "path": "app/api/providers/route.ts"
+        }
+      ],
+      "sublabel": "Route Handlers للمسارات العامة"
+    },
+    {
+      "parent": "api",
+      "id": "api_bookings",
+      "label": "bookings/",
+      "sources": [
+        {
+          "end_line": 12,
+          "line": 1,
+          "path": "app/api/bookings/route.ts"
+        },
+        {
+          "end_line": 6,
+          "line": 1,
+          "path": "app/api/bookings/[id]/route.ts"
+        }
+      ],
+      "sublabel": "الحجوزات وتحديثها"
+    },
+    {
+      "parent": "api",
+      "id": "api_providers",
+      "label": "providers/",
+      "sources": [
+        {
+          "end_line": 4,
+          "line": 1,
+          "path": "app/api/providers/route.ts"
+        },
+        {
+          "end_line": 8,
+          "line": 1,
+          "path": "app/api/providers/availability/route.ts"
+        }
+      ],
+      "sublabel": "المزودون وتوافرهم"
+    },
+    {
+      "parent": "api",
+      "id": "api_provider",
+      "label": "provider/",
+      "sources": [
+        {
+          "end_line": 8,
+          "line": 1,
+          "path": "app/api/provider/profile/route.ts"
+        },
+        {
+          "end_line": 8,
+          "line": 1,
+          "path": "app/api/provider/settings/route.ts"
+        }
+      ],
+      "sublabel": "ملف المزود وخدماته وإعداداته"
+    },
+    {
+      "parent": "api",
+      "id": "api_services",
+      "label": "services/",
+      "sources": [
+        {
+          "end_line": 8,
+          "line": 1,
+          "path": "app/api/services/route.ts"
+        },
+        {
+          "end_line": 8,
+          "line": 1,
+          "path": "app/api/services/[id]/route.ts"
+        }
+      ],
+      "sublabel": "إضافة الخدمات وتعديلها"
+    },
+    {
+      "parent": "api_provider",
+      "id": "api_provider_work",
+      "label": "إدارة توافر المزود",
+      "sources": [
+        {
+          "end_line": 8,
+          "line": 1,
+          "path": "app/api/provider/working-hours/route.ts"
+        },
+        {
+          "end_line": 8,
+          "line": 1,
+          "path": "app/api/provider/absences/route.ts"
+        },
+        {
+          "end_line": 8,
+          "line": 1,
+          "path": "app/api/provider/onboarding/complete/route.ts"
+        }
+      ],
+      "sublabel": "ساعات العمل، الغياب، وإتمام التهيئة"
+    },
+    {
+      "parent": "api",
+      "id": "api_auth",
+      "label": "auth/",
+      "sources": [
+        {
+          "end_line": 2,
+          "line": 1,
+          "path": "app/api/auth/[...nextauth]/route.ts"
+        },
+        {
+          "end_line": 5,
+          "line": 1,
+          "path": "app/api/auth/register/route.ts"
+        }
+      ],
+      "sublabel": "تسجيل الحساب وNextAuth"
+    },
+    {
+      "parent": "api",
+      "id": "api_users",
+      "label": "users/",
+      "sources": [
+        {
+          "end_line": 8,
+          "line": 1,
+          "path": "app/api/users/me/route.ts"
+        },
+        {
+          "end_line": 8,
+          "line": 1,
+          "path": "app/api/users/me/role/route.ts"
+        }
+      ],
+      "sublabel": "المستخدم ودوره"
+    },
+    {
+      "parent": "root",
+      "id": "components",
+      "label": "components/",
+      "sources": [
+        {
+          "end_line": 10,
+          "line": 1,
+          "path": "components/nav.tsx"
+        }
+      ],
+      "sublabel": "مكونات الواجهة"
+    },
+    {
+      "parent": "components",
+      "id": "home_components",
+      "label": "home/",
+      "sources": [
+        {
+          "end_line": 8,
+          "line": 1,
+          "path": "components/home/hero.tsx"
+        },
+        {
+          "end_line": 8,
+          "line": 1,
+          "path": "components/home/services.tsx"
+        }
+      ],
+      "sublabel": "أقسام الصفحة الرئيسية"
+    },
+    {
+      "parent": "components",
+      "id": "provider_components",
+      "label": "provider/",
+      "sources": [
+        {
+          "end_line": 8,
+          "line": 1,
+          "path": "components/provider/ServicesManager.tsx"
+        },
+        {
+          "end_line": 8,
+          "line": 1,
+          "path": "components/provider/WorkingHoursEditor.tsx"
+        }
+      ],
+      "sublabel": "الخدمات والإعدادات والدوام"
+    },
+    {
+      "parent": "components",
+      "id": "onboarding_components",
+      "label": "onboarding/",
+      "sources": [
+        {
+          "end_line": 10,
+          "line": 1,
+          "path": "components/onboarding/OnboardingWizard.tsx"
+        }
+      ],
+      "sublabel": "خطوات تهيئة المزود"
+    },
+    {
+      "parent": "components",
+      "id": "booking_components",
+      "label": "booking/",
+      "sources": [
+        {
+          "end_line": 8,
+          "line": 1,
+          "path": "components/booking/CancelModal.tsx"
+        },
+        {
+          "end_line": 8,
+          "line": 1,
+          "path": "components/booking/RescheduleModal.tsx"
+        }
+      ],
+      "sublabel": "عناصر الحجز والإلغاء وإعادة الجدولة"
+    },
+    {
+      "parent": "components",
+      "id": "ui_components",
+      "label": "ui/",
+      "sources": [
+        {
+          "end_line": 20,
+          "line": 1,
+          "path": "components/ui/button.tsx"
+        }
+      ],
+      "sublabel": "عناصر الواجهة المشتركة"
+    },
+    {
+      "parent": "root",
+      "id": "actions",
+      "label": "actions/",
+      "sources": [
+        {
+          "end_line": 17,
+          "line": 1,
+          "path": "actions/auth.action.ts"
+        },
+        {
+          "end_line": 20,
+          "line": 1,
+          "path": "actions/verification.action.ts"
+        }
+      ],
+      "sublabel": "عمليات الخادم للمصادقة والتحقق"
+    },
+    {
+      "parent": "root",
+      "id": "auth",
+      "label": "auth.ts · auth.config.ts · proxy.ts",
+      "sources": [
+        {
+          "end_line": 17,
+          "line": 1,
+          "path": "auth.ts"
+        },
+        {
+          "end_line": 8,
+          "line": 1,
+          "path": "auth.config.ts"
+        },
+        {
+          "line": 1,
+          "path": "proxy.ts"
+        }
+      ],
+      "sublabel": "إعداد NextAuth والمزوّدات"
+    },
+    {
+      "parent": "root",
+      "id": "lib",
+      "label": "lib/",
+      "sources": [
+        {
+          "end_line": 17,
+          "line": 1,
+          "path": "lib/prisma.ts"
+        },
+        {
+          "end_line": 8,
+          "line": 1,
+          "path": "lib/bookingHelper.ts"
+        }
+      ],
+      "sublabel": "قاعدة البيانات ومساعدات الأعمال"
+    },
+    {
+      "parent": "lib",
+      "id": "lib_auth",
+      "label": "guards.ts · bookingAccess.ts",
+      "sources": [
+        {
+          "end_line": 12,
+          "line": 1,
+          "path": "lib/guards.ts"
+        },
+        {
+          "end_line": 10,
+          "line": 1,
+          "path": "lib/bookingAccess.ts"
+        }
+      ],
+      "sublabel": "التحقق من الجلسة وصلاحيات الحجز"
+    },
+    {
+      "parent": "lib",
+      "id": "lib_shared",
+      "label": "api.ts · client-api.ts · time.ts · slug.ts",
+      "sources": [
+        {
+          "end_line": 10,
+          "line": 1,
+          "path": "lib/api.ts"
+        },
+        {
+          "end_line": 10,
+          "line": 1,
+          "path": "lib/client-api.ts"
+        },
+        {
+          "end_line": 10,
+          "line": 1,
+          "path": "lib/time.ts"
+        }
+      ],
+      "sublabel": "استجابات API والوقت والروابط"
+    },
+    {
+      "parent": "root",
+      "id": "utils",
+      "label": "utils/",
+      "sources": [
+        {
+          "end_line": 10,
+          "line": 1,
+          "path": "utils/validation/booking.ts"
+        },
+        {
+          "end_line": 8,
+          "line": 1,
+          "path": "utils/sendMails.ts"
+        }
+      ],
+      "sublabel": "المخططات والتحقق والأنواع والبريد"
+    },
+    {
+      "parent": "utils",
+      "id": "provider_validation",
+      "label": "validation/provider/",
+      "sources": [
+        {
+          "end_line": 10,
+          "line": 1,
+          "path": "utils/validation/provider/service.ts"
+        },
+        {
+          "end_line": 10,
+          "line": 1,
+          "path": "utils/validation/provider/profile.ts"
+        },
+        {
+          "end_line": 10,
+          "line": 1,
+          "path": "utils/validation/provider/workingHours.ts"
+        }
+      ],
+      "sublabel": "تحقق ملف المزود وخدماته ودوامه"
+    },
+    {
+      "parent": "root",
+      "id": "prisma",
+      "label": "prisma/",
+      "sources": [
+        {
+          "end_line": 8,
+          "line": 1,
+          "path": "prisma/schema.prisma"
+        }
+      ],
+      "sublabel": "مخطط PostgreSQL والترحيلات"
+    },
+    {
+      "parent": "root",
+      "id": "generated",
+      "label": "generated/prisma/",
+      "sources": [
+        {
+          "end_line": 4,
+          "line": 1,
+          "path": "prisma/schema.prisma"
+        }
+      ],
+      "sublabel": "عميل Prisma المولّد من المخطط"
+    },
+    {
+      "parent": "root",
+      "id": "public",
+      "label": "public/",
+      "sources": [
+        {
+          "path": "public/logo.jpg"
+        },
+        {
+          "path": "public/home/onePhoto.png"
+        }
+      ],
+      "sublabel": "الصور والأصول الثابتة"
+    },
+    {
+      "parent": "root",
+      "id": "config",
+      "label": "إعدادات المشروع",
+      "sources": [
+        {
+          "end_line": 15,
+          "line": 1,
+          "path": "package.json"
+        },
+        {
+          "end_line": 5,
+          "line": 1,
+          "path": "next.config.ts"
+        },
+        {
+          "end_line": 10,
+          "line": 1,
+          "path": "tsconfig.json"
+        }
+      ],
+      "sublabel": "الاعتماديات وإعدادات البناء"
+    }
+  ]
+}

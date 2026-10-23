@@ -1,12 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import LoginInput from "./LoginInput";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, AtSign, Lock, Loader2, AlertCircle, Check } from "lucide-react";
-import { loginUserAction } from "@/app/actions/authActions";
+import {
+  ArrowLeft,
+  AtSign,
+  Lock,
+  Loader2,
+  AlertCircle,
+  Check,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
@@ -46,27 +52,59 @@ export default function LoginForm() {
     setIsSubmitting(true);
 
     try {
-      const res = await loginUserAction({
-        email,
-        password,
-        rememberMe,
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
       });
 
-      if (res.success) {
-        setServerSuccess("تم تسجيل الدخول بنجاح! جاري التوجيه إلى لوحة التحكم...");
+      const data = await res.json();
+
+      if (!res.ok) {
+        setServerError(
+          data.message || "خطأ في البريد الإلكتروني أو كلمة المرور.",
+        );
+        return;
+      }
+
+      if (data.code === "EMAIL_NOT_VERIFIED") {
+        const params = new URLSearchParams({
+          email: email.trim(),
+          token: data.verificationStatusToken,
+        });
+        router.push(`/auth/verify-email?${params.toString()}`);
+        return;
+      }
+
+      if (data.code === "LOGIN_SUCCESS") {
+        setServerSuccess("تم تسجيل الدخول بنجاح! جاري التوجيه...");
+
+        // العميل يروح /home، وصاحب الخدمة /dashboard (والـ proxy يحوّله للـ onboarding لو لسه مخلّصش)
+        const target = data.data?.role === "CLIENT" ? "/home" : "/dashboard";
         setTimeout(() => {
-          router.push("/home");
-        }, 1200);
-      } else {
-        setServerError(res.error || "خطأ في البريد الإلكتروني أو كلمة المرور.");
+          // الـ proxy يوجّه مقدم الخدمة غير المكتمل إلى onboarding،
+          // ومقدم الخدمة المكتمل إلى لوحة التحكم، والعميل إلى الصفحة الرئيسية.
+          router.push("/dashboard");
+        }, 1800);
       }
     } catch (err) {
+      console.log(err);
       setServerError("تعذر الاتصال بالخادم. يرجى المحاولة مرة أخرى.");
     } finally {
       setIsSubmitting(false);
     }
   };
-
+  useEffect(() => {
+    return () => {
+      setServerError(null);
+      setServerSuccess(null);
+    };
+  }, []);
   return (
     <form onSubmit={handleSubmit} className="w-full space-y-4" dir="rtl">
       {serverError && (
@@ -112,7 +150,9 @@ export default function LoginForm() {
             onCheckedChange={(val) => setRememberMe(!!val)}
             className="size-4 rounded-xs border-border-subtle data-[state=checked]:bg-primary data-[state=checked]:border-primary"
           />
-          <span className="text-body-sm font-medium text-neutral-primary">تذكرني على هذا الجهاز</span>
+          <span className="text-body-sm font-medium text-neutral-primary">
+            تذكرني على هذا الجهاز
+          </span>
         </label>
 
         <Link
@@ -130,6 +170,7 @@ export default function LoginForm() {
           w-full h-11 rounded-[10px] bg-primary text-surface text-label-lg font-semibold
           hover:bg-primary-dark transition-all duration-200 cursor-pointer shadow-level2
           disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-2
+          text-white
         "
       >
         {isSubmitting ? (

@@ -1,9 +1,27 @@
+"use client"
+import { authWithGoogleAct } from "@/actions/auth.action";
+//import { signIn } from "@/auth";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+
+
 
 export default function GoogleProvider() {
+  const router = useRouter()
+
+  const googleAuthHandler = async () => {
+    const result = await authWithGoogleAct()
+
+    // if (result.isSuccess) {
+    //   router.replace("/home")
+    // }
+    console.log(result.message)
+    
+  }
+
   return (
     <Button
-      type="button"
+      onClick={googleAuthHandler}
       variant="outline"
       className="
         h-11
@@ -33,7 +51,7 @@ export default function GoogleProvider() {
         <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.46-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
         <path fill="none" d="M0 0h48v48H0z" />
       </svg>
-      <span>التسجيل السريع باستخدام Google</span>
+      <span className="text-white">التسجيل السريع باستخدام Google</span>
     </Button>
   );
 }

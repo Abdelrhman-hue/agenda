@@ -1,0 +1,465 @@
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { auth } from "@/auth";
+import { HttpError, handleError } from "@/lib/api";
+import { getBookingScope, scopeWhere } from "@/lib/bookingAccess";
+import { createBookingSchema } from "@/utils/validation/booking";
+import {
+  expireOverdueHeldBookings,
+  resolveProviderProfile,
+  calculateDeposit,
+} from "@/lib/bookingHelper";
+import { BookingStatus, PaymentStatus, Role } from "@/generated/prisma/enums";
+import { dateInTimezone, timeInTimezone, weekdayInTimezone, zonedDateTimeToUtc } from "@/lib/time";
+
+/**
+ * POST /api/bookings
+ * إنشاء حجز جديد وتحديد الموعد ومبلغ العربون المطلوب
+ */
+export async function POST(request: NextRequest) {
+  try {
+    const json = await request.json();
+    const validation = createBookingSchema.safeParse(json);
+
+    if (!validation.success) {
+      return NextResponse.json(
+        {
+          status: "fail",
+          message:
+            validation.error.issues[0]?.message || "بيانات الحجز غير صحيحة",
+          errors: validation.error.issues,
+        },
+        { status: 400 },
+      );
+    }
+
+    const body = validation.data;
+
+    // 1. Expire any stale holds
+    await expireOverdueHeldBookings();
+
+    // 2. Resolve Provider
+    const provider = await resolveProviderProfile({
+      providerId: body.providerId,
+      slug: body.slug,
+      businessId: body.businessId,
+    });
+
+    if (!provider) {
+      return NextResponse.json(
+        { status: "fail", message: "مقدم الخدمة غير مسجل أو غير متاح" },
+        { status: 404 },
+      );
+    }
+
+    // 3. Resolve Service
+    const service = provider.services.find(
+      (s) => s.id === body.serviceId && s.isActive,
+    );
+    if (!service) {
+      return NextResponse.json(
+        { status: "fail", message: "الخدمة المطلوبة غير متوفرة حالياً" },
+        { status: 404 },
+      );
+    }
+
+    if (service.requiresAddress && !body.address?.trim()) {
+      return NextResponse.json(
+        { status: "fail", message: "عنوان الحضور مطلوب لإتمام حجز هذه الخدمة" },
+        { status: 400 },
+      );
+    }
+
+    // 4. Timing calculations
+    const requestedStart = new Date(body.startsAt);
+    const now = new Date();
+
+    if (isNaN(requestedStart.getTime())) {
+      return NextResponse.json(
+        { status: "fail", message: "صيغة تاريخ ووقت الحجز غير صحيحة" },
+        { status: 400 },
+      );
+    }
+
+    if (requestedStart < now) {
+      return NextResponse.json(
+        { status: "fail", message: "لا يمكن حجز موعد في وقت مضى" },
+        { status: 400 },
+      );
+    }
+
+    const startsAt = requestedStart;
+    const endsAt = new Date(startsAt.getTime() + service.durationMinutes * 60 * 1000);
+    const providerDate = dateInTimezone(startsAt, provider.timezone);
+
+    // 5. Check Provider Absence
+    const absence = await prisma.providerAbsence.findFirst({
+      where: {
+        providerId: provider.id,
+        date: new Date(`${providerDate}T00:00:00.000Z`),
+      },
+    });
+
+    if (absence) {
+      return NextResponse.json(
+        {
+          status: "fail",
+          message: `مقدم الخدمة غير متاح في هذا التاريخ ${absence.reason ? `(${absence.reason})` : ""}`,
+        },
+        { status: 409 },
+      );
+    }
+
+    // 6. Check Provider Working Hours
+    const dayOfWeek = weekdayInTimezone(startsAt, provider.timezone);
+    const workingHours = provider.workingHours.filter((wh) => wh.dayOfWeek === dayOfWeek);
+
+    if (workingHours.length === 0) {
+      return NextResponse.json(
+        {
+          status: "fail",
+          message: "مقدم الخدمة في يوم عطلة أسبوعية في هذا اليوم",
+        },
+        { status: 409 },
+      );
+    }
+
+    // Convert slot hours to comparison
+    const slotStartStr = timeInTimezone(startsAt, provider.timezone);
+    const slotEndStr = timeInTimezone(endsAt, provider.timezone);
+
+    const fitsWorkingHours = workingHours.some(
+      (wh) => slotStartStr >= wh.startTime && slotEndStr <= wh.endTime,
+    );
+    if (!fitsWorkingHours) {
+      const ranges = workingHours.map((wh) => `${wh.startTime} إلى ${wh.endTime}`).join("، ");
+      return NextResponse.json(
+        {
+          status: "fail",
+          message: `الموعد خارج ساعات العمل الرسمية (${ranges})`,
+        },
+        { status: 400 },
+      );
+    }
+
+    // 7. Check for Slot Conflicts (overlapping bookings)
+    // 8. Resolve Client User
+    const session = await auth();
+    let clientId = session?.user?.id;
+
+    if (!clientId) {
+      // Find or create a client record by phone or email
+      const clientEmail = body.clientEmail?.trim() || null;
+      const clientPhone = body.clientPhone?.trim() || null;
+
+      let existingUser = null;
+      if (clientEmail || clientPhone) {
+        existingUser = await prisma.user.findFirst({
+          where: {
+            OR: [
+              ...(clientEmail ? [{ email: clientEmail }] : []),
+              ...(clientPhone ? [{ phone: clientPhone }] : []),
+            ],
+          },
+        });
+      }
+
+      if (existingUser) {
+        clientId = existingUser.id;
+      } else {
+        const newUser = await prisma.user.create({
+          data: {
+            name: body.clientName?.trim() || "عميل",
+            email: clientEmail,
+            phone: clientPhone,
+            role: Role.CLIENT,
+          },
+        });
+        clientId = newUser.id;
+      }
+    }
+
+    // 9. Deposit & Price Breakdown Calculation
+    const pricing = calculateDeposit({
+      depositType: provider.depositType,
+      depositAmount: provider.depositAmount,
+      servicePrice: service.price,
+    });
+
+    const isZeroDeposit = pricing.depositAmount === 0;
+    const initialStatus = isZeroDeposit
+      ? BookingStatus.CONFIRMED
+      : BookingStatus.HELD;
+    // الموعد بيفضل مقفول لحد ما صاحب الخدمة يؤكد أو يلغي (من غير مهلة تلقائية)
+    const holdExpiresAt = null;
+    // 10. Persist Booking & Payment in Transaction
+    const result = await prisma.$transaction(async (tx) => {
+      // Serialize booking writes for this provider so overlapping ranges cannot race.
+      await tx.$queryRaw`SELECT "id" FROM "ProviderProfile" WHERE "id" = ${provider.id} FOR UPDATE`;
+      const existingConflict = await tx.booking.findFirst({
+        where: {
+          providerId: provider.id,
+          status: { in: [BookingStatus.HELD, BookingStatus.CONFIRMED] },
+          startsAt: { lt: endsAt },
+          endsAt: { gt: startsAt },
+        },
+        select: { id: true },
+      });
+      if (existingConflict) throw new HttpError(409, "هذا الموعد محجوز بالفعل أو محجوز مؤقتاً لعميل آخر، يرجى اختيار موعد آخر");
+
+      const booking = await tx.booking.create({
+        data: {
+          providerId: provider.id,
+          serviceId: service.id,
+          clientId: clientId!,
+          clientName: body.clientName?.trim() || null,
+          clientPhone: body.clientPhone?.trim() || null,
+          startsAt,
+          endsAt,
+          status: initialStatus,
+          holdExpiresAt,
+          address: body.address?.trim() || null,
+          clientNotes: body.clientNotes?.trim() || null,
+        },
+        include: {
+          client: {
+            select: { id: true, name: true, phone: true, email: true },
+          },
+          service: true,
+          provider: {
+            include: {
+              user: { select: { name: true, phone: true } },
+            },
+          },
+        },
+      });
+
+      const payment = await tx.payment.create({
+        data: {
+          bookingId: booking.id,
+          amount: pricing.depositAmount,
+          method: body.paymentMethod,
+          status: isZeroDeposit ? PaymentStatus.PAID : PaymentStatus.PENDING,
+        },
+      });
+
+      return { booking, payment };
+    });
+
+    return NextResponse.json(
+      {
+        status: "success",
+        message: isZeroDeposit
+          ? "تم تأكيد حجز الموعد بنجاح دون الحاجة لعربون"
+          : "تم إنشاء الحجز وبانتظار تأكيد صاحب الخدمة بعد سداد العربون",
+        data: {
+          bookingId: result.booking.id,
+          startsAt: result.booking.startsAt,
+          endsAt: result.booking.endsAt,
+          status: result.booking.status,
+          holdExpiresAt: result.booking.holdExpiresAt,
+          address: result.booking.address,
+          clientNotes: result.booking.clientNotes,
+          service: {
+            id: result.booking.service.id,
+            name: result.booking.service.name,
+            durationMinutes: result.booking.service.durationMinutes,
+            price: result.booking.service.price,
+          },
+          pricing,
+          payment: {
+            id: result.payment.id,
+            amount: result.payment.amount,
+            method: result.payment.method,
+            status: result.payment.status,
+          },
+          client: result.booking.client,
+          provider: {
+            id: result.booking.provider.id,
+            slug: result.booking.provider.slug,
+            name: result.booking.provider.user.name,
+            phone: result.booking.provider.user.phone,
+          },
+        },
+      },
+      { status: 201 },
+    );
+  } catch (error: any) {
+    console.error("POST /api/bookings error:", error);
+
+    if (error instanceof HttpError) return handleError(error, "bookings POST");
+
+    // Check Prisma unique constraint violation (P2002 on @@unique([providerId, startsAt]))
+    if (error?.code === "P2002") {
+      return NextResponse.json(
+        {
+          status: "fail",
+          message: "هذا الموعد تم حجزه للتو، يرجى اختيار موعد آخر",
+        },
+        { status: 409 },
+      );
+    }
+
+    return NextResponse.json(
+      {
+        status: "error",
+        message: "حدث خطأ غير متوقع أثناء معالجة الحجز",
+        error:
+          process.env.NODE_ENV === "development" ? error.message : undefined,
+      },
+      { status: 500 },
+    );
+  }
+}
+
+/**
+ * GET /api/bookings
+ * جلب قائمة الحجوزات مع دعم الفلترة (حسب businessId/providerId، التاريخ، أو الحالة) لعرضها في الداشبورد
+ */
+export async function GET(request: NextRequest) {
+  try {
+    // 401 لو مش مسجل. نطاق الحجوزات بيتحدد من الجلسة
+    const { scope } = await getBookingScope();
+    const { searchParams } = new URL(request.url);
+
+    await expireOverdueHeldBookings();
+
+    const status = searchParams.get("status") as BookingStatus | null;
+    const date = searchParams.get("date"); // "YYYY-MM-DD"
+    const startDate = searchParams.get("startDate");
+    const endDate = searchParams.get("endDate");
+    const search = searchParams.get("search")?.trim();
+
+    const page = Math.max(1, parseInt(searchParams.get("page") || "1", 10));
+    const limit = Math.max(
+      1,
+      Math.min(100, parseInt(searchParams.get("limit") || "20", 10)),
+    );
+    const skip = (page - 1) * limit;
+
+    // صاحب الخدمة = حجوزات نشاطه، العميل = حجوزاته هو
+    const where: any = { ...scopeWhere(scope) };
+
+    // الأدمن بس يقدر يفلتر بنشاط أو عميل معيّن
+    if (scope.kind === "ADMIN") {
+      const providerId = searchParams.get("providerId");
+      const clientId = searchParams.get("clientId");
+      if (providerId) where.providerId = providerId;
+      if (clientId) where.clientId = clientId;
+    }
+
+    if (status && Object.values(BookingStatus).includes(status)) {
+      where.status = status;
+    }
+
+    if (date) {
+      const dStart = new Date(date);
+      dStart.setHours(0, 0, 0, 0);
+      const dEnd = new Date(date);
+      dEnd.setHours(23, 59, 59, 999);
+      where.startsAt = { gte: dStart, lte: dEnd };
+    } else if (startDate || endDate) {
+      where.startsAt = {};
+      if (startDate) where.startsAt.gte = new Date(startDate);
+      if (endDate) where.startsAt.lte = new Date(endDate);
+    }
+
+    if (search) {
+      where.OR = [
+        { client: { name: { contains: search, mode: "insensitive" } } },
+        { client: { phone: { contains: search, mode: "insensitive" } } },
+        { client: { email: { contains: search, mode: "insensitive" } } },
+        { service: { name: { contains: search, mode: "insensitive" } } },
+        { clientNotes: { contains: search, mode: "insensitive" } },
+      ];
+    }
+
+    // الإحصائيات بنفس نطاق المستخدم
+    const statsWhere = scopeWhere(scope);
+
+    const [bookings, totalCount, statsGroup] = await Promise.all([
+      prisma.booking.findMany({
+        where,
+        include: {
+          client: {
+            select: { id: true, name: true, phone: true, email: true },
+          },
+          service: {
+            select: {
+              id: true,
+              name: true,
+              price: true,
+              durationMinutes: true,
+              requiresAddress: true,
+            },
+          },
+          provider: {
+            select: {
+              id: true,
+              slug: true,
+              category: true,
+              depositType: true,
+              depositAmount: true,
+              user: { select: { name: true, phone: true } },
+            },
+          },
+          payment: {
+            select: { id: true, amount: true, method: true, status: true },
+          },
+        },
+        orderBy: { startsAt: "desc" },
+        skip,
+        take: limit,
+      }),
+      prisma.booking.count({ where }),
+      prisma.booking.groupBy({
+        by: ["status"],
+        where: statsWhere,
+        _count: { _all: true },
+      }),
+    ]);
+
+    const metrics = {
+      total: totalCount,
+      confirmed:
+        statsGroup.find((s) => s.status === BookingStatus.CONFIRMED)?._count
+          ._all || 0,
+      held:
+        statsGroup.find((s) => s.status === BookingStatus.HELD)?._count._all ||
+        0,
+      cancelled:
+        statsGroup.find((s) => s.status === BookingStatus.CANCELLED)?._count
+          ._all || 0,
+      completed:
+        statsGroup.find((s) => s.status === BookingStatus.COMPLETED)?._count
+          ._all || 0,
+      noShow:
+        statsGroup.find((s) => s.status === BookingStatus.NO_SHOW)?._count
+          ._all || 0,
+    };
+
+    return NextResponse.json({
+      status: "success",
+      pagination: {
+        total: totalCount,
+        page,
+        limit,
+        totalPages: Math.ceil(totalCount / limit),
+      },
+      metrics,
+      data: bookings,
+    });
+  } catch (error: any) {
+    if (error instanceof HttpError) return handleError(error, "bookings GET");
+    console.error("GET /api/bookings error:", error);
+    return NextResponse.json(
+      {
+        status: "error",
+        message: "حدث خطأ أثناء جلب قائمة الحجوزات",
+        error:
+          process.env.NODE_ENV === "development" ? error.message : undefined,
+      },
+      { status: 500 },
+    );
+  }
+}

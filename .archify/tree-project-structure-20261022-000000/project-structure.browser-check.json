@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "ok": false,
+  "command": "browser-check",
+  "evidenceKind": "automated-browser",
+  "status": "fail",
+  "visualReview": "not-requested",
+  "provenance": "current",
+  "deliveryReceiptId": "3d241259-43b6-43ef-8411-310a25540e00",
+  "artifact": {
+    "path": "F:\\اجندة\\Agenda project\\agenda\\.archify\\tree-project-structure-20261022-000000\\project-structure.html",
+    "sha256": "8fc53da4bccfefd69bdd3a8705df1693dcee43102ada1ea8c04a34eef3c35c41",
+    "bytes": 859201
+  },
+  "state": {
+    "detail": "read",
+    "motion": "still"
+  },
+  "chrome": {
+    "status": "available",
+    "executable": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
+  },
+  "diagnostics": [
+    {
+      "code": "viewer/browser-check-runtime",
+      "severity": "error",
+      "message": "browser-check could not complete its Chrome inspection.",
+      "subject": {
+        "artifact": "F:\\اجندة\\Agenda project\\agenda\\.archify\\tree-project-structure-20261022-000000\\project-structure.html"
+      },
+      "evidence": {
+        "reason": "Temporary directory ancestor identity is unavailable: C:\\Users\\connect\\AppData\\Local\\Temp"
+      },
+      "supportedFixes": [
+        "resolve the reported Chrome inspection error, then rerun browser-check"
+      ]
+    }
+  ],
+  "containment": {
+    "status": "fail",
+    "policy": "fit-or-reader-declared-readable-vertical-scroll",
+    "viewports": []
+  },
+  "themeStates": {
+    "status": "fail",
+    "viewports": []
+  },
+  "readability": {
+    "status": "fail",
+    "minimumProjectedNodeTextPx": 6,
+    "viewports": []
+  },
+  "viewerChrome": {
+    "status": "fail",
+    "viewports": []
+  },
+  "captures": {
+    "status": "not-requested",
+    "screenshots": [],
+    "contactSheet": null
+  },
+  "sidecars": {
+    "receipt": "project-structure.browser-check.json",
+    "files": []
+  },
+  "error": "Temporary directory ancestor identity is unavailable: C:\\Users\\connect\\AppData\\Local\\Temp"
+}
