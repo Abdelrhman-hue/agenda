@@ -13,7 +13,14 @@ export const proxy = auth(async (req) => {
   const go = (to: string) => NextResponse.redirect(new URL(to, nextUrl));
   const isProtected =
     path.startsWith("/dashboard") || path.startsWith("/onboarding");
-  const LOGIN_REQUIRED = ["/dashboard", "/onboarding", "/book", "/bookings"];
+  const LOGIN_REQUIRED = [
+    "/dashboard",
+    "/onboarding",
+    "/book",
+    "/bookings",
+    "/profile",
+    "/auth/profile",
+  ];
   const requiresLogin = LOGIN_REQUIRED.some(
     (base) => path === base || path.startsWith(base + "/"),
   );

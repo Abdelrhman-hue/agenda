@@ -73,7 +73,11 @@ export default function LoginForm() {
       }
 
       if (data.code === "EMAIL_NOT_VERIFIED") {
-        setServerSuccess(data.message);
+        const params = new URLSearchParams({
+          email: email.trim(),
+          token: data.verificationStatusToken,
+        });
+        router.push(`/auth/verify-email?${params.toString()}`);
         return;
       }
 
@@ -83,9 +87,10 @@ export default function LoginForm() {
         // العميل يروح /home، وصاحب الخدمة /dashboard (والـ proxy يحوّله للـ onboarding لو لسه مخلّصش)
         const target = data.data?.role === "CLIENT" ? "/home" : "/dashboard";
         setTimeout(() => {
-          router.push(target);
-          router.refresh();
-        }, 1200);
+          // الـ proxy يوجّه مقدم الخدمة غير المكتمل إلى onboarding،
+          // ومقدم الخدمة المكتمل إلى لوحة التحكم، والعميل إلى الصفحة الرئيسية.
+          router.push("/dashboard");
+        }, 1800);
       }
     } catch (err) {
       console.log(err);

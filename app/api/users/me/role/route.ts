@@ -15,6 +15,10 @@ export async function POST(req: NextRequest) {
     const session = await requireSession();
     const { role } = await parseBody(req, roleSchema);
 
+    if (session.user.roleChosen !== false) {
+      throw new HttpError(403, "اختيار نوع الحساب متاح للحسابات الجديدة فقط");
+    }
+
     // شرط roleChosen=false جوه الـ WHERE يمنع أي سباق أو محاولة تغيير تانية
     const result = await prisma.user.updateMany({
       where: { id: session.user.id, roleChosen: false },

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "a149ec7f-5685-4c31-9e6b-76b57dce8c80",
+  "status": "current",
+  "command": "deliver",
+  "type": "tree",
+  "input": "F:\\اجندة\\Agenda project\\agenda\\.archify\\tree-project-structure-20261022-000000\\candidate.json",
+  "output": "F:\\اجندة\\Agenda project\\agenda\\.archify\\tree-project-structure-20261022-000000\\project-structure.html",
+  "specification": {
+    "sha256": "0abe86bca64c9102025f3232986fa5f7d2dc9e3d4cffa7ba24a564de2489d9a9",
+    "bytes": 15111
+  },
+  "artifact": {
+    "sha256": "e61ae632387b51070e29924223a876c750cc0585a1583f9c25bcad5360a57137",
+    "bytes": 889275
+  }
+}
