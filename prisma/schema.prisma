@@ -11,14 +11,14 @@ model User {
   id            String    @id @default(cuid())
   email         String?   @unique
   emailVerified DateTime?
-  image         String?  
+  image         String?
   phone         String?   @unique
   password      String?
   name          String?
   role          Role      @default(CLIENT)
   roleChosen    Boolean   @default(true)
   createdAt     DateTime  @default(now())
-  roleChosen Boolean @default(true)
+
   bookings        Booking[]
   providerProfile ProviderProfile?
 
