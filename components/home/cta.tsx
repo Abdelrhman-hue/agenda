@@ -38,7 +38,7 @@ export function Cta() {
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <Link
-            href="/signup"
+            href="/auth/sign_up"
             className="inline-flex h-12 items-center gap-2 rounded-xl bg-[#fbc94a] px-6 text-sm font-bold text-[#1f2a24] transition-colors hover:bg-[#f7bd2c] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
           >
             ابدأ مجانًا الآن — بدون بطاقة بنكية

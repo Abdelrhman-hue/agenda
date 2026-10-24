@@ -27,7 +27,7 @@ const plans: {
       "تحصيل العربون وإشعارات التأكيد",
     ],
     cta: "ابدأ مجانًا الآن",
-    href: "/signup",
+    href: "/auth/sign_up",
   },
   {
     label: "الخطة الأساسية",
@@ -43,7 +43,7 @@ const plans: {
       "مزامنة لحظية مع تقويم Google",
     ],
     cta: "ابدأ تجربة ١٤ يوم مجانًا",
-    href: "/signup?plan=growth",
+    href: "/auth/sign_up?plan=growth",
     featured: true,
   },
   {

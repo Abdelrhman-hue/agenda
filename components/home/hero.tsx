@@ -93,7 +93,7 @@ export function Hero() {
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
             <Link
-              href="auth/login"
+              href="/auth/sign_up"
               className="bg-[#006453] inline-flex h-12 items-center gap-2 rounded-xl px-6 text-sm font-semibold text-white shadow-[0_8px_20px_-8px] shadow-brand/60 transition-colors hover:bg-brand/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
             >
               ابدأ مجانًا الآن
